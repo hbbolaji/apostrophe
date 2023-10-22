@@ -19,7 +19,7 @@ const Input: React.FC<InputType> = ({ ...props }) => {
       <input
         {...props}
         autoComplete="off"
-        className="block w-full outline-none py-3 px-5 text-sm md:text-base border border-1 border-gray-300 rounded-full bg-white focus:border-indigo-500"
+        className="block w-full outline-none py-3 px-5 text-sm md:text-base border border-1 border-gray-300 rounded-full bg-white focus:border-orange-500"
       />
       <p className="text-xs px-5 text-red-500">
         <ErrorMessage name={name} />
