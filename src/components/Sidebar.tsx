@@ -18,6 +18,11 @@ import {
 } from "react-icons/pi";
 import { NavLink } from "react-router-dom";
 
+type SidebarType = {
+  mobile?: boolean;
+  closeNav?: () => void;
+};
+
 const icons = (name: string) => {
   let icon;
   switch (name) {
@@ -64,28 +69,41 @@ const icons = (name: string) => {
   return icon;
 };
 
-const Sidebar = () => {
+const Sidebar: React.FC<SidebarType> = ({ mobile, closeNav }) => {
   return (
-    <div className="fixed left-0 top-0 pt-8 px-5  h-screen w-full space-y-6">
+    <div className="left-0 top-0 pt-8 px-5 h-screen space-y-6">
       <div>
-        <img className="h-12 block cursor-pointer" src={Logo} alt="logo" />
+        <img
+          className="hidden h-12 md:block cursor-pointer"
+          src={Logo}
+          alt="logo"
+        />
       </div>
-      <div className="space-y-8">
+      <div className="space-y-8 w-full">
         {navigation.map((nav: NavType) => (
           <div className="space-y-3" key={nav.name}>
             <div className="flex space-x-3 items-center">
               {icons(nav.name)}
-              <h4 className="capitalize text-base font-semibold">{nav.name}</h4>
+              <h4 className="tracking-wider capitalize text-sm font-semibold">
+                {nav.name}
+              </h4>
             </div>
-            <div className="space-y-5 pl-3">
+            <div className="space-y-4 pl-1">
               {nav.data.map((data: NavItemType) => (
                 <NavLink
                   to={data.nav}
+                  onClick={closeNav}
                   key={data.title}
-                  className="flex items-center space-x-3"
+                  className={({ isActive }) =>
+                    ` ${
+                      isActive ? "text-orange-600 font-bold" : "text-gray-600"
+                    } relative flex w-full items-center space-x-3 hover:bg-orange-500 hover:bg-opacity-20 px-2 py-1 rounded-md`
+                  }
                 >
                   {icons(data.title)}
-                  <p className="text-lg font-light p-1">{data.title}</p>
+                  <p className="tracking-wide text-sm sm:text-base md:text-lg font-light p-1">
+                    {data.title}
+                  </p>
                 </NavLink>
               ))}
             </div>
