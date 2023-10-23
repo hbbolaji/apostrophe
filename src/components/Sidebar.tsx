@@ -79,7 +79,7 @@ const Sidebar: React.FC<SidebarType> = ({ mobile, closeNav }) => {
           alt="logo"
         />
       </div>
-      <div className="space-y-8 w-full">
+      <div className="space-y-4 md:space-y-8 w-full">
         {navigation.map((nav: NavType) => (
           <div className="space-y-3" key={nav.name}>
             <div className="flex space-x-3 items-center">
@@ -88,7 +88,7 @@ const Sidebar: React.FC<SidebarType> = ({ mobile, closeNav }) => {
                 {nav.name}
               </h4>
             </div>
-            <div className="space-y-4 pl-1">
+            <div className="space-y-2 md:space-y-4 pl-1">
               {nav.data.map((data: NavItemType) => (
                 <NavLink
                   to={data.nav}
