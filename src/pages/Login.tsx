@@ -3,8 +3,10 @@ import { Form, Formik } from "formik";
 import * as yup from "yup";
 import Input from "../components/Input";
 import Logo from "../images/apostrophe.png";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen p-8 space-y-10 flex flex-col justify-center bg-white">
       <div className="w-ful">
@@ -25,7 +27,7 @@ const Login = () => {
             password: "",
           }}
           onSubmit={(values) => {
-            console.log(values);
+            navigate("/dashboard");
           }}
           validationSchema={loginValidation}
         >

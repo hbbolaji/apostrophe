@@ -1,7 +1,6 @@
 export type NavItemType = {
   title: string;
   nav: string;
-  icon: any;
 };
 
 export type NavType = {
@@ -10,30 +9,30 @@ export type NavType = {
 };
 
 const user: NavItemType[] = [
-  { title: "Sales", icon: "", nav: "/dashboard/sales" },
-  { title: "Students", icon: "", nav: "/dashboard/students" },
+  { title: "Sales", nav: "/dashboard/sales" },
+  { title: "Students", nav: "/dashboard/students" },
 ];
 
 const invoice: NavItemType[] = [
-  { title: "Invoices", icon: "<GrMenu />", nav: "/dashboard/invoice" },
-  { title: "Template ", icon: "", nav: "/dashboard/template" },
+  { title: "Invoices", nav: "/dashboard/invoices" },
+  { title: "Templates", nav: "/dashboard/templates" },
 ];
 
 const payment: NavItemType[] = [
-  { title: "Payments", icon: "", nav: "/dashboard/payment" },
-  { title: "Plans", icon: "", nav: "/dashboard/plan" },
-  { title: "Discount ", icon: "", nav: "/dashboard/discount" },
+  { title: "Payments", nav: "/dashboard/payments" },
+  { title: "Plans", nav: "/dashboard/plans" },
+  { title: "Discounts", nav: "/dashboard/discounts" },
 ];
 
 const others: NavItemType[] = [
-  { title: "Courses", icon: "", nav: "/dashboard/courses" },
-  { title: "Guardian", icon: "", nav: "/dashboard/guardian" },
+  { title: "Courses", nav: "/dashboard/courses" },
+  { title: "Guardians", nav: "/dashboard/guardians" },
 ];
 
 const navigation: NavType[] = [
   { name: "User", data: user },
-  { name: "Invoices", data: invoice },
-  { name: "Payments", data: payment },
-  { name: "Others", data: others },
+  { name: "Invoice", data: invoice },
+  { name: "Payment", data: payment },
+  { name: "Other", data: others },
 ];
 export default navigation;
