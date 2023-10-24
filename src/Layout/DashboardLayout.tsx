@@ -23,7 +23,7 @@ const DashboardLayout = () => {
           <Sidebar />
         </div>
 
-        <div className="md:h-screen relative w-full flex p-4 md:pt-8 md:px-8 overflow-y-auto z-10">
+        <div className="md:h-screen relative w-full flex overflow-y-auto z-10">
           <Outlet />
         </div>
       </div>

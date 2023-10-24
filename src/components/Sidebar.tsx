@@ -71,7 +71,7 @@ const icons = (name: string) => {
 
 const Sidebar: React.FC<SidebarType> = ({ mobile, closeNav }) => {
   return (
-    <div className="left-0 top-0 pt-8 px-5 h-screen space-y-6">
+    <div className="left-0 top-0 md:pt-8 px-5 h-screen space-y-6">
       <div>
         <img
           className="hidden h-12 md:block cursor-pointer"

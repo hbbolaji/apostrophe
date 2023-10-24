@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Login from "./pages/Login";
 import DashboardLayout from "./Layout/DashboardLayout";
-import User from "./pages/User";
+import Sales from "./pages/Sales";
 import Students from "./pages/Students";
 import Invoices from "./pages/Invoices";
 import Template from "./pages/Template";
@@ -20,7 +20,7 @@ function App() {
       <Routes>
         <Route index path="/" element={<Login />} />
         <Route path="dashboard" element={<DashboardLayout />}>
-          <Route element={<User />} path="sales" />
+          <Route element={<Sales />} path="sales" />
           <Route element={<Students />} path="students" />
           <Route element={<Invoices />} path="invoices" />
           <Route element={<Template />} path="templates" />

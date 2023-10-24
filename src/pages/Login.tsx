@@ -27,11 +27,11 @@ const Login = () => {
             password: "",
           }}
           onSubmit={(values) => {
-            navigate("/dashboard");
+            navigate("/dashboard/sales");
           }}
           validationSchema={loginValidation}
         >
-          {({ values, errors, handleChange, handleSubmit }) => (
+          {({ values, handleChange }) => (
             <Form className="space-y-4">
               <Input
                 name="email"
