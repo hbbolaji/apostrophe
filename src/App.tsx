@@ -1,6 +1,5 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Login from "./pages/Login";
 import DashboardLayout from "./Layout/DashboardLayout";
 import Sales from "./pages/Sales";
@@ -12,13 +11,14 @@ import Plans from "./pages/Plans";
 import Discounts from "./pages/Discounts";
 import Courses from "./pages/Courses";
 import Guardians from "./pages/Guardians";
+import { useAuth } from "./context/AuthContext";
 
 function App() {
-  const queryClient = new QueryClient();
+  const { token } = useAuth();
   return (
-    <QueryClientProvider client={queryClient}>
-      <Routes>
-        <Route index path="/" element={<Login />} />
+    <Routes>
+      <Route index path="/" element={<Login />} />
+      {token !== "" ? (
         <Route path="dashboard" element={<DashboardLayout />}>
           <Route element={<Sales />} path="sales" />
           <Route element={<Students />} path="students" />
@@ -30,8 +30,9 @@ function App() {
           <Route element={<Courses />} path="courses" />
           <Route element={<Guardians />} path="guardians" />
         </Route>
-      </Routes>
-    </QueryClientProvider>
+      ) : null}
+      <Route path="*" element={<Login />} />
+    </Routes>
   );
 }
 

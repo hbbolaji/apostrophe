@@ -15,8 +15,10 @@ import {
   PiOctagonBold,
   PiCircleBold,
   PiSquareBold,
+  PiArrowLineRightLight,
 } from "react-icons/pi";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 type SidebarType = {
   mobile?: boolean;
@@ -70,6 +72,8 @@ const icons = (name: string) => {
 };
 
 const Sidebar: React.FC<SidebarType> = ({ mobile, closeNav }) => {
+  const navigate = useNavigate();
+  const { sendToken } = useAuth();
   return (
     <div className="left-0 top-0 md:pt-8 px-5 h-screen space-y-6">
       <div>
@@ -109,6 +113,19 @@ const Sidebar: React.FC<SidebarType> = ({ mobile, closeNav }) => {
             </div>
           </div>
         ))}
+      </div>
+      <div
+        className={`text-gray-600 relative flex w-full items-center space-x-3 hover:bg-orange-500 hover:bg-opacity-20 px-2 py-1 rounded-md cursor-pointer`}
+        onClick={() => {
+          sessionStorage.removeItem("token");
+          sendToken("");
+          navigate("/", { replace: true });
+        }}
+      >
+        <PiArrowLineRightLight />
+        <p className="tracking-wide text-sm sm:text-base md:text-lg font-light p-1">
+          Log out
+        </p>
       </div>
     </div>
   );
