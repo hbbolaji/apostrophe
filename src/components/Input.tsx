@@ -7,19 +7,23 @@ type InputType = {
   placeholder?: string;
   onChange: any;
   value: string;
+  hidelabel?: boolean;
 };
 
 const Input: React.FC<InputType> = ({ ...props }) => {
-  const { name, placeholder } = props;
+  const { name, placeholder, hidelabel } = props;
   return (
     <div className="space-y-2">
-      <label
-        // htmlFor={name}
-        htmlFor={name}
-        className="text-xs md:text-sm px-2 text-gray-600"
-      >
-        {placeholder}
-      </label>
+      {!hidelabel ? (
+        <label
+          // htmlFor={name}
+          htmlFor={name}
+          className="text-xs md:text-sm px-2 text-gray-600"
+        >
+          {placeholder}
+        </label>
+      ) : null}
+
       <input
         {...props}
         autoComplete="off"
