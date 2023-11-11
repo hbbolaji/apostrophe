@@ -1,13 +1,18 @@
 import React from "react";
+import Avatar, { genConfig } from "react-nice-avatar";
+import { StudentType } from "../utils/types";
 
-type StudentType = {};
-
-const Student: React.FC<StudentType> = () => {
+const Student: React.FC<{ student: StudentType }> = ({ student }) => {
+  const config = genConfig(student.emailAddress);
   return (
-    <div className="w-full w-full xl:p-6 border border-orange-100 rounded-lg flex flex-col items-center space-y-4 hover:shadow-lg cursor-pointer">
-      <div className="h-24 w-24 rounded-full bg-gray-100"></div>
+    <div className="w-full bg-white p-6 rounded-lg flex flex-col items-center space-y-4 shadow hover:shadow-lg cursor-pointer">
+      <div className="h-24 w-24">
+        <Avatar className="h-24 w-24 rounded-full" {...config} />
+      </div>
       <div className="text-center">
-        <p className="text-lg">FirstName LastName</p>
+        <p className="text-lg">
+          {student.firstName} {student.lastName}
+        </p>
         <p className="text-sm text-gray-400">Course</p>
       </div>
     </div>
