@@ -16,9 +16,6 @@ const User: React.FC<{ user: UserType }> = ({ user }) => {
         <p className="text-sm text-gray-400">{user.emailAddress}</p>
       </div>
       <div className="flex space-x-3 w-full">
-        <button className="inline-block w-full text-sm bg-orange-500 text-white p-1 rounded-full">
-          Edit
-        </button>
         <button className="block w-full border text-sm rounded-full p-1 border-orange-500 text-orange-500">
           Deactivate
         </button>

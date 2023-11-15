@@ -1,9 +1,10 @@
 import React from "react";
+import InvoiceTemplate from "../components/InvoiceTemplate";
 
 const Template = () => {
   return (
     <div>
-      <p>Templates</p>
+      <InvoiceTemplate />
     </div>
   );
 };

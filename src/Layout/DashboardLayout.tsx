@@ -19,11 +19,11 @@ const DashboardLayout = () => {
       </div>
       {open ? <MobileNav closeNav={closeNav} /> : null}
       <div className="flex relative">
-        <div className=" hidden md:block w-6/12 lg:w-1/2 xl:w-1/3 2xl:w-1/4 bg-orange-300 bg-opacity-20">
+        <div className="h-screen overflow-y-auto hidden md:block pb-4 w-6/12 lg:w-1/2 xl:w-1/3 2xl:w-1/4 bg-orange-300 bg-opacity-20">
           <Sidebar />
         </div>
 
-        <div className="md:h-screen bg-gray-50 relative w-full flex overflow-y-auto z-10">
+        <div className="h-screen bg-gray-50 relative w-full flex overflow-y-auto z-10">
           <Outlet />
         </div>
       </div>

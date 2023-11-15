@@ -15,7 +15,7 @@ const Sales = () => {
     if (value === "") setUsers(usersData as []);
     else
       setUsers(
-        users.filter(
+        (usersData as []).filter(
           (user: UserType) =>
             user.firstName.toLowerCase().includes(value.toLowerCase()) ||
             user.lastName.toLowerCase().includes(value.toLowerCase())
