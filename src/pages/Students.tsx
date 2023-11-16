@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { PiFunnelSimpleLight } from "react-icons/pi";
-// import Rightbar from "../components/Rightbar";
-// import AddSales from "../components/Sales/AddSales";
+import { PiFunnelSimpleLight, PiPlusLight } from "react-icons/pi";
 import Input from "../components/Input";
 import { Form, Formik } from "formik";
 import Student from "../components/Student";
 import { studentsData } from "../utils/data";
 import { StudentType } from "../utils/types";
 import Checkbox from "../components/Checkbox";
+import { useNavigate } from "react-router-dom";
 
 const Students = () => {
+  const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [showFilter, setShowFilter] = useState<boolean>(false);
-  // const [filters, setFilters] = useState<string[]>([]);
-  let checkbox: string[] = [];
+  const [male, setMale] = useState(false);
+  const [female, setFemale] = useState(false);
+  const [filters, setFilters] = useState<string[]>([]);
 
   const toggleFilter = () => {
     setShowFilter((prev) => !prev);
@@ -32,7 +33,8 @@ const Students = () => {
   };
 
   const onCheck = (value: string) => {
-    checkbox.push(value);
+    const updatedList = [...filters, value];
+    setFilters(updatedList);
   };
 
   useEffect(() => {
@@ -40,7 +42,8 @@ const Students = () => {
   }, []);
 
   const onFilter = (sex: string) => {
-    console.log(checkbox);
+    console.log(filters);
+    setShowFilter(false);
   };
 
   return (
@@ -49,12 +52,22 @@ const Students = () => {
         {/* page heading */}
         <div className="flex items-center justify-between py-3">
           <p className="text-2xl">Students</p>
-          <div
-            className="cursor-pointer flex items-center space-x-5 border border-1 border-orange-300 rounded-full py-1 px-3"
-            onClick={toggleFilter}
-          >
-            <p className="text-sm text-gray-500 font-semibold">Filter</p>
-            <PiFunnelSimpleLight className="text-2xl" />
+          <div className="flex space-x-5 items-center">
+            <PiPlusLight
+              className="text-2xl cursor-pointer"
+              onClick={() => {
+                navigate("/dashboard/students/add");
+              }}
+            />
+            <div className="flex">
+              <div
+                className="cursor-pointer flex items-center space-x-5 border border-1 border-orange-300 rounded-full py-1 px-3"
+                onClick={toggleFilter}
+              >
+                <p className="text-sm text-gray-500 font-semibold">Filter</p>
+                <PiFunnelSimpleLight className="text-2xl" />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -64,20 +77,22 @@ const Students = () => {
             <p className="text-gray-500 font-semibold">Gender</p>
             <div className="space-y-3 px-5">
               <Checkbox
-                // checked={checkbox.includes("male")}
+                checked={male}
                 name="filters"
                 value="male"
                 label="Male"
                 handleChange={() => {
+                  setMale((prev) => !prev);
                   onCheck("male");
                 }}
               />
               <Checkbox
-                // checked={checkbox.includes("female")}
+                checked={female}
                 name="filters"
                 value="female"
                 label="Female"
                 handleChange={() => {
+                  setFemale((prev) => !prev);
                   onCheck("female");
                 }}
               />
@@ -90,27 +105,21 @@ const Students = () => {
                 name="filters"
                 value="english"
                 label="English"
-                handleChange={() => {
-                  onCheck("english");
-                }}
+                handleChange={() => onCheck}
               />
               <Checkbox
                 // checked={checkbox.includes("turkish")}
                 name="filters"
                 value="turkish"
                 label="Turkish"
-                handleChange={() => {
-                  onCheck("turkish");
-                }}
+                handleChange={() => onCheck}
               />
               <Checkbox
                 // checked={checkbox.includes("arabic")}
                 name="filters"
                 value="arabic"
                 label="Arabic"
-                handleChange={() => {
-                  onCheck("arabic");
-                }}
+                handleChange={() => onCheck}
               />
             </div>
             <p className="text-gray-500 font-semibold">Acadmeic Status</p>
@@ -120,27 +129,21 @@ const Students = () => {
                 name="filters"
                 value="active"
                 label="Active"
-                handleChange={() => {
-                  onCheck("active");
-                }}
+                handleChange={() => onCheck}
               />
               <Checkbox
                 // checked={checkbox.includes("withdrawn")}
                 name="filters"
                 value="withdrawn"
                 label="Withdrawn"
-                handleChange={() => {
-                  onCheck("withdrawn");
-                }}
+                handleChange={() => onCheck}
               />
               <Checkbox
                 // checked={checkbox.includes("new")}
                 name="filters"
                 value="new"
                 label="New"
-                handleChange={() => {
-                  onCheck("new");
-                }}
+                handleChange={() => onCheck}
               />
             </div>
             <p className="text-gray-500 font-semibold">Financial Status</p>
@@ -150,27 +153,21 @@ const Students = () => {
                 name="filters"
                 value="paid"
                 label="Paid"
-                handleChange={() => {
-                  onCheck("paid");
-                }}
+                handleChange={() => onCheck}
               />
               <Checkbox
                 // checked={checkbox.includes("inNegotiation")}
                 name="filters"
                 value="inNegotiation"
                 label="In Negotiation"
-                handleChange={() => {
-                  onCheck("inNegotiation");
-                }}
+                handleChange={() => onCheck}
               />
               <Checkbox
                 // checked={checkbox.includes("expired")}
                 name="filters"
                 value="expired"
                 label="Expired"
-                handleChange={() => {
-                  onCheck("expired");
-                }}
+                handleChange={() => onCheck}
               />
             </div>
             <div className="flex justify-end">
@@ -227,12 +224,6 @@ const Students = () => {
             </div>
           ))}
         </div>
-      </div>
-      <div className="relative">
-        {/* large monitor view */}
-        {/* <Rightbar>
-          <AddSales />
-        </Rightbar> */}
       </div>
     </div>
   );

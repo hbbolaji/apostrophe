@@ -3,7 +3,7 @@ import React from "react";
 type CheckBoxType = {
   label: string;
   value: string;
-  handleChange: () => void;
+  handleChange: (value: string) => void;
   checked?: boolean;
   name: string;
 };
@@ -21,7 +21,7 @@ const Checkbox: React.FC<CheckBoxType> = ({
         <input
           type="checkbox"
           className="accent-orange-500"
-          onChange={handleChange}
+          onChange={() => handleChange(value)}
           name={name}
           value={value}
           checked={checked}

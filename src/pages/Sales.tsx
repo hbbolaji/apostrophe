@@ -7,9 +7,11 @@ import { Form, Formik } from "formik";
 import User from "../components/User";
 import { usersData } from "../utils/data";
 import { UserType } from "../utils/types";
+import { useNavigate } from "react-router-dom";
 
 const Sales = () => {
   const [users, setUsers] = useState([]);
+  const navigate = useNavigate();
 
   const onSearch = (value: string) => {
     if (value === "") setUsers(usersData as []);
@@ -33,7 +35,12 @@ const Sales = () => {
         {/* page heading */}
         <div className="flex items-center justify-between py-3">
           <p className="text-2xl">Sales Rep</p>
-          <PiPlusLight className="text-2xl" />
+          <PiPlusLight
+            className="text-2xl cursor-pointer"
+            onClick={() => {
+              navigate("/dashboard/sales/add");
+            }}
+          />
         </div>
 
         {/* search function */}
