@@ -75,7 +75,7 @@ const Sidebar: React.FC<SidebarType> = ({ mobile, closeNav }) => {
   const navigate = useNavigate();
   const { sendToken } = useAuth();
   return (
-    <div className="left-0 top-0 md:pt-8 px-5 h-screen space-y-6">
+    <div className="left-0 top-0 md:pt-8 px-5 min-h-screen space-y-6">
       <div>
         <img
           className="hidden h-12 md:block cursor-pointer"

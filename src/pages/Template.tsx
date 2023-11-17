@@ -1,8 +1,5 @@
 import React from "react";
-import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
-import {Datepicker, Input, initTE } from "tw-elements";
-
-initTE({ Datepicker, Input });
+import InvoiceTemplate from "../components/InvoiceTemplate";
 
 const Template = () => {
   return (
