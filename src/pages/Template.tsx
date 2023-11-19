@@ -1,3 +1,4 @@
+import InvoiceTemplate from "../components/InvoiceTemplate";
 import React from "react";
 import InvoiceTemplate from "../components/InvoiceTemplate";
 
