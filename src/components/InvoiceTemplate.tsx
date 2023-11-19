@@ -119,8 +119,6 @@ const InvoiceTemplate = () => {
               )}
             </Formik>
           </div>
-    </div>
-  );
 };
 
 export default InvoiceTemplate;
