@@ -31,6 +31,12 @@ const icons = (name: string) => {
     case "Students":
       icon = <PiStudentLight className="text-2xl" />;
       break;
+    case "My Profile":
+      icon = <PiCircleBold className="text-lg" />;
+      break;
+    case "Profile":
+      icon = <PiStudentLight className="text-2xl" />;
+      break;
     case "Sales":
       icon = <PiOfficeChairLight className="text-2xl" />;
       break;
@@ -64,7 +70,7 @@ const icons = (name: string) => {
     case "Invoice":
       icon = <PiOctagonBold className="text-lg" />;
       break;
-    case "User":
+    case "Admin":
       icon = <PiCircleBold className="text-lg" />;
       break;
   }
@@ -73,7 +79,7 @@ const icons = (name: string) => {
 
 const Sidebar: React.FC<SidebarType> = ({ mobile, closeNav }) => {
   const navigate = useNavigate();
-  const { sendToken } = useAuth();
+  const { sendToken, currentUser } = useAuth();
   return (
     <div className="left-0 top-0 md:pt-8 px-5 min-h-screen space-y-6">
       <div>
@@ -84,7 +90,7 @@ const Sidebar: React.FC<SidebarType> = ({ mobile, closeNav }) => {
         />
       </div>
       <div className="space-y-4 md:space-y-8 w-full">
-        {navigation.map((nav: NavType) => (
+        {navigation(currentUser?.role).map((nav: NavType) => (
           <div className="space-y-3" key={nav.name}>
             <div className="flex space-x-3 items-center">
               {icons(nav.name)}

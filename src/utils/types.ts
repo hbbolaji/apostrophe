@@ -30,3 +30,14 @@ export type StudentType = {
   id: string;
   uid: string;
 };
+
+export type AuthType = {
+  token: string;
+  currentUser: any;
+  sendToken: (token: string) => void;
+};
+
+export type LoginType = {
+  email: string;
+  password: string;
+};

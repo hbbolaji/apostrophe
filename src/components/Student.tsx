@@ -1,11 +1,18 @@
 import React from "react";
 import Avatar, { genConfig } from "react-nice-avatar";
 import { StudentType } from "../utils/types";
+import { useNavigate } from "react-router-dom";
 
 const Student: React.FC<{ student: StudentType }> = ({ student }) => {
+  const navigate = useNavigate();
   const config = genConfig(student.emailAddress);
   return (
-    <div className="w-full bg-white p-6 rounded-lg flex flex-col items-center space-y-4 shadow hover:shadow-lg cursor-pointer">
+    <div
+      className="w-full bg-white p-6 rounded-lg flex flex-col items-center space-y-4 shadow hover:shadow-lg cursor-pointer"
+      onClick={() => {
+        navigate(`/dashboard/students/${student.id}`);
+      }}
+    >
       <div className="h-24 w-24">
         <Avatar className="h-24 w-24 rounded-full" {...config} />
       </div>

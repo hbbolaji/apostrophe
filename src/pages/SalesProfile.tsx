@@ -12,7 +12,7 @@ const SalesProfile = () => {
   return (
     <div className="pt-8 px-5 w-full space-y-5">
       <div className="p-3">
-        <Profile />
+        <Profile {...students[0]} />
       </div>
       <div className="flex flex-wrap">
         {students.map((student: StudentType) => (

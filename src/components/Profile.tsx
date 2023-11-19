@@ -9,9 +9,10 @@ import {
   PiWhatsappLogoLight,
 } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
+import { StudentType, UserType } from "../utils/types";
 
-const Profile = () => {
-  let config = genConfig("");
+const Profile: React.FC<UserType | StudentType> = (props) => {
+  let config = genConfig(props.emailAddress);
   const navigate = useNavigate();
   return (
     <div className="w-full bg-white rounded-lg shadow-lg p-6 space-y-4">
@@ -31,12 +32,18 @@ const Profile = () => {
       </div>
       <div className="text-left">
         <p className="text-lg flex items-center space-x-3">
-          <span>Veronica Cruz</span> <PiStarFill className="text-green-500" />
+          <span>
+            {props.firstName} {props.lastName}
+          </span>{" "}
+          <PiStarFill className="text-green-500" />
         </p>
-        <p className="text-sm text-gray-400">v.cruz@gmail.com</p>
+        <p className="text-sm text-gray-400">{props.emailAddress}</p>
       </div>
       <div className=" text-3xl flex items-center space-x-4">
-        <PiEnvelopeLight className="border border-gray-500 rounded p-1 cursor-pointer" />
+        <PiEnvelopeLight
+          className="border border-gray-500 rounded p-1 cursor-pointer"
+          title={props.emailAddress}
+        />
         <PiWhatsappLogoLight className="border border-gray-500 rounded p-1 cursor-pointer" />
         <PiPhoneCallThin className="border border-gray-500 rounded p-1 cursor-pointer" />
         <PiPhoneThin className="border border-gray-500 rounded p-1 cursor-pointer" />

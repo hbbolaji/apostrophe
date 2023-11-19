@@ -16,14 +16,17 @@ import AddSales from "./components/Sales/AddSales";
 import AddStudents from "./components/Sales/AddStudents";
 import SalesProfile from "./pages/SalesProfile";
 import StudentProfile from "./pages/StudentProfile";
+import Me from "./pages/Me";
 
 function App() {
-  const { token } = useAuth();
+  const { token, currentUser } = useAuth();
+  console.log(currentUser?.role);
   return (
     <Routes>
       <Route index path="/" element={<Login />} />
       {token !== "" ? (
         <Route path="dashboard" element={<DashboardLayout />}>
+          <Route element={<Me />} path="me" />
           <Route element={<Sales />} path="sales" />
           <Route element={<AddSales />} path="sales/add" />
           <Route element={<SalesProfile />} path="sales/:id" />

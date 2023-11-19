@@ -7,11 +7,7 @@ import Logo from "../images/apostrophe.png";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Toast from "../components/Toast";
-
-type LoginType = {
-  email: string;
-  password: string;
-};
+import { LoginType } from "../utils/types";
 
 const Login = () => {
   const navigate = useNavigate();
