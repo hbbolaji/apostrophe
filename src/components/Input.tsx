@@ -27,7 +27,7 @@ const Input: React.FC<InputType> = ({ ...props }) => {
         </label>
       ) : null}
       <div
-        className={`flex items-center bg-white border border-1 rounded-full py-3 px-5 ${
+        className={`flex items-center bg-white border border-1 rounded-full py-1.5 px-5 ${
           focus ? "border-orange-300" : "border-gray-300"
         }`}
       >

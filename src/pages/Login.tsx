@@ -87,7 +87,7 @@ const Login = () => {
                 />
                 <button
                   type="submit"
-                  className="text-sm md:text-base block w-full bg-orange-500 text-white py-3 rounded-full font-semibold"
+                  className="text-sm md:text-base block w-full bg-orange-500 text-white py-2 rounded-full font-semibold"
                 >
                   Login
                 </button>
