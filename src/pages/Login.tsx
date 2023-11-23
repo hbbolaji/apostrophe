@@ -27,7 +27,7 @@ const Login = () => {
       if (data.success) {
         sessionStorage.setItem("token", data.token);
         sendToken(data.token);
-        navigate("/dashboard/sales", { replace: true });
+        navigate("/dashboard", { replace: true });
       } else {
         console.log(result);
       }

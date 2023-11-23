@@ -1,17 +1,29 @@
-import React, { useState } from "react";
-import { Outlet } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import MobileNav from "../components/MobileNav";
+import { useAuth } from "../context/AuthContext";
 
 const DashboardLayout = () => {
   const [open, setOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
   const openNav = () => {
     setOpen(true);
   };
   const closeNav = () => {
     setOpen(false);
   };
+  useEffect(() => {
+    if (currentUser?.role === "sales") {
+      navigate("me");
+    } else if (currentUser?.role === "admin") {
+      navigate("sales");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser]);
+
   return (
     <div className="h-screen z-10 relative md:min-h-10">
       <div>

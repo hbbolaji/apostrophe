@@ -10,11 +10,14 @@ import {
   PiWhatsappLogoLight,
 } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
-import { UserType } from "../utils/types";
+import { StudentType } from "../utils/types";
+import { useAuth } from "../context/AuthContext";
 
-const Profile: React.FC<UserType> = (props) => {
+const StudentCard: React.FC<StudentType> = (props) => {
+  const { currentUser } = useAuth();
   let config = genConfig(props.emailAddress);
   const navigate = useNavigate();
+  const role = currentUser?.role;
   return (
     <div className="w-full bg-white rounded-lg shadow-lg p-6 space-y-4">
       <div className="flex items-center justify-between">
@@ -22,25 +25,32 @@ const Profile: React.FC<UserType> = (props) => {
           <Avatar className="h-24 w-24 rounded-full" {...config} sex="man" />
         </div>
         <div className="space-y-4">
-          {props?.role === "sales" ? (
-            <div
-              className="flex items-center justif-center border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
-              onClick={() => {
-                navigate("");
-              }}
-            >
-              <PiNotePencilThin className="text-orange-500" />
-              <span className="text-sm text-orange-500">Edit Profile</span>
-            </div>
-          ) : null}
+          <div
+            className="flex items-center justif-center border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
+            onClick={() => {
+              navigate("");
+            }}
+          >
+            <PiNotePencilThin className="text-orange-500" />
+            <span className="text-sm text-orange-500">Edit Profile</span>
+          </div>
           <div
             className="flex items-center justify-center border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
             onClick={() => {
-              navigate("/dashboard/students/add");
+              navigate("/dashboard/templates");
             }}
           >
             <PiPlusThin className="text-orange-500" />
-            <span className="text-sm text-orange-500">Add Student</span>
+            <span className="text-sm text-orange-500">Add Invoice</span>
+          </div>
+          <div
+            className="flex items-center justify-center border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
+            onClick={() => {
+              navigate("/dashboard/courses");
+            }}
+          >
+            <PiPlusThin className="text-orange-500" />
+            <span className="text-sm text-orange-500">Add Course</span>
           </div>
         </div>
       </div>
@@ -66,4 +76,4 @@ const Profile: React.FC<UserType> = (props) => {
   );
 };
 
-export default Profile;
+export default StudentCard;

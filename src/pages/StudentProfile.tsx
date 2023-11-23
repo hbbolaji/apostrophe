@@ -1,11 +1,11 @@
 import React from "react";
-import Profile from "../components/Profile";
 import { studentsData } from "../utils/data";
+import StudentCard from "../components/StudentCard";
 
 const StudentProfile = () => {
   return (
     <div className="pt-8 px-5 w-full">
-      <Profile {...studentsData[0]} />
+      <StudentCard {...studentsData[0]} />
     </div>
   );
 };
