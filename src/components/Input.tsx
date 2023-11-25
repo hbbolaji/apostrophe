@@ -10,6 +10,7 @@ type InputType = {
   value: string;
   hidelabel?: boolean;
   close?: () => void;
+  disabled?: boolean;
 };
 
 const Input: React.FC<InputType> = ({ ...props }) => {
@@ -27,7 +28,9 @@ const Input: React.FC<InputType> = ({ ...props }) => {
         </label>
       ) : null}
       <div
-        className={`flex items-center bg-white border border-1 rounded-full py-1.5 px-5 ${
+        className={`flex items-center ${
+          props.disabled ? "bg-gray-100" : "bg-white"
+        }  border border-1 rounded-full py-1.5 px-5 ${
           focus ? "border-orange-300" : "border-gray-300"
         }`}
       >
@@ -35,9 +38,12 @@ const Input: React.FC<InputType> = ({ ...props }) => {
           {...props}
           autoComplete="off"
           id={name}
-          className="block w-full outline-none text-sm md:text-base"
+          className={`${
+            props.disabled ? "bg-gray-100" : "bg-white"
+          } block w-full outline-none text-sm md:text-base`}
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
+          disabled={props.disabled}
         />
         {close && value !== "" ? (
           <PiXLight

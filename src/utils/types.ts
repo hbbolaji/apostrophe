@@ -29,7 +29,6 @@ export type StudentType = {
   financialStatus: string;
   id: string;
   uid: string;
-  role?: string;
 };
 
 export type AuthType = {

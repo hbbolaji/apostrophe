@@ -17,6 +17,8 @@ import AddStudents from "./components/Sales/AddStudents";
 import SalesProfile from "./pages/SalesProfile";
 import StudentProfile from "./pages/StudentProfile";
 import Me from "./pages/Me";
+import EditSales from "./components/Sales/EditSale";
+import EditStudent from "./components/Sales/EditStudent";
 
 function App() {
   const { token, currentUser } = useAuth();
@@ -27,6 +29,9 @@ function App() {
       {token !== "" ? (
         <Route path="dashboard" element={<DashboardLayout />}>
           {role === "sales" ? <Route element={<Me />} path="me" /> : null}
+          {role === "sales" ? (
+            <Route element={<EditSales />} path="me/edit" />
+          ) : null}
           {role === "admin" ? <Route element={<Sales />} path="sales" /> : null}
           {role === "admin" ? (
             <Route element={<AddSales />} path="sales/add" />
@@ -39,6 +44,9 @@ function App() {
           ) : null}
           <Route element={<AddStudents />} path="students/add" />
           <Route element={<StudentProfile />} path="students/:id" />
+          {role === "sales" ? (
+            <Route element={<EditStudent />} path="students/edit/:id" />
+          ) : null}
           <Route element={<Invoices />} path="invoices" />
           <Route element={<Template />} path="templates" />
           <Route element={<Payments />} path="payments" />

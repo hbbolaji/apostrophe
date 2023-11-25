@@ -4,8 +4,12 @@ import Datepicker from "react-tailwindcss-datepicker";
 import Input from "../Input";
 import Select from "../Select";
 import countries from "../../utils/countries.json";
+import { studentsData } from "../../utils/data";
+import { useLocation } from "react-router-dom";
 
-const AddStudents = () => {
+const EditStudent = () => {
+  const location = useLocation();
+  const id = location.pathname.split("/")[4];
   const [step, setStep] = useState(0);
   const [dob, setDob] = useState({
     startDate: new Date(),
@@ -13,6 +17,7 @@ const AddStudents = () => {
   });
 
   const countriesData = countries.map((count) => count.country);
+  const student = studentsData.find((stud) => stud.id === id);
 
   const handleValueChange = (newValue: { startDate: Date; endDate: Date }) => {
     console.log(newValue);
@@ -22,25 +27,24 @@ const AddStudents = () => {
   return (
     <div className="w-full space-y-5 md:pt-8 px-5">
       <h4 className="text-orange-400 font-semibold text-center text-2xl">
-        Add New Students
+        Edit student Profile
       </h4>
       <div className="w-full">
         <Formik
           initialValues={{
-            firstName: "",
-            lastName: "",
-            email: "",
-            phoneNumber: "",
-            primaryLanguage: "",
-            secondaryLanguage: "",
-            whatsappNumber: "",
-            gender: "",
+            firstName: student?.firstName || "",
+            lastName: student?.lastName || "",
+            emailAddress: student?.emailAddress || "",
+            phoneNumber: student?.phoneNumber || "",
+            spokenLanguage: student?.spokenLanguage || "",
+            whatsappNumber: student?.whatsappNumber || "",
+            gender: student?.gender || "",
             status: "",
-            nationality: "",
-            residence: "",
-            placementTest: "",
-            academicStatus: "Awaiting Course Registration",
-            financialStatus: "No Payment",
+            nationality: student?.nationality || "",
+            residence: student?.residence || "",
+            placementTest: student?.placementTest || "",
+            academicStatus: student?.academicStatus || "",
+            financialStatus: student?.financialStatus || "",
           }}
           onSubmit={(values) => {
             console.log({ ...values, dateOfBirth: dob.startDate });
@@ -92,7 +96,7 @@ const AddStudents = () => {
                     data={["Turkish", "English", "Arabic"]}
                     name="spokenLanguage"
                     placeholder="Spoken Language"
-                    value={values.primaryLanguage}
+                    value={values.spokenLanguage}
                     onChange={handleChange}
                   />
                   <div className="flex justify-end">
@@ -113,7 +117,7 @@ const AddStudents = () => {
                   <Input
                     placeholder="Email Address"
                     name="email"
-                    value={values.email}
+                    value={values.emailAddress}
                     onChange={handleChange}
                     type="email"
                   />
@@ -175,7 +179,7 @@ const AddStudents = () => {
                     onChange={handleChange}
                     type="number"
                   />
-                  {/* <Select
+                  <Select
                     data={[
                       "Course Completed",
                       "Awaiting Course Registration",
@@ -198,7 +202,7 @@ const AddStudents = () => {
                     placeholder="Financial Status"
                     value={values.financialStatus}
                     onChange={handleChange}
-                  /> */}
+                  />
                   <div className="flex space-x-6 justify-end">
                     <button
                       type="button"
@@ -224,4 +228,4 @@ const AddStudents = () => {
   );
 };
 
-export default AddStudents;
+export default EditStudent;

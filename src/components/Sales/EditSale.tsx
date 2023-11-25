@@ -3,26 +3,26 @@ import React, { useState } from "react";
 import * as yup from "yup";
 import Input from "../Input";
 import Select from "../Select";
+import { useAuth } from "../../context/AuthContext";
 
-const AddSales = () => {
+const EditSales = () => {
   const [step, setStep] = useState(0);
+  const { currentUser } = useAuth();
   return (
     <div className="w-full space-y-5 md:pt-8 px-5">
       <h4 className="text-orange-400 font-semibold text-center text-2xl">
-        Add New Sales Rep
+        Edit Sales Profile
       </h4>
       <div className="w-full">
         <Formik
           initialValues={{
-            firstName: "",
-            lastName: "",
-            emailAddress: "",
-            phoneNumber: "",
-            whatsappNumber: "",
-            gender: "",
-            status: "active",
-            password: "",
-            confirmPassword: "",
+            firstName: currentUser.firstName || "",
+            lastName: currentUser.lastName || "",
+            emailAddress: currentUser.emailAddress || "",
+            phoneNumber: currentUser.phoneNumber || "",
+            whatsappNumber: currentUser.whatsappNumber || "",
+            gender: currentUser.gender || "",
+            status: currentUser.status || "",
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => {
@@ -57,36 +57,19 @@ const AddSales = () => {
                     value={values.gender}
                     onChange={handleChange}
                   />
-                  <Input
-                    placeholder="Password"
-                    name="password"
-                    value={values.password}
-                    onChange={handleChange}
-                    type="password"
-                  />
-                  <Input
-                    placeholder="Confirm Password"
-                    name="confirmPassword"
-                    value={values.confirmPassword}
-                    onChange={handleChange}
-                    type="password"
-                  />
-
-                  {/* <Select
+                  <Select
                     data={["active", "inactive"]}
                     name="status"
                     placeholder="Status"
                     value={values.status}
                     onChange={handleChange}
-                  /> */}
-                  <div className="flex justify-end">
-                    <button
-                      onClick={() => setStep(1)}
-                      className="text-sm md:text-base block px-5 bg-orange-500 text-white py-1.5 rounded-full font-semibold"
-                    >
-                      Next
-                    </button>
-                  </div>
+                  />
+                  <button
+                    onClick={() => setStep(1)}
+                    className="text-sm md:text-base block px-5 bg-orange-500 text-white py-1.5 rounded-full font-semibold"
+                  >
+                    Next
+                  </button>
                 </div>
               ) : null}
               {step === 1 ? (
@@ -100,6 +83,7 @@ const AddSales = () => {
                     value={values.emailAddress}
                     onChange={handleChange}
                     type="email"
+                    disabled={true}
                   />
                   <Input
                     placeholder="Phone Number"
@@ -140,7 +124,7 @@ const AddSales = () => {
   );
 };
 
-export default AddSales;
+export default EditSales;
 
 const validationSchema = yup.object().shape({
   firstName: yup.string().required(),

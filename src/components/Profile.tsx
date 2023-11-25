@@ -26,7 +26,7 @@ const Profile: React.FC<UserType> = (props) => {
             <div
               className="flex items-center justif-center border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
               onClick={() => {
-                navigate("");
+                navigate("/dashboard/me/edit");
               }}
             >
               <PiNotePencilThin className="text-orange-500" />

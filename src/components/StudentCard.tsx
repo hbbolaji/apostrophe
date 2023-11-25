@@ -3,6 +3,7 @@ import Avatar, { genConfig } from "react-nice-avatar";
 import {
   PiEnvelopeLight,
   PiNotePencilThin,
+  PiPersonThin,
   PiPhoneCallThin,
   PiPhoneThin,
   PiPlusThin,
@@ -11,13 +12,10 @@ import {
 } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import { StudentType } from "../utils/types";
-import { useAuth } from "../context/AuthContext";
 
 const StudentCard: React.FC<StudentType> = (props) => {
-  const { currentUser } = useAuth();
   let config = genConfig(props.emailAddress);
   const navigate = useNavigate();
-  const role = currentUser?.role;
   return (
     <div className="w-full bg-white rounded-lg shadow-lg p-6 space-y-4">
       <div className="flex items-center justify-between">
@@ -28,7 +26,7 @@ const StudentCard: React.FC<StudentType> = (props) => {
           <div
             className="flex items-center justif-center border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
             onClick={() => {
-              navigate("");
+              navigate(`/dashboard/students/edit/${props.id}`);
             }}
           >
             <PiNotePencilThin className="text-orange-500" />
@@ -46,11 +44,11 @@ const StudentCard: React.FC<StudentType> = (props) => {
           <div
             className="flex items-center justify-center border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
             onClick={() => {
-              navigate("/dashboard/courses");
+              navigate("/dashboard/guardians");
             }}
           >
-            <PiPlusThin className="text-orange-500" />
-            <span className="text-sm text-orange-500">Add Course</span>
+            <PiPersonThin className="text-orange-500" />
+            <span className="text-sm text-orange-500">Add Guardian</span>
           </div>
         </div>
       </div>
