@@ -202,7 +202,7 @@ const AddStudents = () => {
                   <div className="flex space-x-6 justify-end">
                     <button
                       type="button"
-                      onClick={() => setStep(0)}
+                      onClick={() => setStep(1)}
                       className="text-sm md:text-base block px-5 bg-orange-500 text-white py-1.5 rounded-full font-semibold"
                     >
                       Previous
