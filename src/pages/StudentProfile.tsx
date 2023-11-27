@@ -14,7 +14,7 @@ const StudentProfile = () => {
       <div className="flex">
         <div className="grid grid-cols-2 w-full gap-4">
           <div className="col-span-1 h-96 bg-white shadow-xl rounded-lg p-4 w-full ">
-            no payment history
+            NO payment history {/* information about payment history */}
           </div>
           <div className="col-span-1 h-96 bg-white shadow-xl rounded-lg p-4 w-full">
             Awaiting Course Registration
