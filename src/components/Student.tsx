@@ -20,7 +20,9 @@ const Student: React.FC<{ student: StudentType }> = ({ student }) => {
         <p className="text-lg">
           {student.firstName} {student.lastName}
         </p>
+        <p className="text-sm text-gray-400">{student.emailAddress}</p>
         <p className="text-sm text-gray-400">Course</p>
+        <p className="text-sm text-gray-400">Sales Person</p>
       </div>
     </div>
   );
