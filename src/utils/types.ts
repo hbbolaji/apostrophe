@@ -30,6 +30,9 @@ export type StudentType = {
   financialStatus: string;
   id: string;
   uid: string;
+  salesFirstName?: string;
+  salesLastName?: string;
+  courseTitle?: string;
 };
 
 export type AuthType = {

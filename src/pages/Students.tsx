@@ -7,8 +7,11 @@ import { studentsData } from "../utils/data";
 import { StudentType } from "../utils/types";
 import Checkbox from "../components/Checkbox";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 const Students = () => {
+  const { token } = useAuth();
   const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [showFilter, setShowFilter] = useState<boolean>(false);
@@ -38,12 +41,29 @@ const Students = () => {
   };
 
   useEffect(() => {
-    setStudents(studentsData as []);
+    getStudents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onFilter = (sex: string) => {
-    console.log(filters);
     setShowFilter(false);
+  };
+
+  const getStudents = async () => {
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/api/v1/student/all`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const { data } = await result;
+      setStudents(data.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -217,7 +237,7 @@ const Students = () => {
         <div className="flex flex-wrap">
           {students.map((student: StudentType) => (
             <div
-              key={student.uid}
+              key={student.id}
               className="w-full sm:w-1/2 md:w-1/3 xl:w-1/4 p-3"
             >
               <Student student={student} />

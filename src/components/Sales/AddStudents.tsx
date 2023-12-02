@@ -4,8 +4,14 @@ import Datepicker from "react-tailwindcss-datepicker";
 import Input from "../Input";
 import Select from "../Select";
 import countries from "../../utils/countries.json";
+import { getFormData } from "../../utils/helper";
+import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const AddStudents = () => {
+  const navigate = useNavigate();
+  const { token } = useAuth();
   const [step, setStep] = useState(0);
   const [dob, setDob] = useState({
     startDate: new Date(),
@@ -15,8 +21,25 @@ const AddStudents = () => {
   const countriesData = countries.map((count) => count.country);
 
   const handleValueChange = (newValue: { startDate: Date; endDate: Date }) => {
-    console.log(newValue);
     setDob(newValue);
+  };
+
+  const createStudent = async (values: FormData) => {
+    try {
+      await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/api/v1/student`,
+        values,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      navigate("/dashboard/me");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -29,13 +52,12 @@ const AddStudents = () => {
           initialValues={{
             firstName: "",
             lastName: "",
-            email: "",
+            emailAddress: "",
             phoneNumber: "",
-            primaryLanguage: "",
-            secondaryLanguage: "",
+            spokenLanguage: "",
             whatsappNumber: "",
+            contactNumber: "",
             gender: "",
-            status: "",
             nationality: "",
             residence: "",
             placementTest: "",
@@ -43,7 +65,12 @@ const AddStudents = () => {
             financialStatus: "No Payment",
           }}
           onSubmit={(values) => {
-            console.log({ ...values, dateOfBirth: dob.startDate });
+            const formData = getFormData({
+              ...values,
+              dateOfBirth: dob.startDate,
+            });
+            createStudent(formData);
+            // console.log({ ...values, dateOfBirth: dob.startDate });
           }}
         >
           {({ values, handleChange }) => (
@@ -92,7 +119,7 @@ const AddStudents = () => {
                     data={["Turkish", "English", "Arabic"]}
                     name="spokenLanguage"
                     placeholder="Spoken Language"
-                    value={values.primaryLanguage}
+                    value={values.spokenLanguage}
                     onChange={handleChange}
                   />
                   <div className="flex justify-end">
@@ -112,8 +139,8 @@ const AddStudents = () => {
                   </p>
                   <Input
                     placeholder="Email Address"
-                    name="email"
-                    value={values.email}
+                    name="emailAddress"
+                    value={values.emailAddress}
                     onChange={handleChange}
                     type="email"
                   />
@@ -121,6 +148,13 @@ const AddStudents = () => {
                     placeholder="Phone Number"
                     name="phoneNumber"
                     value={values.phoneNumber}
+                    onChange={handleChange}
+                    type="text"
+                  />
+                  <Input
+                    placeholder="Contact Number"
+                    name="contactNumber"
+                    value={values.contactNumber}
                     onChange={handleChange}
                     type="text"
                   />

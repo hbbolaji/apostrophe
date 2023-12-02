@@ -1,15 +1,19 @@
 import { Form, Formik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Datepicker from "react-tailwindcss-datepicker";
 import Input from "../Input";
 import Select from "../Select";
 import countries from "../../utils/countries.json";
-import { studentsData } from "../../utils/data";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
+import { getFormData } from "../../utils/helper";
 
 const EditStudent = () => {
-  const location = useLocation();
-  const id = location.pathname.split("/")[4];
+  const { token } = useAuth();
+  const { state } = useLocation();
+  const navigate = useNavigate();
+  const student = { ...state };
   const [step, setStep] = useState(0);
   const [dob, setDob] = useState({
     startDate: new Date(),
@@ -17,11 +21,34 @@ const EditStudent = () => {
   });
 
   const countriesData = countries.map((count) => count.country);
-  const student = studentsData.find((stud) => stud.id === id);
+
+  useEffect(() => {
+    if (!state) {
+      navigate("/dashboard/me");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleValueChange = (newValue: { startDate: Date; endDate: Date }) => {
-    console.log(newValue);
     setDob(newValue);
+  };
+
+  const editStudent = async (values: FormData) => {
+    try {
+      await axios.patch(
+        `${process.env.REACT_APP_BASE_URL}/api/v1/student/${student.id}`,
+        values,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      navigate(`/dashboard/students/${student.id}`);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -38,6 +65,7 @@ const EditStudent = () => {
             phoneNumber: student?.phoneNumber || "",
             spokenLanguage: student?.spokenLanguage || "",
             whatsappNumber: student?.whatsappNumber || "",
+            contactNumber: student?.contactNumber || "",
             gender: student?.gender || "",
             status: "",
             nationality: student?.nationality || "",
@@ -47,7 +75,11 @@ const EditStudent = () => {
             financialStatus: student?.financialStatus || "",
           }}
           onSubmit={(values) => {
-            console.log({ ...values, dateOfBirth: dob.startDate });
+            const formData = getFormData({
+              ...values,
+              dateOfBirth: dob.startDate,
+            });
+            editStudent(formData);
           }}
         >
           {({ values, handleChange }) => (
@@ -116,7 +148,7 @@ const EditStudent = () => {
                   </p>
                   <Input
                     placeholder="Email Address"
-                    name="email"
+                    name="emailAddress"
                     value={values.emailAddress}
                     onChange={handleChange}
                     type="email"
@@ -125,6 +157,13 @@ const EditStudent = () => {
                     placeholder="Phone Number"
                     name="phoneNumber"
                     value={values.phoneNumber}
+                    onChange={handleChange}
+                    type="text"
+                  />
+                  <Input
+                    placeholder="Contact Number"
+                    name="contactNumber"
+                    value={values.contactNumber}
                     onChange={handleChange}
                     type="text"
                   />

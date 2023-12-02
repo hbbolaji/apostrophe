@@ -10,7 +10,7 @@ const User: React.FC<{ user: UserType }> = ({ user }) => {
     <div
       className="w-full bg-white py-4 text-center px-1 rounded-xl flex flex-col items-center space-y-3 shadow hover:shadow-lg cursor-pointer"
       onClick={() => {
-        navigate(`/dashboard/sales/${user.id}`);
+        navigate(`/dashboard/sales/${user.id}`, { state: user });
       }}
     >
       <div className="h-20 w-20">

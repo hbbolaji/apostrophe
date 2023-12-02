@@ -40,16 +40,14 @@ const Sales = () => {
       );
       const { data } = await result;
       setUsers(data.data);
-      console.log(data.data.length);
     } catch (error) {
       console.log(error);
     }
   };
 
-  // const onFilter = () => {}
   useEffect(() => {
-    // setUsers(usersData as []);
     getSales();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div className="flex space-between w-full">
@@ -102,7 +100,7 @@ const Sales = () => {
         <div className="flex flex-wrap">
           {users.map((user: UserType) => (
             <div
-              key={user.uid}
+              key={user.id}
               className="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-3"
             >
               <User user={user} />
