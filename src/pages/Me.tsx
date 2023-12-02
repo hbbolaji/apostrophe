@@ -7,10 +7,11 @@ import Student from "../components/Student";
 
 const Me = () => {
   const [students, setStudents] = useState<StudentType[]>([]);
+  const { currentUser, token, getCurrentUser } = useAuth();
   useEffect(() => {
     setStudents(studentsData);
+    getCurrentUser(token);
   }, []);
-  const { currentUser } = useAuth();
   return (
     <div className="w-full md:pt-8 px-5 space-y-5">
       <div className="p-3">

@@ -6,6 +6,7 @@ const AuthContext = createContext<AuthType>({
   token: "",
   currentUser: {},
   sendToken: (token) => {},
+  getCurrentUser: (token) => {},
 });
 export const useAuth = () => useContext(AuthContext);
 
@@ -17,7 +18,7 @@ const AuthProvider: React.FC<{ children: JSX.Element }> = ({ children }) => {
     setToken(token);
   };
 
-  const getCurrentUser = async () => {
+  const getCurrentUser = async (token: string) => {
     if (token) {
       const result = await axios({
         method: "get",
@@ -36,12 +37,14 @@ const AuthProvider: React.FC<{ children: JSX.Element }> = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    getCurrentUser();
+    getCurrentUser(token);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   return (
-    <AuthContext.Provider value={{ token, currentUser, sendToken }}>
+    <AuthContext.Provider
+      value={{ token, currentUser, sendToken, getCurrentUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

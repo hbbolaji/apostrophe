@@ -10,6 +10,7 @@ export type UserType = {
   gender: string;
   id: string;
   uid: string;
+  spokenLanguage?: string;
 };
 
 export type StudentType = {
@@ -35,6 +36,7 @@ export type AuthType = {
   token: string;
   currentUser: any;
   sendToken: (token: string) => void;
+  getCurrentUser: (token: string) => void;
 };
 
 export type LoginType = {

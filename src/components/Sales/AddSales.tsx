@@ -25,7 +25,7 @@ const AddSales = () => {
           },
         }
       );
-      navigate("dashboard/sales");
+      navigate("/dashboard/sales");
     } catch (error) {
       console.log(error);
     }

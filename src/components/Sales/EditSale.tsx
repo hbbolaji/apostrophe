@@ -4,10 +4,33 @@ import * as yup from "yup";
 import Input from "../Input";
 import Select from "../Select";
 import { useAuth } from "../../context/AuthContext";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { getFormData } from "../../utils/helper";
 
 const EditSales = () => {
   const [step, setStep] = useState(0);
-  const { currentUser } = useAuth();
+  const navigate = useNavigate();
+  const { currentUser, token } = useAuth();
+
+  const editSales = async (values: FormData) => {
+    try {
+      await axios.patch(
+        `${process.env.REACT_APP_BASE_URL}/api/v1/user`,
+        values,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      navigate("/dashboard/me");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="w-full space-y-5 md:pt-8 px-5">
       <h4 className="text-orange-400 font-semibold text-center text-2xl">
@@ -21,12 +44,16 @@ const EditSales = () => {
             emailAddress: currentUser.emailAddress || "",
             phoneNumber: currentUser.phoneNumber || "",
             whatsappNumber: currentUser.whatsappNumber || "",
+            contactNumber: currentUser.contactNumber || "",
             gender: currentUser.gender || "",
             status: currentUser.status || "",
+            role: currentUser.role || "",
+            spokenLanguage: currentUser.spokenLanguage || "",
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            console.log(values);
+            const formData = getFormData(values);
+            editSales(formData);
           }}
         >
           {({ values, handleChange }) => (
@@ -58,18 +85,20 @@ const EditSales = () => {
                     onChange={handleChange}
                   />
                   <Select
-                    data={["active", "inactive"]}
-                    name="status"
-                    placeholder="Status"
-                    value={values.status}
+                    data={["Turkish", "English", "Arabic"]}
+                    name="spokenLanguage"
+                    placeholder="Spoken Language"
+                    value={values.spokenLanguage}
                     onChange={handleChange}
                   />
-                  <button
-                    onClick={() => setStep(1)}
-                    className="text-sm md:text-base block px-5 bg-orange-500 text-white py-1.5 rounded-full font-semibold"
-                  >
-                    Next
-                  </button>
+                  <div className="flex justify-end">
+                    <button
+                      onClick={() => setStep(1)}
+                      className="text-sm md:text-base block px-5 bg-orange-500 text-white py-1.5 rounded-full font-semibold"
+                    >
+                      Next
+                    </button>
+                  </div>
                 </div>
               ) : null}
               {step === 1 ? (
@@ -96,6 +125,13 @@ const EditSales = () => {
                     placeholder="WhatsApp Number"
                     name="whatsappNumber"
                     value={values.whatsappNumber}
+                    onChange={handleChange}
+                    type="text"
+                  />
+                  <Input
+                    placeholder="Contact Number"
+                    name="contactNumber"
+                    value={values.contactNumber}
                     onChange={handleChange}
                     type="text"
                   />
