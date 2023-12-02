@@ -50,6 +50,13 @@ function App() {
           {role === "sales" ? (
             <Route element={<EditStudent />} path="students/edit/:id" />
           ) : null}
+          {role === "admin" ? (
+            <>
+              <Route element={<Courses />} path="courses" />
+              <Route element={<AddCourses />} path="courses/add" />
+            </>
+          ) : null}
+
           <Route element={<Invoices />} path="invoices" />
           <Route element={<Template />} path="templates" />
           <Route element={<Payments />} path="payments" />

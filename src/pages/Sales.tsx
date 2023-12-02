@@ -8,9 +8,12 @@ import User from "../components/User";
 import { usersData } from "../utils/data";
 import { UserType } from "../utils/types";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 const Sales = () => {
   const [users, setUsers] = useState([]);
+  const { token } = useAuth();
   const navigate = useNavigate();
 
   const onSearch = (value: string) => {
@@ -25,9 +28,28 @@ const Sales = () => {
       );
   };
 
+  const getSales = async () => {
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/api/v1/user/all`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const { data } = await result;
+      setUsers(data.data);
+      console.log(data.data.length);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // const onFilter = () => {}
   useEffect(() => {
-    setUsers(usersData as []);
+    // setUsers(usersData as []);
+    getSales();
   }, []);
   return (
     <div className="flex space-between w-full">
