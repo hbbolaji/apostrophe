@@ -8,7 +8,7 @@ import { getFormData } from "../utils/helper";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 
-const Guardians = () => {
+const AddGuardians = () => {
   const [step, setStep] = useState(0);
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -181,4 +181,4 @@ const Guardians = () => {
   );
 };
 
-export default Guardians;
+export default AddGuardians;

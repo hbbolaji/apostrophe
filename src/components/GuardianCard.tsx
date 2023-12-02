@@ -26,13 +26,15 @@ const GuardianCard: React.FC<{ guardian: any }> = ({ guardian }) => {
       <div
         className="flex w-full items-center justify-center border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
         onClick={() => {
-          navigate(`/dashboard/me`);
+          navigate(`/dashboard/guardians/edit/${guardian.id}`, {
+            state: guardian,
+          });
         }}
       >
         <div>
           <PiNotePencilThin className="text-orange-500" />
         </div>
-        <p className="text-sm  text-orange-500">Edit Profile</p>
+        <p className="text-sm  text-orange-500">Edit Guardian</p>
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">

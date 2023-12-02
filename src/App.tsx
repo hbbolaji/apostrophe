@@ -10,7 +10,7 @@ import Payments from "./pages/Payments";
 import Plans from "./pages/Plans";
 import Discounts from "./pages/Discounts";
 import Courses from "./pages/Courses";
-import Guardians from "./pages/Guardians";
+import AddGuardians from "./pages/AddGuardians";
 import { useAuth } from "./context/AuthContext";
 import AddSales from "./components/Sales/AddSales";
 import AddStudents from "./components/Sales/AddStudents";
@@ -20,6 +20,7 @@ import Me from "./pages/Me";
 import EditSales from "./components/Sales/EditSale";
 import EditStudent from "./components/Sales/EditStudent";
 import AddCourses from "./components/Sales/AddCourse";
+import EditGuardian from "./pages/EditGuardians";
 
 function App() {
   const { token, currentUser } = useAuth();
@@ -64,7 +65,8 @@ function App() {
           <Route element={<Discounts />} path="discounts" />
           <Route element={<Courses />} path="courses" />
           <Route element={<AddCourses />} path="courses/add" />
-          <Route element={<Guardians />} path="guardians" />
+          <Route element={<AddGuardians />} path="guardians/add" />
+          <Route element={<EditGuardian />} path="guardians/edit/:id" />
         </Route>
       ) : null}
       <Route path="*" element={<Login />} />

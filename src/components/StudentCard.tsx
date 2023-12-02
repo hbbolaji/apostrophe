@@ -80,7 +80,7 @@ const StudentCard: React.FC<StudentType> = (props) => {
             <div
               className="flex items-center justify-center border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
               onClick={() => {
-                navigate("/dashboard/guardians", { state: props.id });
+                navigate("/dashboard/guardians/add", { state: props.id });
               }}
             >
               <PiPersonThin className="text-orange-500" />
