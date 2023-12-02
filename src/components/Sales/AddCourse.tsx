@@ -24,28 +24,25 @@ const AddCourses = () => {
     endDate: new Date(),
   });
   const handleStartDate = (newValue: { startDate: Date; endDate: Date }) => {
-    console.log(newValue);
     setStartDate(newValue);
   };
   const handleEndDate = (newValue: { startDate: Date; endDate: Date }) => {
-    console.log(newValue);
     setEndDate(newValue);
   };
 
   const createCourse = async (values: FormData) => {
     try {
-      const result = await axios.post(
+      await axios.post(
         `${process.env.REACT_APP_BASE_URL}/api/v1/course`,
         values,
         {
           headers: {
-            // Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
           },
         }
       );
-      console.log(result);
-      // navigate("/dashboard/courses");
+      navigate("/dashboard/courses");
     } catch (error) {
       console.log(error);
     }

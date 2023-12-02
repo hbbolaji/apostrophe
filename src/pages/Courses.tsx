@@ -1,17 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Course from "../components/Course";
 import { useNavigate } from "react-router-dom";
 import { PiPlusLight } from "react-icons/pi";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 const Courses = () => {
   const navigate = useNavigate();
-  const courseList = [
-    "SAT One Year Subscription",
-    "SAT Four Month Subscription",
-    "SAT Practice Test Course",
-    "TOEFL",
-    "IELTS",
-  ];
+  const [courses, setCourses] = useState<any[]>([]);
+  const { token } = useAuth();
+
+  const getCourses = async () => {
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/api/v1/course/all`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const { data } = await result;
+      setCourses(data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getCourses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="w-full md:pt-8 px-5 space-y-5">
       <div className="flex items-center justify-between py-3">
@@ -26,9 +46,9 @@ const Courses = () => {
         </div>
       </div>
       <div className="flex flex-wrap">
-        {courseList.map((course: string) => (
-          <div key={course} className="w-full sm:w-1/2 md:w-1/3 xl:w-1/4 p-3">
-            <Course courseTitle={course} />
+        {courses.map((course) => (
+          <div key={course.id} className="w-full sm:w-1/2  2xl:w-1/4 p-3">
+            <Course course={course} />
           </div>
         ))}
       </div>
