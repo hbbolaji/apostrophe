@@ -43,7 +43,13 @@ const InvoiceTemplate = () => {
                     onChange={handleChange}
                   />
                   <Select
-                    data={["Course 1", "Course 2", "Course 3"]}
+                    data={[
+                      "SAT One Year Subscription",
+                      "SAT Four Month Subscription",
+                      "SAT Practice Test Course",
+                      "TOEFL",
+                      "IELTS",
+                    ]}
                     name="courseName"
                     placeholder="Course Name"
                     value={values.courseName}
