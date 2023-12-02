@@ -3,9 +3,33 @@ import React, { useState } from "react";
 import * as yup from "yup";
 import Input from "../Input";
 import Select from "../Select";
+import { getFormData } from "../../utils/helper";
+import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const AddSales = () => {
   const [step, setStep] = useState(0);
+  const { token } = useAuth();
+  const navigate = useNavigate();
+
+  const createSales = async (values: FormData) => {
+    try {
+      await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/api/v1/auth/register`,
+        values,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      navigate("dashboard/sales");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="w-full space-y-5 md:pt-8 px-5">
       <h4 className="text-orange-400 font-semibold text-center text-2xl">
@@ -19,14 +43,17 @@ const AddSales = () => {
             emailAddress: "",
             phoneNumber: "",
             whatsappNumber: "",
+            contactNumber: "",
             gender: "",
             status: "active",
-            password: "",
-            confirmPassword: "",
+            generatedPassword: "",
+            role: "sales",
+            spokenLanguage: "",
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            console.log(values);
+            const formData = getFormData(values);
+            createSales(formData);
           }}
         >
           {({ values, handleChange }) => (
@@ -59,26 +86,11 @@ const AddSales = () => {
                   />
                   <Input
                     placeholder="Password"
-                    name="password"
-                    value={values.password}
+                    name="generatedPassword"
+                    value={values.generatedPassword}
                     onChange={handleChange}
                     type="password"
                   />
-                  <Input
-                    placeholder="Confirm Password"
-                    name="confirmPassword"
-                    value={values.confirmPassword}
-                    onChange={handleChange}
-                    type="password"
-                  />
-
-                  {/* <Select
-                    data={["active", "inactive"]}
-                    name="status"
-                    placeholder="Status"
-                    value={values.status}
-                    onChange={handleChange}
-                  /> */}
                   <div className="flex justify-end">
                     <button
                       onClick={() => setStep(1)}
@@ -96,7 +108,7 @@ const AddSales = () => {
                   </p>
                   <Input
                     placeholder="Email Address"
-                    name="email"
+                    name="emailAddress"
                     value={values.emailAddress}
                     onChange={handleChange}
                     type="email"
@@ -109,11 +121,25 @@ const AddSales = () => {
                     type="text"
                   />
                   <Input
+                    placeholder="Contact Number"
+                    name="contactNumber"
+                    value={values.contactNumber}
+                    onChange={handleChange}
+                    type="text"
+                  />
+                  <Input
                     placeholder="WhatsApp Number"
                     name="whatsappNumber"
                     value={values.whatsappNumber}
                     onChange={handleChange}
                     type="text"
+                  />
+                  <Select
+                    data={["Turkish", "English", "Arabic"]}
+                    name="spokenLanguage"
+                    placeholder="Spoken Language"
+                    value={values.spokenLanguage}
+                    onChange={handleChange}
                   />
                   <div className="flex space-x-6 justify-end">
                     <button

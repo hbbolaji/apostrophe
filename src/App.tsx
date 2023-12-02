@@ -27,7 +27,7 @@ function App() {
   return (
     <Routes>
       <Route index path="/" element={<Login />} />
-      {true ? (
+      {token ? (
         <Route path="dashboard" element={<DashboardLayout />}>
           {role === "sales" ? <Route element={<Me />} path="me" /> : null}
           {role === "sales" ? (
