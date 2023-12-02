@@ -9,9 +9,12 @@ import {
   PiWhatsappLogoThin,
 } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const GuardianCard: React.FC<{ guardian: any }> = ({ guardian }) => {
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
+  const role = currentUser.role;
   return (
     <div className="px-5 py-3 space-y-4">
       <p className="font-semibold text-lg text-center">Guardian Info</p>
@@ -23,19 +26,21 @@ const GuardianCard: React.FC<{ guardian: any }> = ({ guardian }) => {
           {guardian.relationshipStudent}
         </p>
       </div>
-      <div
-        className="flex w-full items-center justify-center border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
-        onClick={() => {
-          navigate(`/dashboard/guardians/edit/${guardian.id}`, {
-            state: guardian,
-          });
-        }}
-      >
-        <div>
-          <PiNotePencilThin className="text-orange-500" />
+      {role === "sales" ? (
+        <div
+          className="flex w-full items-center justify-center border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
+          onClick={() => {
+            navigate(`/dashboard/guardians/edit/${guardian.id}`, {
+              state: guardian,
+            });
+          }}
+        >
+          <div>
+            <PiNotePencilThin className="text-orange-500" />
+          </div>
+          <p className="text-sm  text-orange-500">Edit Guardian</p>
         </div>
-        <p className="text-sm  text-orange-500">Edit Guardian</p>
-      </div>
+      ) : null}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <PiMapPinThin className="text-3xl" />
