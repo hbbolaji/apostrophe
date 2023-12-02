@@ -1,12 +1,43 @@
 import { Form, Formik } from "formik";
-import React, { useState } from "react";
-import * as yup from "yup";
+import React, { useEffect, useState } from "react";
 import Input from "../components/Input";
 import Select from "../components/Select";
 import countries from "../utils/countries.json";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getFormData } from "../utils/helper";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 const Guardians = () => {
   const [step, setStep] = useState(0);
+  const { state } = useLocation();
+  const navigate = useNavigate();
+  const { token } = useAuth();
+
+  useEffect(() => {
+    if (!state) {
+      navigate("/dashboard/me");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const createGuardian = async (values: FormData) => {
+    try {
+      await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/api/v1/guardian/${state}`,
+        values,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      // navigate(`/dashboard/students/${state}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const countriesData = countries.map((count) => count.country);
   return (
@@ -22,15 +53,15 @@ const Guardians = () => {
             emailAddress: "",
             phoneNumber: "",
             whatsappNumber: "",
+            contactNumber: "",
             gender: "",
-            status: "active",
             nationality: "",
             residence: "",
             relationshipStudent: "",
           }}
-          validationSchema={validationSchema}
           onSubmit={(values) => {
-            console.log(values);
+            const formData = getFormData(values);
+            createGuardian(formData);
           }}
         >
           {({ values, handleChange }) => (
@@ -92,7 +123,7 @@ const Guardians = () => {
                   </p>
                   <Input
                     placeholder="Email Address"
-                    name="email"
+                    name="emailAddress"
                     value={values.emailAddress}
                     onChange={handleChange}
                     type="email"
@@ -101,6 +132,13 @@ const Guardians = () => {
                     placeholder="Phone Number"
                     name="phoneNumber"
                     value={values.phoneNumber}
+                    onChange={handleChange}
+                    type="text"
+                  />
+                  <Input
+                    placeholder="Contact Number"
+                    name="contactNumber"
+                    value={values.contactNumber}
                     onChange={handleChange}
                     type="text"
                   />
@@ -144,13 +182,3 @@ const Guardians = () => {
 };
 
 export default Guardians;
-
-const validationSchema = yup.object().shape({
-  firstName: yup.string().required(),
-  lastName: yup.string().required(),
-  emailAddress: yup.string().required(),
-  phoneNumber: yup.string().required(),
-  whatsappNumber: yup.string().required(),
-  gender: yup.string().required(),
-  status: yup.string().required(),
-});
