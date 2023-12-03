@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import GuardianCard from "../components/GuardianCard";
+import Guardian from "../components/Guardian";
 
 const GuardiansPage = () => {
   const [guardians, setGuardians] = useState<any[]>([]);
@@ -41,7 +41,7 @@ const GuardiansPage = () => {
             className="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-3"
           >
             <div className="bg-white shadow-lg rounded-lg">
-              <GuardianCard guardian={guardian} />
+              <Guardian guardian={guardian} />
             </div>
           </div>
         ))}
