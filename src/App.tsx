@@ -22,6 +22,8 @@ import EditStudent from "./components/Sales/EditStudent";
 import AddCourses from "./components/Sales/AddCourse";
 import EditGuardian from "./pages/EditGuardians";
 import GuardiansPage from "./pages/GuardiansPage";
+import AddDiscounts from "./pages/AddDiscounts";
+import EditDiscount from "./pages/EditDiscount";
 
 function App() {
   const { token, currentUser } = useAuth();
@@ -64,6 +66,8 @@ function App() {
           <Route element={<Payments />} path="payments" />
           <Route element={<Plans />} path="plans" />
           <Route element={<Discounts />} path="discounts" />
+          <Route element={<AddDiscounts />} path="discounts/add" />
+          <Route element={<EditDiscount />} path="discounts/edit/:id" />
           <Route element={<Courses />} path="courses" />
           <Route element={<AddCourses />} path="courses/add" />
           {role === "admin" ? (
