@@ -24,6 +24,7 @@ import EditGuardian from "./pages/EditGuardians";
 import GuardiansPage from "./pages/GuardiansPage";
 import AddDiscounts from "./pages/AddDiscounts";
 import EditDiscount from "./pages/EditDiscount";
+import AddPlans from "./pages/AddPlan";
 
 function App() {
   const { token, currentUser } = useAuth();
@@ -65,6 +66,7 @@ function App() {
           <Route element={<Template />} path="templates" />
           <Route element={<Payments />} path="payments" />
           <Route element={<Plans />} path="plans" />
+          <Route element={<AddPlans />} path="plans/add" />
           <Route element={<Discounts />} path="discounts" />
           <Route element={<AddDiscounts />} path="discounts/add" />
           <Route element={<EditDiscount />} path="discounts/edit/:id" />
