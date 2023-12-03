@@ -1,8 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Invoice from "../components/Invoice";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 const Invoices = () => {
-  const invoices = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 10, 11, 12, 13, 14, 15];
+  const [invoices, setInvoices] = useState<any>([]);
+  const { token } = useAuth();
+
+  const getInvoices = async () => {
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/api/v1/invoice/all`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const { data } = await result;
+      setInvoices(data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getInvoices();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="flex space-between w-full">
       <div className="flex-1 space-y-5 md:pt-8 px-5">
@@ -14,15 +40,12 @@ const Invoices = () => {
         <div></div>
         {/* List of invoices */}
         <div>
-          <div className="bg-gray-200 p-4 rounded-t-lg grid grid-cols-5 gap-4">
-            <div className="col-span-1">
+          <div className="bg-gray-200 p-4 rounded-t-lg grid grid-cols-6 gap-4">
+            <div className="col-span-2">
               <p>Issuance Date</p>
             </div>
-            <div className="col-span-1">
+            <div className="col-span-2">
               <p>Validity Date</p>
-            </div>
-            <div className="col-span-1">
-              <p>Currency</p>
             </div>
             <div className="col-span-1">
               <p>Amount</p>
@@ -31,9 +54,9 @@ const Invoices = () => {
               <p>Status</p>
             </div>
           </div>
-          {invoices.map((inv) => (
-            <div key={inv}>
-              <Invoice />
+          {invoices.map((inv: any) => (
+            <div key={inv.id}>
+              <Invoice invoice={inv} />
             </div>
           ))}
         </div>

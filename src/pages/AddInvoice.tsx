@@ -62,7 +62,7 @@ const AddInvoice = () => {
     paymentPlanId: string
   ) => {
     try {
-      const result = await axios.post(
+      await axios.post(
         `${process.env.REACT_APP_BASE_URL}/api/v1/invoice/${state}/${courseId}/${paymentPlanId}`,
         values,
         {
@@ -73,7 +73,6 @@ const AddInvoice = () => {
         }
       );
       navigate(`/dashboard/me`);
-      console.log(result);
     } catch (error) {
       console.log(error);
     }
