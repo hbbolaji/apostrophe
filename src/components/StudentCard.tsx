@@ -71,7 +71,7 @@ const StudentCard: React.FC<StudentType> = (props) => {
             <div
               className="flex items-center justify-center border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
               onClick={() => {
-                navigate("/dashboard/templates");
+                navigate("/dashboard/invoices/add", { state: props.id });
               }}
             >
               <PiPlusThin className="text-orange-500" />
