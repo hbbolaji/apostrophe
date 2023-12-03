@@ -37,53 +37,48 @@ function App() {
       <Route index path="/" element={<Login />} />
       {token ? (
         <Route path="dashboard" element={<DashboardLayout />}>
-          {role === "sales" ? <Route element={<Me />} path="me" /> : null}
+          {/* Sales only routes */}
           {role === "sales" ? (
-            <Route element={<EditSales />} path="me/edit" />
-          ) : null}
-          {role === "admin" ? <Route element={<Sales />} path="sales" /> : null}
-          {role === "admin" ? (
-            <Route element={<AddSales />} path="sales/add" />
-          ) : null}
-          {role === "admin" ? (
-            <Route element={<SalesProfile />} path="sales/:id" />
-          ) : null}
-          {role === "admin" ? (
             <>
-              <Route element={<Students />} path="students" />
+              <Route element={<Me />} path="me" />
+              <Route element={<EditSales />} path="me/edit" />
+              <Route element={<EditStudent />} path="students/edit/:id" />
+              <Route element={<AddStudents />} path="students/add" />
+              <Route element={<AddInvoice />} path="invoices/add" />
+              <Route element={<EditInvoice />} path="invoices/edit/:id" />
+              <Route element={<AddGuardians />} path="guardians/add" />
+              <Route element={<EditGuardian />} path="guardians/edit/:id" />
             </>
-          ) : null}
-          <Route element={<AddStudents />} path="students/add" />
-          <Route element={<StudentProfile />} path="students/:id" />
-          {role === "sales" ? (
-            <Route element={<EditStudent />} path="students/edit/:id" />
-          ) : null}
+          ) : (
+            <Route element={<Me />} path="me" />
+          )}
+          {/* Admin only Routes */}
           {role === "admin" ? (
             <>
+              <Route element={<Sales />} path="sales" />
+              <Route element={<AddSales />} path="sales/add" />
+              <Route element={<SalesProfile />} path="sales/:id" />
+              <Route element={<Students />} path="students" />
               <Route element={<Courses />} path="courses" />
               <Route element={<AddCourses />} path="courses/add" />
+              <Route element={<Invoices />} path="invoices" />
+              <Route element={<Plans />} path="plans" />
+              <Route element={<AddPlans />} path="plans/add" />
+              <Route element={<EditPlans />} path="plans/edit/:id" />
+              <Route element={<Discounts />} path="discounts" />
+              <Route element={<AddDiscounts />} path="discounts/add" />
+              <Route element={<EditDiscount />} path="discounts/edit/:id" />
+              <Route element={<Courses />} path="courses" />
+              <Route element={<AddCourses />} path="courses/add" />
+              <Route element={<GuardiansPage />} path="guardians" />
             </>
-          ) : null}
-
-          <Route element={<Invoices />} path="invoices" />
-          <Route element={<AddInvoice />} path="invoices/add" />
-          <Route element={<EditInvoice />} path="invoices/edit/:id" />
+          ) : (
+            <Route element={<Sales />} path="sales" />
+          )}
+          {/* Shared Routes */}
+          <Route element={<StudentProfile />} path="students/:id" />
           <Route element={<Template />} path="templates" />
           <Route element={<Payments />} path="payments" />
-          <Route element={<Plans />} path="plans" />
-          <Route element={<AddPlans />} path="plans/add" />
-          <Route element={<EditPlans />} path="plans/edit/:id" />
-          <Route element={<Discounts />} path="discounts" />
-          <Route element={<AddDiscounts />} path="discounts/add" />
-          <Route element={<EditDiscount />} path="discounts/edit/:id" />
-          <Route element={<Courses />} path="courses" />
-          <Route element={<AddCourses />} path="courses/add" />
-          {role === "admin" ? (
-            <Route element={<GuardiansPage />} path="guardians" />
-          ) : null}
-
-          <Route element={<AddGuardians />} path="guardians/add" />
-          <Route element={<EditGuardian />} path="guardians/edit/:id" />
         </Route>
       ) : null}
       <Route path="*" element={<Login />} />

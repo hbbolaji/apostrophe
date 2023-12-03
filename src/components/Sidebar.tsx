@@ -1,6 +1,6 @@
 import React from "react";
 import Logo from "../images/apostrophe.png";
-import navigation, { NavItemType, NavType } from "../utils/navigation";
+import navigation, { NavItemType } from "../utils/navigation";
 import {
   PiStudentLight,
   PiOfficeChairLight,
@@ -12,9 +12,6 @@ import {
   PiPersonSimpleBikeLight,
   PiTreeStructureLight,
   PiArrowBendRightUpBold,
-  PiOctagonBold,
-  PiCircleBold,
-  PiSquareBold,
   PiArrowLineRightLight,
 } from "react-icons/pi";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -30,9 +27,6 @@ const icons = (name: string) => {
   switch (name) {
     case "Students":
       icon = <PiStudentLight className="text-2xl" />;
-      break;
-    case "My Profile":
-      icon = <PiCircleBold className="text-lg" />;
       break;
     case "Profile":
       icon = <PiStudentLight className="text-2xl" />;
@@ -64,15 +58,6 @@ const icons = (name: string) => {
     case "Other":
       icon = <PiArrowBendRightUpBold className="text-lg" />;
       break;
-    case "Payment":
-      icon = <PiSquareBold className="text-lg" />;
-      break;
-    case "Invoice":
-      icon = <PiOctagonBold className="text-lg" />;
-      break;
-    case "Admin":
-      icon = <PiCircleBold className="text-lg" />;
-      break;
   }
   return icon;
 };
@@ -80,6 +65,7 @@ const icons = (name: string) => {
 const Sidebar: React.FC<SidebarType> = ({ mobile, closeNav }) => {
   const navigate = useNavigate();
   const { sendToken, currentUser } = useAuth();
+  const { role } = currentUser;
   return (
     <div className="left-0 top-0 md:pt-8 px-5 min-h-screen space-y-6">
       <div>
@@ -89,36 +75,45 @@ const Sidebar: React.FC<SidebarType> = ({ mobile, closeNav }) => {
           alt="logo"
         />
       </div>
-      <div className="space-y-4 md:space-y-8 w-full">
-        {navigation(currentUser?.role).map((nav: NavType) => (
-          <div className="space-y-3" key={nav.name}>
-            <div className="flex space-x-3 items-center">
-              {icons(nav.name)}
-              <h4 className="tracking-wider capitalize text-sm font-semibold">
-                {nav.name}
-              </h4>
-            </div>
-            <div className="space-y-2 md:space-y-4 pl-1">
-              {nav.data.map((data: NavItemType) => (
-                <NavLink
-                  to={data.nav}
-                  onClick={closeNav}
-                  key={data.title}
-                  className={({ isActive }) =>
-                    ` ${
-                      isActive ? "text-orange-600 font-bold" : "text-gray-600"
-                    } relative flex w-full items-center space-x-3 hover:bg-orange-500 hover:bg-opacity-20 px-2 py-1 rounded-md`
-                  }
-                >
-                  {icons(data.title)}
-                  <p className="tracking-wide text-sm sm:text-base md:text-lg font-light p-1">
-                    {data.title}
-                  </p>
-                </NavLink>
-              ))}
-            </div>
-          </div>
-        ))}
+      <div className="space-y-4 md:space-y-4 w-full">
+        {navigation()
+          .filter((route) => route.role === role)
+          .map((data: NavItemType) => (
+            <NavLink
+              to={data.nav}
+              onClick={closeNav}
+              key={data.title}
+              className={({ isActive }) =>
+                ` ${
+                  isActive ? "text-orange-600 font-bold" : "text-gray-600"
+                } relative flex w-full items-center space-x-3 hover:bg-orange-500 hover:bg-opacity-20 px-2 py-1 rounded-md`
+              }
+            >
+              {icons(data.title)}
+              <p className="tracking-wide text-sm sm:text-base md:text-lg font-light p-1">
+                {data.title}
+              </p>
+            </NavLink>
+          ))}
+        {navigation()
+          .filter((route) => route.role === "both")
+          .map((data: NavItemType) => (
+            <NavLink
+              to={data.nav}
+              onClick={closeNav}
+              key={data.title}
+              className={({ isActive }) =>
+                ` ${
+                  isActive ? "text-orange-600 font-bold" : "text-gray-600"
+                } relative flex w-full items-center space-x-3 hover:bg-orange-500 hover:bg-opacity-20 px-2 py-1 rounded-md`
+              }
+            >
+              {icons(data.title)}
+              <p className="tracking-wide text-sm sm:text-base md:text-lg font-light p-1">
+                {data.title}
+              </p>
+            </NavLink>
+          ))}
       </div>
       <div
         className={`text-gray-600 relative flex w-full items-center space-x-3 hover:bg-orange-500 hover:bg-opacity-20 px-2 py-1 rounded-md cursor-pointer`}
