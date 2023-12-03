@@ -149,12 +149,12 @@ const AddGuardians = () => {
                     onChange={handleChange}
                     type="text"
                   />
-                  <Input
-                    placeholder="Student Relationship"
+                  <Select
+                    data={["Father", "Mother", "Sibling", "Other"]}
                     name="relationshipStudent"
+                    placeholder="Student Relationship"
                     value={values.relationshipStudent}
                     onChange={handleChange}
-                    type="text"
                   />
                   <div className="flex space-x-6 justify-end">
                     <button

@@ -101,19 +101,24 @@ const AddStudents = () => {
                     value={values.gender}
                     onChange={handleChange}
                   />
-                  <div
-                    className={`flex items-center bg-white border border-1 rounded-full px-5 ${
-                      false ? "border-orange-300" : "border-gray-300"
-                    }`}
-                  >
-                    <Datepicker
-                      value={dob}
-                      onChange={() => handleValueChange}
-                      primaryColor={"orange"}
-                      showShortcuts={false}
-                      asSingle={true}
-                      useRange={false}
-                    />
+                  <div className="space-y-2">
+                    <p className="text-xs md:text-sm px-2 text-gray-600">
+                      Date of Birth
+                    </p>
+                    <div
+                      className={`flex items-center bg-white border border-1 rounded-full px-5 ${
+                        false ? "border-orange-300" : "border-gray-300"
+                      }`}
+                    >
+                      <Datepicker
+                        value={dob}
+                        onChange={() => handleValueChange}
+                        primaryColor={"orange"}
+                        showShortcuts={false}
+                        asSingle={true}
+                        useRange={false}
+                      />
+                    </div>
                   </div>
                   <Select
                     data={["Turkish", "English", "Arabic"]}
