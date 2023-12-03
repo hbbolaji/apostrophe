@@ -33,7 +33,7 @@ const EditGuardian = () => {
           },
         }
       );
-      navigate(`/dashboard/me`);
+      navigate(`/dashboard/students/${state.studentId}`);
     } catch (error) {
       console.log(error);
     }
