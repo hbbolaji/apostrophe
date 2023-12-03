@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import GuardianCard from "../components/GuardianCard";
+import PaymentCard from "../components/PaymentCard";
 
 const StudentProfile = () => {
   const { id } = useParams();
@@ -11,6 +12,7 @@ const StudentProfile = () => {
   const { token } = useAuth();
   const [guardian, setGuardian] = useState<any>(null);
   const [student, setStudent] = useState<any>([]);
+  const [invoice, setInvoice] = useState<any>(null);
 
   const getGuardian = async () => {
     try {
@@ -46,12 +48,30 @@ const StudentProfile = () => {
     }
   };
 
+  const getInvoiceByStudentId = async () => {
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/api/v1/invoice/all/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const { data } = await result;
+      setInvoice(data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     if (!id) {
       navigate("/dashboard/me");
     }
     getStudetnById();
     getGuardian();
+    getInvoiceByStudentId();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -61,7 +81,7 @@ const StudentProfile = () => {
       <div className="flex">
         <div className="grid grid-cols-2 w-full gap-4">
           <div className="col-span-1 h-96 bg-white shadow-xl rounded-lg p-4 w-full ">
-            NO payment history {/* information about payment history */}
+            {invoice ? <PaymentCard invoice={invoice} /> : null}
           </div>
           <div className="col-span-1 h-96 bg-white shadow-xl rounded-lg p-4 w-full">
             Awaiting Course Registration

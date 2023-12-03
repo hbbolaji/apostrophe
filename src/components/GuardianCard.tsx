@@ -17,7 +17,24 @@ const GuardianCard: React.FC<{ guardian: any }> = ({ guardian }) => {
   const role = currentUser.role;
   return (
     <div className="px-5 py-3 space-y-4">
-      <p className="font-semibold text-lg text-center">Guardian Info</p>
+      <div className="flex justify-between items-center">
+        <p className="font-semibold text-lg text-center">Guardian Info</p>
+        {role === "sales" ? (
+          <div
+            className="flex items-center justify-center border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
+            onClick={() => {
+              navigate(`/dashboard/guardians/edit/${guardian.id}`, {
+                state: guardian,
+              });
+            }}
+          >
+            <div>
+              <PiNotePencilThin className="text-orange-500" />
+            </div>
+            <p className="text-sm  text-orange-500">Edit</p>
+          </div>
+        ) : null}
+      </div>
       <div>
         <p className="text-center text-2xl font-semibold text-gray-500">
           {guardian.firstName} {guardian.lastName}
@@ -26,21 +43,7 @@ const GuardianCard: React.FC<{ guardian: any }> = ({ guardian }) => {
           {guardian.relationshipStudent}
         </p>
       </div>
-      {role === "sales" ? (
-        <div
-          className="flex w-full items-center justify-center border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
-          onClick={() => {
-            navigate(`/dashboard/guardians/edit/${guardian.id}`, {
-              state: guardian,
-            });
-          }}
-        >
-          <div>
-            <PiNotePencilThin className="text-orange-500" />
-          </div>
-          <p className="text-sm  text-orange-500">Edit Guardian</p>
-        </div>
-      ) : null}
+
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <PiMapPinThin className="text-3xl" />

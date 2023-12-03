@@ -27,6 +27,7 @@ import EditDiscount from "./pages/EditDiscount";
 import AddPlans from "./pages/AddPlan";
 import EditPlans from "./pages/EditPlan";
 import AddInvoice from "./pages/AddInvoice";
+import EditInvoice from "./pages/EditInvoice";
 
 function App() {
   const { token, currentUser } = useAuth();
@@ -66,6 +67,7 @@ function App() {
 
           <Route element={<Invoices />} path="invoices" />
           <Route element={<AddInvoice />} path="invoices/add" />
+          <Route element={<EditInvoice />} path="invoices/edit/:id" />
           <Route element={<Template />} path="templates" />
           <Route element={<Payments />} path="payments" />
           <Route element={<Plans />} path="plans" />

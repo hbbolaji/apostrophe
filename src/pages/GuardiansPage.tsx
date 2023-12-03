@@ -29,8 +29,6 @@ const GuardiansPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(guardians);
-
   return (
     <div className="w-full md:pt-8 px-5 space-y-5">
       <p className="text-xl font-semibold px-5">Guardians</p>
