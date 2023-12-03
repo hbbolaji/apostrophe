@@ -13,6 +13,7 @@ const AddGuardians = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const { token } = useAuth();
+  console.log(state);
 
   useEffect(() => {
     if (!state) {
@@ -33,7 +34,7 @@ const AddGuardians = () => {
           },
         }
       );
-      // navigate(`/dashboard/students/${state}`);
+      navigate(`/dashboard/students/${state}`);
     } catch (error) {
       console.log(error);
     }

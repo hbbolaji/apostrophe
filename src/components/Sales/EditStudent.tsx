@@ -224,7 +224,7 @@ const EditStudent = () => {
                     onChange={handleChange}
                     type="number"
                   />
-                  <Select
+                  {/* <Select
                     data={[
                       "Course Completed",
                       "Awaiting Course Registration",
@@ -247,7 +247,7 @@ const EditStudent = () => {
                     placeholder="Financial Status"
                     value={values.financialStatus}
                     onChange={handleChange}
-                  />
+                  /> */}
                   <div className="flex space-x-6 justify-end">
                     <button
                       type="button"

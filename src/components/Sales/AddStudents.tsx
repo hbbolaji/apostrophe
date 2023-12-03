@@ -214,32 +214,6 @@ const AddStudents = () => {
                     onChange={handleChange}
                     type="number"
                   />
-                  {/* Munif */}
-
-                  {/* <Select
-                    data={[
-                      "Course Completed",
-                      "Awaiting Course Registration",
-                      "Frozen Registration",
-                      "Withdrawn",
-                    ]}
-                    name="academicStatus"
-                    placeholder="Academic Status"
-                    value={values.academicStatus}
-                    onChange={handleChange}
-                  />
-                  <Select
-                    data={[
-                      "No Payment",
-                      "In Negotiation",
-                      "Complete Payment",
-                      "Partial Payment",
-                    ]}
-                    name="financialStatus"
-                    placeholder="Financial Status"
-                    value={values.financialStatus}
-                    onChange={handleChange}
-                  /> */}
                   <div className="flex space-x-6 justify-end">
                     <button
                       type="button"
