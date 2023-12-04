@@ -4,7 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import GuardianCard from "../components/GuardianCard";
-import PaymentCard from "../components/PaymentCard";
+import InvoiceCard from "../components/InvoiceCard";
+import PaymentCard from "./PaymentCard";
 
 const StudentProfile = () => {
   const { id } = useParams();
@@ -13,6 +14,7 @@ const StudentProfile = () => {
   const [guardian, setGuardian] = useState<any>(null);
   const [student, setStudent] = useState<any>([]);
   const [invoice, setInvoice] = useState<any>(null);
+  const [payments, setPayments] = useState<any>(null);
 
   const getGuardian = async () => {
     try {
@@ -65,6 +67,23 @@ const StudentProfile = () => {
     }
   };
 
+  const getPaymentsById = async () => {
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/api/v1/payments/made/all/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const { data } = await result;
+      setPayments(data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     if (!id) {
       navigate("/dashboard/me");
@@ -72,6 +91,7 @@ const StudentProfile = () => {
     getStudetnById();
     getGuardian();
     getInvoiceByStudentId();
+    getPaymentsById();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -79,21 +99,21 @@ const StudentProfile = () => {
     <div className="pt-8 pb-8 px-5 w-full space-y-6">
       <StudentCard {...student} />
       <div className="flex">
-        <div className="grid grid-cols-2 w-full gap-4">
-          <div className="col-span-1 h-96 bg-white shadow-xl rounded-lg p-4 w-full ">
-            {invoice ? <PaymentCard invoice={invoice} /> : null}
+        <div className="grid grid-cols-3 w-full gap-4">
+          <div className="col-span-3 xl:col-span-2 h-96 bg-white shadow-xl rounded-lg p-4 w-full ">
+            {invoice ? <InvoiceCard invoice={invoice} /> : null}
           </div>
-          <div className="col-span-1 h-96 bg-white shadow-xl rounded-lg p-4 w-full">
-            Awaiting Course Registration
+          <div className="col-span-3 xl:col-span-1 h-96 bg-white shadow-xl rounded-lg p-4 w-full">
+            {payments ? <PaymentCard payments={payments} /> : null}
           </div>
-          <div className="col-span-1  bg-white shadow-xl rounded-lg p-4 w-full">
+          <div className="col-span-3 xl:col-span-2  bg-white shadow-xl rounded-lg p-4 w-full">
             {guardian ? (
               <GuardianCard guardian={{ ...guardian, studentId: student.id }} />
             ) : (
               <p>No guardian yet</p>
             )}
           </div>
-          <div className="col-span-1 h-96 bg-white shadow-xl rounded-lg p-4 w-full">
+          <div className="col-span-3 xl:col-span-1 h-96 bg-white shadow-xl rounded-lg p-4 w-full">
             TimeTable
           </div>
         </div>

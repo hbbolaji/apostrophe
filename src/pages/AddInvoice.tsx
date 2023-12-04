@@ -72,7 +72,7 @@ const AddInvoice = () => {
           },
         }
       );
-      navigate(`/dashboard/me`);
+      navigate(`/dashboard/students/${state}`);
     } catch (error) {
       console.log(error);
     }
@@ -101,7 +101,6 @@ const AddInvoice = () => {
           }}
           onSubmit={(values) => {
             const formData = getFormData(values);
-            console.log(values);
             createInvoice(formData, values.courseId, values.paymentPlanId);
           }}
         >

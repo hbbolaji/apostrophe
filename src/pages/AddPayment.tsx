@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Form, Formik } from "formik";
 import { getFormData } from "../utils/helper";
@@ -11,17 +11,23 @@ import { PiCloudArrowUpBold } from "react-icons/pi";
 const AddPayment = () => {
   const { state } = useLocation();
   const { token } = useAuth();
+  const navigate = useNavigate();
   const ref = useRef<HTMLInputElement>(null);
-  // const [fileName, setFileName] = useState<string>("");
+  const [file, setFile] = useState<any>();
 
   const handleClick = () => {
     ref.current?.click();
   };
 
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return null;
+    setFile(e.target.files[0]);
+  };
+
   const createPayment = async (values: FormData) => {
     try {
-      const result = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/payments/made/${state}`,
+      await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/api/v1/payments/made/${state.invoiceId}`,
         values,
         {
           headers: {
@@ -30,12 +36,12 @@ const AddPayment = () => {
           },
         }
       );
-      console.log(result);
-      // navigate(`/dashboard/students/${state}`);
+      navigate(`/dashboard/students/${state.studentId}`);
     } catch (error) {
       console.log(error);
     }
   };
+
   return (
     <div className="w-full space-y-5 md:pt-8 px-5">
       <h4 className="text-orange-400 font-semibold text-center text-2xl">
@@ -50,11 +56,10 @@ const AddPayment = () => {
             medium: "",
             toAccount: "",
             notes: "",
-            referenceNumber: "",
-            receipt: "",
           }}
           onSubmit={(values) => {
-            const formData = getFormData(values);
+            const formData = getFormData({ ...values });
+            formData.append("receipt", file);
             createPayment(formData);
           }}
         >
@@ -106,13 +111,6 @@ const AddPayment = () => {
                   onChange={handleChange}
                   type="text"
                 />
-                <Input
-                  placeholder="Reference Number"
-                  name="referenceNumber"
-                  value={values.referenceNumber}
-                  onChange={handleChange}
-                  type="text"
-                />
                 <div
                   onClick={handleClick}
                   className="flex flex-col items-center space-y-2 p-4 bg-orange-300 bg-opacity-40 rounded-lg cursor-pointer"
@@ -131,13 +129,13 @@ const AddPayment = () => {
                     multiple={false}
                     className="hidden"
                     accept="image/*"
-                    value={values.receipt}
-                    onChange={handleChange}
+                    // value={file}
+                    onChange={handleFile}
                   />
                 </div>
-                {values.receipt !== "" ? (
+                {file ? (
                   <p className="text-center text-orange-500 border border-1 rounded-lg border-orange-500 py-2">
-                    {values.receipt.split("\\").slice(-1)}
+                    {file.name}
                   </p>
                 ) : null}
                 <div className="flex justify-end">
