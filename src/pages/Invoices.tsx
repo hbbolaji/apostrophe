@@ -42,7 +42,7 @@ const Invoices = () => {
         <div>
           <div className="bg-gray-200 p-4 rounded-t-lg grid grid-cols-6 gap-4">
             <div className="col-span-2">
-              <p>Issuance Date</p>
+              <p>Student Name</p>
             </div>
             <div className="col-span-2">
               <p>Validity Date</p>
