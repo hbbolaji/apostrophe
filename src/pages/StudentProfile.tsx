@@ -100,10 +100,10 @@ const StudentProfile = () => {
       <StudentCard {...student} />
       <div className="flex">
         <div className="grid grid-cols-3 w-full gap-4">
-          <div className="col-span-3 xl:col-span-2 h-96 bg-white shadow-xl rounded-lg p-4 w-full ">
+          <div className="col-span-3 xl:col-span-2  bg-white shadow-xl rounded-lg p-4 w-full ">
             {invoice ? <InvoiceCard invoice={invoice} /> : null}
           </div>
-          <div className="col-span-3 xl:col-span-1 h-96 bg-white shadow-xl rounded-lg p-4 w-full">
+          <div className="col-span-3 xl:col-span-1  bg-white shadow-xl rounded-lg p-4 w-full">
             {payments ? <PaymentCard payments={payments} /> : null}
           </div>
           <div className="col-span-3 xl:col-span-2  bg-white shadow-xl rounded-lg p-4 w-full">
@@ -113,8 +113,8 @@ const StudentProfile = () => {
               <p>No guardian yet</p>
             )}
           </div>
-          <div className="col-span-3 xl:col-span-1 h-96 bg-white shadow-xl rounded-lg p-4 w-full">
-            TimeTable
+          <div className="col-span-3 xl:col-span-1  bg-white shadow-xl rounded-lg p-4 w-full">
+            Awaiting course registration
           </div>
         </div>
       </div>

@@ -35,52 +35,50 @@ const GuardianCard: React.FC<{ guardian: any }> = ({ guardian }) => {
           </div>
         ) : null}
       </div>
-      <div>
-        <p className="text-center text-2xl font-semibold text-gray-500">
+      <div className="text-sm text-gray-500">
+        <p className="">{guardian.relationshipStudent}</p>
+        <p className="border border-1 border-gray-300 rounded-lg px-4 py-2">
           {guardian.firstName} {guardian.lastName}
-        </p>
-        <p className="text-center text-sm text-gray-500">
-          {guardian.relationshipStudent}
         </p>
       </div>
 
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <PiMapPinThin className="text-3xl" />
+      <div className="flex items-center space-x-6">
+        <div className="flex items-center space-x-4 border border-1 border-gray-300 rounded-lg px-4 py-2 w-full">
+          <PiMapPinThin className="" />
           <p className="text-sm text-gray-500 font-semibold">
             {guardian.residence}
           </p>
         </div>
-        <div className="flex items-center space-x-4">
-          <PiFlagThin className="text-3xl" />
+        <div className="flex items-center space-x-4 border border-1 border-gray-300 rounded-lg px-4 py-2 w-full">
+          <PiFlagThin className="" />
           <p className="text-sm text-gray-500 font-semibold">
             {guardian.nationality}
           </p>
         </div>
       </div>
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col items-center space-y-2">
-          <PiEnvelopeThin className="text-3xl" />
+      <div className="flex items-center space-x-6">
+        <div className="flex items-center space-x-4 border border-1 border-gray-300 rounded-lg px-4 py-2 w-full">
+          <PiEnvelopeThin className="" />
           <p className="text-sm text-gray-500 font-semibold">
             {guardian.emailAddress}
           </p>
         </div>
-        <div className="flex flex-col items-center space-y-2">
-          <PiWhatsappLogoThin className="text-3xl" />
+        <div className="flex items-center space-x-4 border border-1 border-gray-300 rounded-lg px-4 py-2 w-full">
+          <PiWhatsappLogoThin className="" />
           <p className="text-sm text-gray-500 font-semibold">
             {guardian.whatsappNumber}
           </p>
         </div>
       </div>
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col items-center space-y-2">
-          <PiPhoneCallThin className="text-3xl" />
+      <div className="flex items-center space-x-6">
+        <div className="flex items-center space-x-4 border border-1 border-gray-300 rounded-lg px-4 py-2 w-full">
+          <PiPhoneCallThin className="" />
           <p className="text-sm text-gray-500 font-semibold">
             {guardian.contactNumber}
           </p>
         </div>
-        <div className="flex flex-col items-center space-y-2">
-          <PiPhoneThin className="text-3xl" />
+        <div className="flex items-center space-x-4 border border-1 border-gray-300 rounded-lg px-4 py-2 w-full">
+          <PiPhoneThin className="" />
           <p className="text-sm text-gray-500 font-semibold">
             {guardian.phoneNumber}
           </p>
