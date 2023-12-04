@@ -1,6 +1,5 @@
 import moment from "moment";
 import React from "react";
-import { PiStarFill } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -15,13 +14,6 @@ const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
       <div className="flex justify-between items-center">
         <div className="flex space-x-2 items-center">
           <p className="font-semibold ">Invoice Info</p>
-          <PiStarFill
-            className={`${
-              invoice[0].status === "Unpaid"
-                ? "text-red-500"
-                : " text-green-500"
-            } `}
-          />
         </div>
       </div>
       {/* invoice data type */}
