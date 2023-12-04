@@ -28,6 +28,7 @@ import AddPlans from "./pages/AddPlan";
 import EditPlans from "./pages/EditPlan";
 import AddInvoice from "./pages/AddInvoice";
 import EditInvoice from "./pages/EditInvoice";
+import AddPayment from "./pages/AddPayment";
 
 function App() {
   const { token, currentUser } = useAuth();
@@ -79,6 +80,7 @@ function App() {
           <Route element={<StudentProfile />} path="students/:id" />
           <Route element={<Template />} path="templates" />
           <Route element={<Payments />} path="payments" />
+          <Route element={<AddPayment />} path="payments/add" />
         </Route>
       ) : null}
       <Route path="*" element={<Login />} />
