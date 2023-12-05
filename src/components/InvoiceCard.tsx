@@ -18,42 +18,53 @@ const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
       </div>
       {/* invoice data type */}
       <div className="space-y-2">
-        <div className="p-2 rounded-lg bg-orange-200 bg-opacity-60  flex justify-between items-center">
-          <p>Date</p>
-          <p>Course</p>
-          <p>Amount</p>
-          <p>Edit</p>
-          <p>Show</p>
+        <div
+          className={`p-2 grid w-full ${
+            role === "sales" ? "grid-cols-7" : "grid-cols-5"
+          } gap-4 rounded-lg bg-orange-200 bg-opacity-60 `}
+        >
+          <div className="col-span-1">Date</div>
+          <div className="col-span-2">Course</div>
+          <div className="col-span-1">Amount</div>
+          {role === "sales" ? (
+            <>
+              <div className="col-span-1 text-center">Edit</div>
+              <div className="col-span-1 text-center">Pay</div>
+            </>
+          ) : null}
+          <div className="col-span-1 text-center">Show</div>
         </div>
         {invoice.map((inv: any) => (
           <div
-            className={`p-2 rounded-lg  flex justify-between items-center ${
+            className={`p-2 rounded-lg grid gap-4 ${
+              role === "sales" ? "grid-cols-7" : "grid-cols-5"
+            }   ${
               inv.status === "Paid"
                 ? "bg-green-100 bg-opacity-60"
                 : "bg-red-100 bg-opacity-60"
             }`}
             key={inv.id}
           >
-            <p className="text-sm">
+            <div className="text-sm col-span-1">
               {moment(inv.validityDate).format("MMM Do YY")}
-            </p>
-            <p className="text-sm">{inv.courseTitle}</p>
-            <p className="font-semibold ">${inv.courseAmount}</p>
+            </div>
+            <div className="text-sm col-span-2">{inv.courseTitle}</div>
+            <div className="font-semibold col-span-1">${inv.courseAmount}</div>
             {role === "sales" ? (
               <div
-                className=" border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
+                className="col-span-1 border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
                 onClick={() => {
                   navigate(`/dashboard/invoices/edit/1`, {
                     state: inv,
                   });
                 }}
               >
-                <p className="text-sm  text-orange-500">Edit </p>
+                <p className="text-sm text-center text-orange-500">Edit </p>
               </div>
             ) : null}
             {role === "sales" ? (
               <div
-                className=" border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
+                className="col-span-1 border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
                 onClick={() => {
                   navigate(`/dashboard/payments/add`, {
                     state: {
@@ -63,18 +74,18 @@ const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
                   });
                 }}
               >
-                <p className="text-sm  text-orange-500">Pay </p>
+                <p className="text-sm text-center text-orange-500">Pay </p>
               </div>
             ) : null}
             <div
-              className=" border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
+              className="col-span-1 border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
               onClick={() => {
                 navigate(`/dashboard/templates`, {
                   state: inv,
                 });
               }}
             >
-              <p className="text-sm  text-orange-500">Show</p>
+              <p className="text-sm text-center text-orange-500">Show</p>
             </div>
           </div>
         ))}
