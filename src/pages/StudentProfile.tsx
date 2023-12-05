@@ -5,7 +5,7 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import GuardianCard from "../components/GuardianCard";
 import InvoiceCard from "../components/InvoiceCard";
-import PaymentCard from "./PaymentCard";
+import PaymentCard from "../components/PaymentCard";
 
 const StudentProfile = () => {
   const { id } = useParams();
@@ -110,7 +110,7 @@ const StudentProfile = () => {
             {guardian ? (
               <GuardianCard guardian={{ ...guardian, studentId: student.id }} />
             ) : (
-              <p>No guardian yet</p>
+              <p>No guardian registered</p>
             )}
           </div>
           <div className="col-span-3 xl:col-span-1  bg-white shadow-xl rounded-lg p-4 w-full">
