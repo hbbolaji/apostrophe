@@ -20,7 +20,6 @@ const userSales: NavItemType[] = [
 
 const invoice: NavItemType[] = [
   { title: "Invoices", nav: "/dashboard/invoices", role: "admin" },
-  { title: "Templates", nav: "/dashboard/templates", role: "both" },
 ];
 
 const payment: NavItemType[] = [
@@ -35,17 +34,6 @@ const others: NavItemType[] = [
 ];
 
 const navigation = () => {
-  return [
-    // { name: "Admin", data: user },
-    // { name: "My Profile", data: userSales },
-    // { name: "Invoice", data: invoice },
-    // { name: "Payment", data: payment },
-    // { name: "Other", data: others },
-    ...user,
-    ...userSales,
-    ...invoice,
-    ...payment,
-    ...others,
-  ];
+  return [...user, ...userSales, ...invoice, ...payment, ...others];
 };
 export default navigation;

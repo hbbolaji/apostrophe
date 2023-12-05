@@ -9,7 +9,7 @@ const Invoice: React.FC<{ invoice: any }> = ({ invoice }) => {
       className={`bg-gray-50 p-6 grid grid-cols-6 content-center gap-4 ${
         invoice.status === "Unpaid" ? "hover:bg-red-50" : "hover:bg-green-50"
       } cursor-pointer`}
-      onClick={() => navigate(`/dashboard/students/${invoice.studentId}`)}
+      onClick={() => navigate(`/dashboard/templates`, { state: invoice })}
     >
       <div className="col-span-2">
         <p>

@@ -66,7 +66,14 @@ const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
                 <p className="text-sm  text-orange-500">Pay </p>
               </div>
             ) : null}
-            <div className=" border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer">
+            <div
+              className=" border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
+              onClick={() => {
+                navigate(`/dashboard/templates`, {
+                  state: inv,
+                });
+              }}
+            >
               <p className="text-sm  text-orange-500">Show</p>
             </div>
           </div>
