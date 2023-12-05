@@ -1,6 +1,6 @@
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
-import Datepicker from "react-tailwindcss-datepicker";
+import Datepicker, { DateValueType } from "react-tailwindcss-datepicker";
 import Input from "../Input";
 import Select from "../Select";
 import countries from "../../utils/countries.json";
@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { getFormData } from "../../utils/helper";
+import moment from "moment";
 
 const EditStudent = () => {
   const { token } = useAuth();
@@ -15,9 +16,9 @@ const EditStudent = () => {
   const navigate = useNavigate();
   const student = { ...state };
   const [step, setStep] = useState(0);
-  const [dob, setDob] = useState({
-    startDate: new Date(),
-    endDate: new Date(),
+  const [dob, setDob] = useState<DateValueType>({
+    startDate: student.dateOfBirth,
+    endDate: null,
   });
 
   const countriesData = countries.map((count) => count.country);
@@ -29,7 +30,7 @@ const EditStudent = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleValueChange = (newValue: { startDate: Date; endDate: Date }) => {
+  const handleValueChange = (newValue: DateValueType) => {
     setDob(newValue);
   };
 
@@ -74,10 +75,10 @@ const EditStudent = () => {
             academicStatus: student?.academicStatus || "",
             financialStatus: student?.financialStatus || "",
           }}
-          onSubmit={(values) => {
+          onSubmit={(values: any) => {
             const formData = getFormData({
               ...values,
-              dateOfBirth: dob.startDate,
+              dateOfBirth: dob?.startDate || "",
             });
             editStudent(formData);
           }}
@@ -112,9 +113,11 @@ const EditStudent = () => {
                   />
                   <div className="space-y-2">
                     <p className="text-xs md:text-sm px-2 text-gray-600">
-                      Date of Birth
+                      Date of Birth{" "}
+                      <span className="font-semibold">
+                        {moment(dob?.startDate).format("MMM Do YY")}
+                      </span>
                     </p>
-
                     <div
                       className={`flex items-center bg-white border border-1 rounded-full px-5 ${
                         false ? "border-orange-300" : "border-gray-300"
@@ -122,7 +125,7 @@ const EditStudent = () => {
                     >
                       <Datepicker
                         value={dob}
-                        onChange={() => handleValueChange}
+                        onChange={handleValueChange}
                         primaryColor={"orange"}
                         showShortcuts={false}
                         asSingle={true}

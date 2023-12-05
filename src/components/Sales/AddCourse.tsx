@@ -1,6 +1,7 @@
 import { Form, Formik } from "formik";
 import React, { useState } from "react";
 import Datepicker from "react-tailwindcss-datepicker";
+import { type DateValueType } from "react-tailwindcss-datepicker/dist/types";
 // import * as yup from "yup";
 import Input from "../Input";
 import Select from "../Select";
@@ -12,21 +13,18 @@ import { getFormData } from "../../utils/helper";
 const AddCourses = () => {
   const navigate = useNavigate();
   const { token } = useAuth();
-  const [startDate, setStartDate] = useState<{
-    startDate: Date;
-    endDate: Date;
-  }>({
-    startDate: new Date(),
-    endDate: new Date(),
+  const [startDate, setStartDate] = useState<DateValueType>({
+    startDate: null,
+    endDate: null,
   });
-  const [endDate, setEndDate] = useState<{ startDate: Date; endDate: Date }>({
-    startDate: new Date(),
-    endDate: new Date(),
+  const [endDate, setEndDate] = useState<DateValueType>({
+    startDate: null,
+    endDate: null,
   });
-  const handleStartDate = (newValue: { startDate: Date; endDate: Date }) => {
+  const handleStartDate = (newValue: DateValueType) => {
     setStartDate(newValue);
   };
-  const handleEndDate = (newValue: { startDate: Date; endDate: Date }) => {
+  const handleEndDate = (newValue: DateValueType) => {
     setEndDate(newValue);
   };
 
@@ -67,15 +65,10 @@ const AddCourses = () => {
           onSubmit={(values) => {
             const formData = getFormData({
               ...values,
-              startDate: startDate.startDate,
-              endDate: endDate.startDate,
+              startDate: startDate?.startDate || new Date().setMonth(11),
+              endDate: endDate?.startDate || new Date().setMonth(12),
             });
             createCourse(formData);
-            console.log({
-              ...values,
-              startDate: new Date(2023 - 10 - 10),
-              endDate: 2024 - 11 - 20,
-            });
           }}
         >
           {({ values, handleChange }) => (
@@ -115,7 +108,7 @@ const AddCourses = () => {
                   >
                     <Datepicker
                       value={startDate}
-                      onChange={() => handleStartDate}
+                      onChange={handleStartDate}
                       primaryColor={"orange"}
                       showShortcuts={false}
                       asSingle={true}
@@ -134,7 +127,7 @@ const AddCourses = () => {
                   >
                     <Datepicker
                       value={endDate}
-                      onChange={() => handleEndDate}
+                      onChange={handleEndDate}
                       primaryColor={"orange"}
                       showShortcuts={false}
                       asSingle={true}

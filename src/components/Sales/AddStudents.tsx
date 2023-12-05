@@ -1,6 +1,6 @@
 import { Form, Formik } from "formik";
 import React, { useState } from "react";
-import Datepicker from "react-tailwindcss-datepicker";
+import Datepicker, { DateValueType } from "react-tailwindcss-datepicker";
 import Input from "../Input";
 import Select from "../Select";
 import countries from "../../utils/countries.json";
@@ -13,14 +13,14 @@ const AddStudents = () => {
   const navigate = useNavigate();
   const { token } = useAuth();
   const [step, setStep] = useState(0);
-  const [dob, setDob] = useState({
+  const [dob, setDob] = useState<DateValueType>({
     startDate: new Date(),
     endDate: new Date(),
   });
 
   const countriesData = countries.map((count) => count.country);
 
-  const handleValueChange = (newValue: { startDate: Date; endDate: Date }) => {
+  const handleValueChange = (newValue: DateValueType) => {
     setDob(newValue);
   };
 
@@ -64,13 +64,12 @@ const AddStudents = () => {
             academicStatus: "Awaiting Course Registration",
             financialStatus: "No Payment",
           }}
-          onSubmit={(values) => {
+          onSubmit={(values: any) => {
             const formData = getFormData({
               ...values,
-              dateOfBirth: dob.startDate,
+              dateOfBirth: dob?.startDate || "",
             });
             createStudent(formData);
-            // console.log({ ...values, dateOfBirth: dob.startDate });
           }}
         >
           {({ values, handleChange }) => (
@@ -112,7 +111,7 @@ const AddStudents = () => {
                     >
                       <Datepicker
                         value={dob}
-                        onChange={() => handleValueChange}
+                        onChange={handleValueChange}
                         primaryColor={"orange"}
                         showShortcuts={false}
                         asSingle={true}
