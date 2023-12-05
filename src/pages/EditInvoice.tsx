@@ -1,16 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form, Formik } from "formik";
-import Input from "../components/Input";
 import Select from "../components/Select";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { getFormData } from "../utils/helper";
+import Datepicker, { DateValueType } from "react-tailwindcss-datepicker";
+import moment from "moment";
 
 const EditInvoice = () => {
   const { token } = useAuth();
   const { state } = useLocation();
   const navigate = useNavigate();
+  const [issuanceDate, setIssuanceDate] = useState<DateValueType>({
+    startDate: state.IssuanceDate,
+    endDate: null,
+  });
+  const [validityDate, setValidityDate] = useState<DateValueType>({
+    startDate: state.validityDate,
+    endDate: null,
+  });
+
+  const handleIssuanceDate = (newValue: DateValueType) => {
+    setIssuanceDate(newValue);
+  };
+
+  const handleValidityDate = (newValue: DateValueType) => {
+    setValidityDate(newValue);
+  };
 
   const updateInvoice = async (values: FormData) => {
     try {
@@ -41,12 +58,14 @@ const EditInvoice = () => {
             studentId: state.studentId || "",
             courseId: state.courseId,
             paymentPlanId: state.courseId,
-            issuanceDate: state.issuanceDate || "",
-            validityDate: state.validityDate || "",
             status: state.status || "",
           }}
           onSubmit={(values) => {
-            const formData = getFormData(values);
+            const formData = getFormData({
+              ...values,
+              issuanceDate: issuanceDate?.startDate || "",
+              validityDate: validityDate?.startDate || "",
+            });
             updateInvoice(formData);
           }}
         >
@@ -56,20 +75,50 @@ const EditInvoice = () => {
                 <p className="font-semibold text-gray-500">
                   Recipient Information
                 </p>
-                <Input
-                  placeholder="Issuance Date"
-                  name="issuanceDate"
-                  value={values.issuanceDate}
-                  onChange={handleChange}
-                  type="date"
-                />
-                <Input
-                  placeholder="Validity Date"
-                  name="validityDate"
-                  value={values.validityDate}
-                  onChange={handleChange}
-                  type="date"
-                />
+                <div className="space-y-2">
+                  <p className="text-xs md:text-sm px-2 text-gray-600">
+                    Issuance Date{" "}
+                    <span className="font-semibold">
+                      {moment(issuanceDate?.startDate).format("MMM Do YY")}
+                    </span>
+                  </p>
+                  <div
+                    className={`flex items-center bg-white border border-1 rounded-full px-5 ${
+                      false ? "border-orange-300" : "border-gray-300"
+                    }`}
+                  >
+                    <Datepicker
+                      value={issuanceDate}
+                      onChange={handleIssuanceDate}
+                      primaryColor={"orange"}
+                      showShortcuts={false}
+                      asSingle={true}
+                      useRange={false}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-xs md:text-sm px-2 text-gray-600">
+                    Validity Date{" "}
+                    <span className="font-semibold">
+                      {moment(validityDate?.startDate).format("MMM Do YY")}
+                    </span>
+                  </p>
+                  <div
+                    className={`flex items-center bg-white border border-1 rounded-full px-5 ${
+                      false ? "border-orange-300" : "border-gray-300"
+                    }`}
+                  >
+                    <Datepicker
+                      value={validityDate}
+                      onChange={handleValidityDate}
+                      primaryColor={"orange"}
+                      showShortcuts={false}
+                      asSingle={true}
+                      useRange={false}
+                    />
+                  </div>
+                </div>
                 <Select
                   data={["Paid", "Unpaid"]}
                   name="status"

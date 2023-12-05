@@ -7,6 +7,7 @@ import Input from "../components/Input";
 import Select from "../components/Select";
 import axios from "axios";
 import { PiCloudArrowUpBold } from "react-icons/pi";
+import Datepicker, { DateValueType } from "react-tailwindcss-datepicker";
 
 const AddPayment = () => {
   const { state } = useLocation();
@@ -14,6 +15,14 @@ const AddPayment = () => {
   const navigate = useNavigate();
   const ref = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<any>();
+  const [date, setDate] = useState<DateValueType>({
+    startDate: null,
+    endDate: null,
+  });
+
+  const handleDate = (newValue: DateValueType) => {
+    setDate(newValue);
+  };
 
   const handleClick = () => {
     ref.current?.click();
@@ -57,8 +66,11 @@ const AddPayment = () => {
             toAccount: "",
             notes: "",
           }}
-          onSubmit={(values) => {
-            const formData = getFormData({ ...values });
+          onSubmit={(values: any) => {
+            const formData = getFormData({
+              ...values,
+              date: date?.startDate || "",
+            });
             formData.append("receipt", file);
             createPayment(formData);
           }}
@@ -69,13 +81,25 @@ const AddPayment = () => {
                 <p className="font-semibold text-gray-500">
                   Discount Scheme Information
                 </p>
-                <Input
-                  placeholder="Date"
-                  name="date"
-                  value={values.date}
-                  onChange={handleChange}
-                  type="date"
-                />
+                <div className="space-y-2">
+                  <p className="text-xs md:text-sm px-2 text-gray-600">
+                    Validity Date
+                  </p>
+                  <div
+                    className={`flex items-center bg-white border border-1 rounded-full px-5 ${
+                      false ? "border-orange-300" : "border-gray-300"
+                    }`}
+                  >
+                    <Datepicker
+                      value={date}
+                      onChange={handleDate}
+                      primaryColor={"orange"}
+                      showShortcuts={false}
+                      asSingle={true}
+                      useRange={false}
+                    />
+                  </div>
+                </div>
                 <Select
                   data={["TRY", "MYR", "USD"]}
                   name="currency"

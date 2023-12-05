@@ -41,7 +41,7 @@ const Select: React.FC<SelectType> = ({ ...props }) => {
         >
           <option>{placeholder}</option>
           {dataObj.map((val) => (
-            <option key={val.title} value={val.value}>
+            <option key={val.value} value={val.value}>
               {val.title}
             </option>
           ))}
