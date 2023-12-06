@@ -2,33 +2,29 @@ import React, { useEffect, useState } from "react";
 import Course from "../components/Course";
 import { useNavigate } from "react-router-dom";
 import { PiPlusLight } from "react-icons/pi";
-import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { getCourses } from "../api/course";
+import Spinner from "../components/Spinner";
 
 const Courses = () => {
   const navigate = useNavigate();
   const [courses, setCourses] = useState<any[]>([]);
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const { token } = useAuth();
 
-  const getCourses = async () => {
-    try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/course/all`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const { data } = await result;
-      setCourses(data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    getCourses();
+    setLoading(true);
+    (async () => {
+      const result = await getCourses(token);
+      if (result.data) {
+        setLoading(false);
+        setCourses(result.data);
+      } else {
+        setLoading(false);
+        setError(true);
+      }
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -45,12 +41,18 @@ const Courses = () => {
           />
         </div>
       </div>
-      <div className="flex flex-wrap">
-        {courses.map((course) => (
-          <div key={course.id} className="w-full sm:w-1/2  2xl:w-1/4 p-3">
-            <Course course={course} />
-          </div>
-        ))}
+      <div className="min-h-96">
+        <div className="flex flex-wrap">
+          {courses.map((course) => (
+            <div key={course.id} className="w-full sm:w-1/2  2xl:w-1/4 p-3">
+              <Course course={course} />
+            </div>
+          ))}
+        </div>
+        {error ? (
+          <p className="text-center py-24">Error Loading list of courses</p>
+        ) : null}
+        {loading ? <Spinner /> : null}
       </div>
     </div>
   );

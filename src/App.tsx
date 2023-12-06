@@ -19,7 +19,7 @@ import StudentProfile from "./pages/StudentProfile";
 import Me from "./pages/Me";
 import EditSales from "./components/Sales/EditSale";
 import EditStudent from "./components/Sales/EditStudent";
-import AddCourses from "./components/Sales/AddCourse";
+import AddCourses from "./pages/AddCourse";
 import EditGuardian from "./pages/EditGuardians";
 import GuardiansPage from "./pages/GuardiansPage";
 import AddDiscounts from "./pages/AddDiscounts";
