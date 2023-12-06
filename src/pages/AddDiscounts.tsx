@@ -1,31 +1,33 @@
 import { Form, Formik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import { getFormData } from "../utils/helper";
+import * as yup from "yup";
 import Input from "../components/Input";
 import { useAuth } from "../context/AuthContext";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { createDiscount } from "../api/discount";
+import ButtonSpinner from "../components/ButtonSpinner";
+import Toast from "../components/Toast";
 
 const AddDiscounts = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
-  const createDiscount = async (values: FormData) => {
-    try {
-      await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/discount/scheme`,
-        values,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      navigate(`/dashboard/discounts`);
-    } catch (error) {
-      console.log(error);
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleSubmit = async (values: any) => {
+    setLoading(true);
+    const formData = getFormData(values);
+    const result: any = await createDiscount(token, formData);
+    if (result?.status === 200 || result?.statusText === "OK") {
+      setLoading(false);
+      navigate("/dashboard/discounts");
+    } else {
+      setError(true);
+      setLoading(false);
     }
   };
+
   return (
     <div className="w-full space-y-5 md:pt-8 px-5">
       <h4 className="text-orange-400 font-semibold text-center text-2xl">
@@ -39,13 +41,23 @@ const AddDiscounts = () => {
             notes: "",
             enabled: true,
           }}
+          validationSchema={validationSchema}
           onSubmit={(values) => {
-            const formData = getFormData(values);
-            createDiscount(formData);
+            handleSubmit(values);
           }}
         >
           {({ values, handleChange }) => (
             <Form className=" space-y-5 block w-full">
+              {error ? (
+                <Toast
+                  message="cannot add new discount scheme now"
+                  close={() => {
+                    setError(false);
+                  }}
+                  show={error}
+                  type="error"
+                />
+              ) : null}
               <div className="p-5 bg-white rounded-lg shadow-lg w-5/6 xl:w-1/2 mx-auto space-y-5">
                 <p className="font-semibold text-gray-500">
                   Discount Scheme Information
@@ -71,13 +83,14 @@ const AddDiscounts = () => {
                   onChange={handleChange}
                   type="text"
                 />
-                <div className="flex justify-end">
+                <div className="flex items-center space-x-4 justify-end">
                   <button
                     type="submit"
                     className="text-sm md:text-base block px-5 bg-orange-500 text-white py-1.5 rounded-full font-semibold"
                   >
                     Submit
                   </button>
+                  {loading ? <ButtonSpinner /> : null}
                 </div>
               </div>
             </Form>
@@ -89,3 +102,9 @@ const AddDiscounts = () => {
 };
 
 export default AddDiscounts;
+
+const validationSchema = yup.object().shape({
+  discountTitle: yup.string().required("Discount Title is required"),
+  discountValue: yup.string().required("Discount Value is required"),
+  notes: yup.string().required("Discount Note is required"),
+});
