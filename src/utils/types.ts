@@ -43,6 +43,6 @@ export type AuthType = {
 };
 
 export type LoginType = {
-  email: string;
-  password: string;
+  emailAddress: string;
+  generatedPassword: string;
 };

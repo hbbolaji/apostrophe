@@ -1,21 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import { PiXBold } from "react-icons/pi";
 
 type ToastType = {
   message: string;
-  close?: () => void;
+  close: () => void;
   type?: string;
   show: boolean;
 };
 
 const Toast: React.FC<ToastType> = ({ message, close, show, type }) => {
-  const [showToast, setShowToast] = useState<boolean>(show);
   setTimeout(() => {
-    setShowToast(false);
+    close();
   }, 3000);
   return (
     <>
-      {showToast ? (
+      {show ? (
         <div
           className={`relative md:w-1/2 mx-auto py-2 px-4 ${
             type === "error" && "bg-red-200"
