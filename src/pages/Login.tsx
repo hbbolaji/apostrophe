@@ -42,7 +42,7 @@ const Login = () => {
 
   return (
     <>
-      <Toast message="Succesfully Logged in" />
+      {/* <Toast message="Succesfully Logged in" /> */}
       <div className="relative min-h-screen p-8 space-y-10 flex flex-col justify-center bg-white">
         <div className="w-ful">
           <img

@@ -71,8 +71,9 @@ const AddCourses = () => {
           message="cannot add new course now"
           close={() => {
             setError(false);
-            navigate("/dashboard/courses");
           }}
+          show={error}
+          type="error"
         />
       ) : null}
       <div className="w-full">
