@@ -59,7 +59,7 @@ const EditDiscount = () => {
                   </p>
                   {error ? (
                     <Toast
-                      message="cannot add new discount scheme now"
+                      message="cannot edit discount scheme now"
                       close={() => {
                         setError(false);
                       }}
