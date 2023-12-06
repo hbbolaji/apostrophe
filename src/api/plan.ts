@@ -17,6 +17,28 @@ export const getPlans = async (token: string) => {
   }
 };
 
+export const createPaymentPlan = async (
+  token: string,
+  values: FormData,
+  discountSchemeId: string
+) => {
+  try {
+    const result = await axios.post(
+      `${process.env.REACT_APP_BASE_URL}/api/v1/payment/plan/${discountSchemeId}`,
+      values,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return result;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const updatePaymentPlan = async (
   token: string,
   id: string,

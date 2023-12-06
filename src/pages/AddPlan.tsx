@@ -1,56 +1,28 @@
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { getFormData } from "../utils/helper";
+import * as yup from "yup";
 import Input from "../components/Input";
 import { useAuth } from "../context/AuthContext";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Select from "../components/Select";
+import { getDiscounts } from "../api/discount";
+import { createPaymentPlan } from "../api/plan";
+import ButtonSpinner from "../components/ButtonSpinner";
+import Toast from "../components/Toast";
 
 const AddPlans = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
   const [discounts, setDiscounts] = useState<any>([]);
-  const createPaymentPlan = async (
-    values: FormData,
-    discountSchemeId: string
-  ) => {
-    try {
-      await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/payment/plan/${discountSchemeId}`,
-        values,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      navigate(`/dashboard/plans`);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getDiscounts = async () => {
-    try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/discount/scheme/all`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const { data } = await result;
-      setDiscounts(selectData(data.data));
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    getDiscounts();
+    (async () => {
+      const result = await getDiscounts(token);
+      setDiscounts(selectData(result.data));
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -63,8 +35,26 @@ const AddPlans = () => {
       }));
   };
 
+  const handleSubmit = async (values: any) => {
+    setLoading(true);
+    const formData = getFormData(values);
+    const result: any = await createPaymentPlan(
+      token,
+      formData,
+      values.discountSchemeId
+    );
+    if (result?.status === 200 || result?.statusText === "OK") {
+      setLoading(false);
+
+      navigate(`/dashboard/plans`);
+    } else {
+      setError(true);
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="w-full space-y-5 md:pt-8 px-5">
+    <div className="w-full space-y-5 md:pt-8">
       <h4 className="text-orange-400 font-semibold text-center text-2xl">
         Add Payment Plans
       </h4>
@@ -78,17 +68,27 @@ const AddPlans = () => {
             enabled: true,
             discountSchemeId: "",
           }}
-          onSubmit={(values) => {
-            const formData = getFormData(values);
-            createPaymentPlan(formData, values.discountSchemeId);
+          validationSchema={validationSchema}
+          onSubmit={(values: any) => {
+            handleSubmit(values);
           }}
         >
           {({ values, handleChange }) => (
             <Form className=" space-y-5 block w-full">
-              <div className="p-5 bg-white rounded-lg shadow-lg w-5/6 xl:w-1/2 mx-auto space-y-5">
+              <div className="p-5 bg-white rounded-lg shadow-lg w-11/12 md:w-5/6 xl:w-1/2 mx-auto space-y-5">
                 <p className="font-semibold text-gray-500">
                   Payment Plan Information
                 </p>
+                {error ? (
+                  <Toast
+                    message="cannot add new payment plan now"
+                    close={() => {
+                      setError(false);
+                    }}
+                    show={error}
+                    type="error"
+                  />
+                ) : null}
                 <Input
                   placeholder="Total Fee"
                   name="totalFees"
@@ -131,6 +131,7 @@ const AddPlans = () => {
                   >
                     Submit
                   </button>
+                  {loading ? <ButtonSpinner /> : null}
                 </div>
               </div>
             </Form>
@@ -142,3 +143,10 @@ const AddPlans = () => {
 };
 
 export default AddPlans;
+
+const validationSchema = yup.object().shape({
+  totalFees: yup.string().required("total fee is required"),
+  noOfInstalments: yup.string().required("number of instalments is required"),
+  instalmentPortions: yup.string().required("instalment portions is required"),
+  notes: yup.string().required("notes is required"),
+});
