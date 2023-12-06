@@ -6,23 +6,23 @@ const Invoice: React.FC<{ invoice: any }> = ({ invoice }) => {
   const navigate = useNavigate();
   return (
     <div
-      className={`bg-gray-50 p-6 grid grid-cols-6 content-center gap-4 ${
+      className={`text-sm xl:text-base bg-gray-50 p-6 grid grid-cols-6 content-center gap-4 ${
         invoice.status === "Unpaid" ? "hover:bg-red-50" : "hover:bg-green-50"
       } cursor-pointer`}
       onClick={() => navigate(`/dashboard/templates`, { state: invoice })}
     >
-      <div className="col-span-2">
-        <p>
+      <div className="col-span-6 sm:col-span-2">
+        <p className="font-semibold">
           {invoice.studentFirstName} {invoice.studentLastName}
         </p>
       </div>
       <div className="col-span-2">
-        <p>{moment(invoice.validityDate).format("MMMM Do YYYY")}</p>
+        <p>{moment(invoice.validityDate).format("MMM Do YY")}</p>
       </div>
-      <div className="col-span-1">
+      <div className="col-span-2 sm:col-span-1">
         <p>USD {invoice.courseAmount}</p>
       </div>
-      <div className={`col-span-1 `}>
+      <div className={`col-span-2 sm:col-span-1 `}>
         <p
           className={`${
             invoice.status === "Unpaid"

@@ -1,31 +1,28 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import Guardian from "../components/Guardian";
+import { getGuardians } from "../api/guardian";
+import Spinner from "../components/Spinner";
 
 const GuardiansPage = () => {
   const [guardians, setGuardians] = useState<any[]>([]);
+
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const { token } = useAuth();
 
-  const getGuardians = async () => {
-    try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/guardian/all`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const { data } = await result;
-      setGuardians(data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    getGuardians();
+    (async () => {
+      setLoading(true);
+      const result: any = await getGuardians(token);
+      if (result.data) {
+        setLoading(false);
+        setGuardians(result.data);
+      } else {
+        setLoading(false);
+        setError(true);
+      }
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -44,6 +41,10 @@ const GuardiansPage = () => {
           </div>
         ))}
       </div>
+      {error ? (
+        <p className="text-center py-24">Error Loading list of Students</p>
+      ) : null}
+      {loading ? <Spinner /> : null}
     </div>
   );
 };

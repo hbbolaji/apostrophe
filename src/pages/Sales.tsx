@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { PiPlusLight } from "react-icons/pi";
-// import Rightbar from "../components/Rightbar";
-// import AddSales from "../components/Sales/AddSales";
 import Input from "../components/Input";
 import { Form, Formik } from "formik";
 import User from "../components/User";
 import { usersData } from "../utils/data";
 import { UserType } from "../utils/types";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { getSales } from "../api/sales";
+import Spinner from "../components/Spinner";
 
 const Sales = () => {
   const [users, setUsers] = useState([]);
   const { token } = useAuth();
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const onSearch = (value: string) => {
@@ -28,33 +29,27 @@ const Sales = () => {
       );
   };
 
-  const getSales = async () => {
-    try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/user/all`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const { data } = await result;
-      setUsers(data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    getSales();
+    (async () => {
+      setLoading(true);
+      const result: any = await await getSales(token);
+      if (result.data) {
+        setLoading(false);
+        setUsers(result.data);
+      } else {
+        setLoading(false);
+        setError(true);
+      }
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     <div className="flex space-between w-full">
       <div className="flex-1 space-y-5 md:pt-8 px-5">
         {/* page heading */}
         <div className="flex items-center justify-between py-3">
-          <p className="text-2xl">Sales Rep</p>
+          <p className="text-2xl">Sales Agents</p>
           <PiPlusLight
             className="text-2xl cursor-pointer"
             onClick={() => {
@@ -107,12 +102,12 @@ const Sales = () => {
             </div>
           ))}
         </div>
-      </div>
-      <div className="relative">
-        {/* large monitor view */}
-        {/* <Rightbar>
-          <AddSales />
-        </Rightbar> */}
+        {error ? (
+          <p className="text-center py-24">
+            Error Loading list of sales agents
+          </p>
+        ) : null}
+        {loading ? <Spinner /> : null}
       </div>
     </div>
   );

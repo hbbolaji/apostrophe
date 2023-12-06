@@ -7,14 +7,17 @@ import { studentsData } from "../utils/data";
 import { StudentType } from "../utils/types";
 import Checkbox from "../components/Checkbox";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { getStudents } from "../api/student";
+import Spinner from "../components/Spinner";
 
 const Students = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [showFilter, setShowFilter] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [male, setMale] = useState(false);
   const [female, setFemale] = useState(false);
   const [filters, setFilters] = useState<string[]>([]);
@@ -41,29 +44,22 @@ const Students = () => {
   };
 
   useEffect(() => {
-    getStudents();
+    (async () => {
+      setLoading(true);
+      const result: any = await getStudents(token);
+      if (result.data) {
+        setLoading(false);
+        setStudents(result.data);
+      } else {
+        setLoading(false);
+        setError(true);
+      }
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onFilter = (sex: string) => {
     setShowFilter(false);
-  };
-
-  const getStudents = async () => {
-    try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/student/all`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const { data } = await result;
-      setStudents(data.data);
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   return (
@@ -244,6 +240,10 @@ const Students = () => {
             </div>
           ))}
         </div>
+        {error ? (
+          <p className="text-center py-24">Error Loading list of Students</p>
+        ) : null}
+        {loading ? <Spinner /> : null}
       </div>
     </div>
   );

@@ -1,33 +1,30 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import axios from "axios";
 import { PiPlusThin } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import Plan from "../components/Plan";
+import { getPlans } from "../api/plan";
+import Spinner from "../components/Spinner";
 
 const Discounts = () => {
   const { token } = useAuth();
   const [plans, setPlans] = useState<any[]>([]);
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
-  const getPlans = async () => {
-    try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/payment/plan/all`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const { data } = await result;
-      setPlans(data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   useEffect(() => {
-    getPlans();
+    (async () => {
+      setLoading(true);
+      const result = await getPlans(token);
+      if (result.data) {
+        setLoading(false);
+        setPlans(result.data);
+      } else {
+        setLoading(false);
+        setError(true);
+      }
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -52,6 +49,10 @@ const Discounts = () => {
           </div>
         ))}
       </div>
+      {error ? (
+        <p className="text-center py-24">Error Loading list of Payment Plans</p>
+      ) : null}
+      {loading ? <Spinner /> : null}
     </div>
   );
 };

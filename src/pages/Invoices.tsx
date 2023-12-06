@@ -1,31 +1,27 @@
 import React, { useEffect, useState } from "react";
 import Invoice from "../components/Invoice";
-import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { getInvoices } from "../api/invoice";
+import Spinner from "../components/Spinner";
 
 const Invoices = () => {
   const [invoices, setInvoices] = useState<any>([]);
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const { token } = useAuth();
 
-  const getInvoices = async () => {
-    try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/invoice/all`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const { data } = await result;
-      setInvoices(data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    getInvoices();
+    (async () => {
+      setLoading(true);
+      const result: any = await getInvoices(token);
+      if (result.data) {
+        setLoading(false);
+        setInvoices(result.data);
+      } else {
+        setLoading(false);
+        setError(true);
+      }
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -40,7 +36,7 @@ const Invoices = () => {
         <div></div>
         {/* List of invoices */}
         <div>
-          <div className="bg-gray-200 p-4 rounded-t-lg grid grid-cols-6 gap-4">
+          <div className="hidden bg-gray-200 p-4 rounded-t-lg sm:grid grid-cols-6 gap-4">
             <div className="col-span-2">
               <p>Student Name</p>
             </div>
@@ -60,6 +56,10 @@ const Invoices = () => {
             </div>
           ))}
         </div>
+        {error ? (
+          <p className="text-center py-24">Error Loading list of invoices</p>
+        ) : null}
+        {loading ? <Spinner /> : null}
       </div>
     </div>
   );
