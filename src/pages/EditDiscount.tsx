@@ -71,8 +71,7 @@ const EditDiscount = () => {
                     className="border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
                     onClick={() => {
                       const val = { ...values, enabled: !values.enabled };
-                      const formData = getFormData(val);
-                      editDiscount(token, state.id, formData);
+                      handleSubmit(val);
                     }}
                   >
                     <p className="text-sm  text-orange-500">
