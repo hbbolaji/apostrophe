@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { PiFunnelSimpleLight, PiPlusLight } from "react-icons/pi";
+import { PiFunnelSimpleLight } from "react-icons/pi";
 import Input from "../components/Input";
 import { Form, Formik } from "formik";
 import Student from "../components/Student";
 import { studentsData } from "../utils/data";
 import { StudentType } from "../utils/types";
 import Checkbox from "../components/Checkbox";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getStudents } from "../api/student";
 import Spinner from "../components/Spinner";
 
 const Students = () => {
   const { token } = useAuth();
-  const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -69,12 +67,6 @@ const Students = () => {
         <div className="flex items-center justify-between py-3">
           <p className="text-2xl">Students</p>
           <div className="flex space-x-5 items-center">
-            <PiPlusLight
-              className="text-2xl cursor-pointer"
-              onClick={() => {
-                navigate("/dashboard/students/add");
-              }}
-            />
             <div className="flex">
               <div
                 className="cursor-pointer flex items-center space-x-5 border border-1 border-orange-300 rounded-full py-1 px-3"
