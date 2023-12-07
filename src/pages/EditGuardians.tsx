@@ -67,7 +67,7 @@ const EditGuardian = () => {
           {({ values, handleChange }) => (
             <Form className=" space-y-5 block w-full">
               {step === 0 ? (
-                <div className="p-5 bg-white rounded-lg shadow-lg w-5/6 xl:w-1/2 mx-auto space-y-5">
+                <div className="p-5 bg-white rounded-lg shadow-lg w-11/2 md:w-5/6 xl:w-1/2 mx-auto space-y-5">
                   <p className="font-semibold text-gray-500">
                     Personal Information
                   </p>
