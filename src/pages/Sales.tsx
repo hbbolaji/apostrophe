@@ -3,7 +3,6 @@ import { PiPlusLight } from "react-icons/pi";
 import Input from "../components/Input";
 import { Form, Formik } from "formik";
 import User from "../components/User";
-import { usersData } from "../utils/data";
 import { UserType } from "../utils/types";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -12,16 +11,17 @@ import Spinner from "../components/Spinner";
 
 const Sales = () => {
   const [users, setUsers] = useState([]);
+  const [data, setData] = useState([]);
   const { token } = useAuth();
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const onSearch = (value: string) => {
-    if (value === "") setUsers(usersData as []);
+    if (value === "") setData(users);
     else
-      setUsers(
-        (usersData as []).filter(
+      setData(
+        data.filter(
           (user: UserType) =>
             user.firstName.toLowerCase().includes(value.toLowerCase()) ||
             user.lastName.toLowerCase().includes(value.toLowerCase())
@@ -36,6 +36,7 @@ const Sales = () => {
       if (result.data) {
         setLoading(false);
         setUsers(result.data);
+        setData(result.data);
       } else {
         setLoading(false);
         setError(true);
@@ -71,13 +72,13 @@ const Sales = () => {
                 <Input
                   name="search"
                   placeholder="Search..."
-                  hidelabel={true}
+                  hidelabel="true"
                   type="text"
                   value={values.search}
                   onChange={handleChange}
                   close={() => {
                     setValues({ search: "" });
-                    setUsers(usersData as []);
+                    setData(users);
                   }}
                 />
               </div>
@@ -93,7 +94,7 @@ const Sales = () => {
 
         {/* List of users */}
         <div className="flex flex-wrap">
-          {users.map((user: UserType) => (
+          {data.map((user: UserType) => (
             <div
               key={user.id}
               className="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-3"

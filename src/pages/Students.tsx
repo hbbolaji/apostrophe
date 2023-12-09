@@ -3,7 +3,6 @@ import { PiFunnelSimpleLight } from "react-icons/pi";
 import Input from "../components/Input";
 import { Form, Formik } from "formik";
 import Student from "../components/Student";
-import { studentsData } from "../utils/data";
 import { StudentType } from "../utils/types";
 import Checkbox from "../components/Checkbox";
 import { useAuth } from "../context/AuthContext";
@@ -13,6 +12,7 @@ import Spinner from "../components/Spinner";
 const Students = () => {
   const { token } = useAuth();
   const [students, setStudents] = useState([]);
+  const [data, setData] = useState([]);
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -25,10 +25,10 @@ const Students = () => {
   };
 
   const onSearch = (value: string) => {
-    if (value === "") setStudents(studentsData as []);
+    if (value === "") setData(students);
     else
-      setStudents(
-        (studentsData as []).filter(
+      setData(
+        data.filter(
           (user: StudentType) =>
             user.firstName.toLowerCase().includes(value.toLowerCase()) ||
             user.lastName.toLowerCase().includes(value.toLowerCase())
@@ -48,6 +48,7 @@ const Students = () => {
       if (result.data) {
         setLoading(false);
         setStudents(result.data);
+        setData(result.data);
       } else {
         setLoading(false);
         setError(true);
@@ -202,13 +203,13 @@ const Students = () => {
                 <Input
                   name="search"
                   placeholder="Search..."
-                  hidelabel={true}
+                  hidelabel="true"
                   type="text"
                   value={values.search}
                   onChange={handleChange}
                   close={() => {
                     setValues({ search: "" });
-                    setStudents(studentsData as []);
+                    setData(students);
                   }}
                 />
               </div>
@@ -223,7 +224,7 @@ const Students = () => {
         </Formik>
         {/* List of users */}
         <div className="flex flex-wrap">
-          {students.map((student: StudentType) => (
+          {data.map((student: StudentType) => (
             <div
               key={student.id}
               className="w-full sm:w-1/2 md:w-1/3 xl:w-1/4 p-3"

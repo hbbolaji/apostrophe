@@ -8,7 +8,7 @@ type InputType = {
   placeholder?: string;
   onChange: any;
   value: string;
-  hidelabel?: boolean;
+  hidelabel?: string;
   close?: () => void;
   disabled?: boolean;
 };
@@ -18,7 +18,7 @@ const Input: React.FC<InputType> = ({ ...props }) => {
   const { name, placeholder, hidelabel, close, value } = props;
   return (
     <div className="space-y-2">
-      {!hidelabel ? (
+      {hidelabel !== "true" ? (
         <label
           // htmlFor={name}
           htmlFor={name}
