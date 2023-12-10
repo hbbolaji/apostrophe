@@ -1,7 +1,8 @@
-import { Form, Formik } from "formik";
+import { FieldArray, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { getFormData } from "../utils/helper";
 import * as yup from "yup";
+import { v4 as uuid } from "uuid";
 import Input from "../components/Input";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +11,7 @@ import { getDiscounts } from "../api/discount";
 import { createPaymentPlan } from "../api/plan";
 import ButtonSpinner from "../components/ButtonSpinner";
 import Toast from "../components/Toast";
+import { PiXLight } from "react-icons/pi";
 
 const AddPlans = () => {
   const { token } = useAuth();
@@ -63,14 +65,15 @@ const AddPlans = () => {
           initialValues={{
             totalFees: "",
             noOfInstalments: "",
-            instalmentPortions: "",
+            instalmentPortions: [],
             notes: "",
             enabled: true,
             discountSchemeId: "",
           }}
           validationSchema={validationSchema}
           onSubmit={(values: any) => {
-            handleSubmit(values);
+            // handleSubmit(values);
+            console.log(values);
           }}
         >
           {({ values, handleChange }) => (
@@ -103,13 +106,56 @@ const AddPlans = () => {
                   onChange={handleChange}
                   type="text"
                 />
-                <Input
+                <FieldArray name="instalmentPortions">
+                  {({ push, remove }) => (
+                    <div className="space-y-2">
+                      <p className="block text-xs md:text-sm text-gray-700 dark:text-gray-300">
+                        Instalment Portions
+                      </p>
+                      {values.instalmentPortions.map(
+                        (sub: any, index: number) => {
+                          const portion = `instalmentPortions[${index}].portion`;
+                          return (
+                            <div
+                              key={sub.id}
+                              className="flex items-center space-x-2"
+                            >
+                              <div className="flex-1">
+                                <Input
+                                  placeholder="Installment Portion"
+                                  name={portion}
+                                  hidelabel="true"
+                                  onChange={handleChange}
+                                />
+                              </div>
+                              <PiXLight
+                                className="text-3xl cursor-pointer text-gray-600 dark:text-gray-200"
+                                onClick={() => remove(index)}
+                              />
+                            </div>
+                          );
+                        }
+                      )}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          push({ id: uuid(), portion: "", status: "unpaid" })
+                        }
+                        className="w-full flex justify-center text-sm md:text-base text-center py-2 px-4 md:py-2 md:px-2 text-orange-500 rounded-full bg-slate-200 flex items-center font-semibold"
+                      >
+                        + Add an Instalment Portion
+                      </button>
+                    </div>
+                  )}
+                </FieldArray>
+                {/* <Input
                   placeholder="Installment Portion"
                   name="instalmentPortions"
                   value={values.instalmentPortions}
                   onChange={handleChange}
                   type="text"
-                />
+                /> */}
+                {}
                 <Select
                   dataObj={discounts}
                   name="discountSchemeId"
@@ -147,6 +193,6 @@ export default AddPlans;
 const validationSchema = yup.object().shape({
   totalFees: yup.string().required("total fee is required"),
   noOfInstalments: yup.string().required("number of instalments is required"),
-  instalmentPortions: yup.string().required("instalment portions is required"),
+  // instalmentPortions: yup.string().required("instalment portions is required"),
   notes: yup.string().required("notes is required"),
 });

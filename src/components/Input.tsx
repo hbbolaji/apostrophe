@@ -1,4 +1,4 @@
-import { ErrorMessage } from "formik";
+import { ErrorMessage, useField } from "formik";
 import React, { useState } from "react";
 import { PiXLight } from "react-icons/pi";
 
@@ -6,8 +6,8 @@ type InputType = {
   name: string;
   type?: string;
   placeholder?: string;
-  onChange: any;
-  value: string;
+  onChange?: any;
+  value?: string;
   hidelabel?: string;
   close?: () => void;
   disabled?: boolean;
@@ -16,6 +16,7 @@ type InputType = {
 const Input: React.FC<InputType> = ({ ...props }) => {
   const [focus, setFocus] = useState(false);
   const { name, placeholder, hidelabel, close, value } = props;
+  const [field, meta] = useField(props);
   return (
     <div className="space-y-2">
       {hidelabel !== "true" ? (
@@ -41,6 +42,7 @@ const Input: React.FC<InputType> = ({ ...props }) => {
           className={`${
             props.disabled ? "bg-gray-100" : "bg-white"
           } block w-full outline-none text-sm md:text-base`}
+          {...field}
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
           disabled={props.disabled}
@@ -52,9 +54,13 @@ const Input: React.FC<InputType> = ({ ...props }) => {
           />
         ) : null}
       </div>
-      <p className="text-xs px-5 text-red-500">
-        <ErrorMessage name={name} />
-      </p>
+      <div>
+        {meta.touched && meta.error ? (
+          <p className="text-xs px-5 text-red-500">
+            <ErrorMessage name={name} />
+          </p>
+        ) : null}
+      </div>
     </div>
   );
 };
