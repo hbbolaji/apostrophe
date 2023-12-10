@@ -1,19 +1,36 @@
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
+import * as yup from "yup";
 import Input from "../components/Input";
 import Select from "../components/Select";
 import countries from "../utils/countries.json";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getFormData } from "../utils/helper";
-import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { createGuardian } from "../api/guardian";
+import Toast from "../components/Toast";
+import ButtonSpinner from "../components/ButtonSpinner";
 
 const AddGuardians = () => {
   const [step, setStep] = useState(0);
   const { state } = useLocation();
   const navigate = useNavigate();
   const { token } = useAuth();
-  console.log(state);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  const handleSubmit = async (values: any) => {
+    setLoading(true);
+    const formData = getFormData(values);
+    const result: any = await createGuardian(token, state, formData);
+    if (result?.status === 200 || result?.statusText === "OK") {
+      setLoading(false);
+      navigate(`/dashboard/students/${state}`);
+    } else {
+      setError(true);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!state) {
@@ -22,30 +39,22 @@ const AddGuardians = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const createGuardian = async (values: FormData) => {
-    try {
-      await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/guardian/${state}`,
-        values,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      navigate(`/dashboard/students/${state}`);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const countriesData = countries.map((count) => count.country);
   return (
     <div className="w-full space-y-5 md:pt-8">
       <h4 className="text-orange-400 font-semibold text-center text-2xl">
         Add Student Guardian
       </h4>
+      {error ? (
+        <Toast
+          message="cannot add guardian now"
+          close={() => {
+            setError(false);
+          }}
+          show={error}
+          type="error"
+        />
+      ) : null}
       <div className="w-full">
         <Formik
           initialValues={{
@@ -60,9 +69,9 @@ const AddGuardians = () => {
             residence: "",
             relationshipStudent: "",
           }}
+          validationSchema={validationSchema}
           onSubmit={(values) => {
-            const formData = getFormData(values);
-            createGuardian(formData);
+            handleSubmit(values);
           }}
         >
           {({ values, handleChange }) => (
@@ -171,6 +180,7 @@ const AddGuardians = () => {
                     >
                       Submit
                     </button>
+                    {loading ? <ButtonSpinner /> : null}
                   </div>
                 </div>
               ) : null}
@@ -183,3 +193,18 @@ const AddGuardians = () => {
 };
 
 export default AddGuardians;
+
+const validationSchema = yup.object().shape({
+  firstName: yup.string().required("First name is required"),
+  lastName: yup.string().required("Last name is required"),
+  emailAddress: yup.string().required("Email is required"),
+  phoneNumber: yup.string().required("Phone number is required"),
+  whatsappNumber: yup.string().required("Whatsapp number is required"),
+  contactNumber: yup.string().required("Contact number is required"),
+  gender: yup.string().required("gender is required"),
+  nationality: yup.string().required("nationality is required"),
+  residence: yup.string().required("residence is required"),
+  relationshipStudent: yup
+    .string()
+    .required("Relationship to student is required"),
+});
