@@ -6,13 +6,13 @@ import {
   PiOfficeChairLight,
   PiNewspaperClippingLight,
   PiTriangleLight,
-  PiMoneyLight,
   PiPercentLight,
   PiBookLight,
   PiPersonSimpleBikeLight,
   PiTreeStructureLight,
   PiArrowBendRightUpBold,
   PiArrowLineRightLight,
+  PiChartLineLight,
 } from "react-icons/pi";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -40,8 +40,8 @@ const icons = (name: string) => {
     case "Templates":
       icon = <PiTriangleLight className="text-2xl" />;
       break;
-    case "Payments":
-      icon = <PiMoneyLight className="text-2xl" />;
+    case "Dashboard":
+      icon = <PiChartLineLight className="text-2xl" />;
       break;
     case "Plans":
       icon = <PiTreeStructureLight className="text-2xl" />;

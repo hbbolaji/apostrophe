@@ -10,6 +10,7 @@ export type NavType = {
 };
 
 const user: NavItemType[] = [
+  { title: "Dashboard", nav: "/dashboard/analytics", role: "both" },
   { title: "Sales", nav: "/dashboard/sales", role: "admin" },
   { title: "Students", nav: "/dashboard/students", role: "admin" },
 ];
@@ -23,7 +24,6 @@ const invoice: NavItemType[] = [
 ];
 
 const payment: NavItemType[] = [
-  { title: "Payments", nav: "/dashboard/payments", role: "both" },
   { title: "Plans", nav: "/dashboard/plans", role: "admin" },
   { title: "Discounts", nav: "/dashboard/discounts", role: "admin" },
 ];

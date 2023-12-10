@@ -6,7 +6,7 @@ import Sales from "./pages/Sales";
 import Students from "./pages/Students";
 import Invoices from "./pages/Invoices";
 import Template from "./pages/Template";
-import Payments from "./pages/Payments";
+import Analytics from "./pages/Analytics";
 import Plans from "./pages/Plans";
 import Discounts from "./pages/Discounts";
 import Courses from "./pages/Courses";
@@ -79,7 +79,7 @@ function App() {
           {/* Shared Routes */}
           <Route element={<StudentProfile />} path="students/:id" />
           <Route element={<Template />} path="templates" />
-          <Route element={<Payments />} path="payments" />
+          <Route element={<Analytics />} path="analytics" />
           <Route element={<AddPayment />} path="payments/add" />
         </Route>
       ) : null}
