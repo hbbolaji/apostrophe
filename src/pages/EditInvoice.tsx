@@ -63,7 +63,7 @@ const EditInvoice = () => {
   };
 
   return (
-    <div className="w-full space-y-5 md:pt-8 px-5">
+    <div className="w-full space-y-5 md:pt-8">
       <h4 className="text-orange-400 font-semibold text-center text-2xl">
         Edit Invoice
       </h4>
@@ -92,7 +92,7 @@ const EditInvoice = () => {
         >
           {({ values, handleChange }) => (
             <Form className="flex flex-col xl:flex-row space-y-5 xl:space-y-0  xl:space-x-5 block w-full">
-              <div className="p-5 bg-white rounded-lg shadow-lg w-5/6 xl:w-1/2 mx-auto space-y-5">
+              <div className="p-5 bg-white rounded-lg shadow-lg w-11/12 md:w-5/6 xl:w-1/2 mx-auto space-y-5">
                 <p className="font-semibold text-gray-500">
                   Recipient Information
                 </p>
