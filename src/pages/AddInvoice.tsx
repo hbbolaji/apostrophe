@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
+import * as yup from "yup";
 import { Form, Formik } from "formik";
 import Select from "../components/Select";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import axios from "axios";
 import { getFormData } from "../utils/helper";
 import Datepicker, { DateValueType } from "react-tailwindcss-datepicker";
+import { getCourses } from "../api/course";
+import { getPlans } from "../api/plan";
+import { createInvoice } from "../api/invoice";
+import Toast from "../components/Toast";
+import ButtonSpinner from "../components/ButtonSpinner";
 
 const AddInvoice = () => {
   const { token } = useAuth();
@@ -13,6 +18,10 @@ const AddInvoice = () => {
   const navigate = useNavigate();
   const [courses, setCourses] = useState<any>([]);
   const [plans, setPlans] = useState<any>([]);
+  const [issuanceError, setIssuanceError] = useState<boolean>(false);
+  const [validityError, setValidityError] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [issuanceDate, setIssuanceDate] = useState<DateValueType>({
     startDate: null,
     endDate: null,
@@ -23,45 +32,13 @@ const AddInvoice = () => {
   });
 
   const handleIssuanceDate = (newValue: DateValueType) => {
+    setIssuanceError(false);
     setIssuanceDate(newValue);
   };
 
   const handleValidityDate = (newValue: DateValueType) => {
+    setValidityError(false);
     setValidityDate(newValue);
-  };
-
-  const getCourses = async () => {
-    try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/course/all`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const { data } = await result;
-      setCourses(selectData(data.data));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getPlans = async () => {
-    try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/payment/plan/all`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const { data } = await result;
-      setPlans(selectData(data.data));
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const selectData = (value: any) => {
@@ -73,39 +50,70 @@ const AddInvoice = () => {
     }));
   };
 
-  const createInvoice = async (
-    values: FormData,
-    courseId: string,
-    paymentPlanId: string
-  ) => {
-    try {
-      await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/invoice/${state}/${courseId}/${paymentPlanId}`,
-        values,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
+  const handleSubmit = async (values: any) => {
+    if (issuanceDate?.startDate === null) {
+      setIssuanceError(true);
+    }
+    if (validityDate?.startDate === null) {
+      setValidityError(true);
+    }
+    setLoading(true);
+    if (issuanceDate?.startDate !== null && validityDate?.startDate !== null) {
+      const formData = getFormData({
+        ...values,
+        issuanceDate: issuanceDate?.startDate || "",
+        validityDate: validityDate?.startDate || "",
+      });
+      const result: any = await createInvoice(
+        token,
+        state,
+        formData,
+        values.courseId,
+        values.paymentPlanId
       );
-      navigate(`/dashboard/students/${state}`);
-    } catch (error) {
-      console.log(error);
+      if (result?.status === 200 || result?.statusText === "OK") {
+        setLoading(false);
+        navigate(`/dashboard/students/${state}`);
+      } else {
+        setError(true);
+        setLoading(false);
+      }
     }
   };
 
   useEffect(() => {
-    getCourses();
-    getPlans();
+    (async () => {
+      const courseResult = await getCourses(token);
+      const plansResult = await getPlans(token);
+      if (courseResult.data) {
+        setCourses(selectData(courseResult.data));
+      } else {
+        navigate(`/dashboard/students/${state}`);
+      }
+      if (plansResult.data) {
+        setPlans(selectData(plansResult.data));
+      } else {
+        navigate(`/dashboard/students/${state}`);
+      }
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <div className="w-full space-y-5 md:pt-8 px-5">
+    <div className="w-full space-y-5 md:pt-8">
       <h4 className="text-orange-400 font-semibold text-center text-2xl">
         Create Invoice
       </h4>
+      {error ? (
+        <Toast
+          message="cannot add new course now"
+          close={() => {
+            setError(false);
+          }}
+          show={error}
+          type="error"
+        />
+      ) : null}
       <div className="w-full">
         <Formik
           initialValues={{
@@ -114,18 +122,14 @@ const AddInvoice = () => {
             paymentPlanId: "",
             status: "Unpaid",
           }}
-          onSubmit={(values) => {
-            const formData = getFormData({
-              ...values,
-              issuanceDate: issuanceDate?.startDate || "",
-              validityDate: validityDate?.startDate || "",
-            });
-            createInvoice(formData, values.courseId, values.paymentPlanId);
+          validationSchema={validationSchema}
+          onSubmit={(values: any) => {
+            handleSubmit(values);
           }}
         >
           {({ values, handleChange }) => (
             <Form className="flex flex-col xl:flex-row space-y-5 xl:space-y-0  xl:space-x-5 block w-full">
-              <div className="p-5 bg-white rounded-lg shadow-lg w-5/6 xl:w-1/2 mx-auto space-y-5">
+              <div className="p-5 bg-white rounded-lg shadow-lg w-11/12 md:w-5/6 xl:w-1/2 mx-auto space-y-5">
                 <p className="font-semibold text-gray-500">
                   Recipient Information
                 </p>
@@ -154,6 +158,11 @@ const AddInvoice = () => {
                       useRange={false}
                     />
                   </div>
+                  {issuanceError ? (
+                    <p className="text-xs px-5 text-red-500">
+                      Issuance date is required
+                    </p>
+                  ) : null}
                 </div>
                 <div className="space-y-2">
                   <p className="text-xs md:text-sm px-2 text-gray-600">
@@ -173,6 +182,11 @@ const AddInvoice = () => {
                       useRange={false}
                     />
                   </div>
+                  {validityError ? (
+                    <p className="text-xs px-5 text-red-500">
+                      Validity date is required
+                    </p>
+                  ) : null}
                 </div>
                 <Select
                   dataObj={plans}
@@ -181,13 +195,14 @@ const AddInvoice = () => {
                   value={values.paymentPlanId}
                   onChange={handleChange}
                 />
-                <div className="flex justify-end">
+                <div className="flex justify-end items-center space-x-4">
                   <button
                     type="submit"
                     className="text-sm md:text-base block px-5 bg-orange-500 text-white py-1.5 rounded-full font-semibold"
                   >
                     Submit
                   </button>
+                  {loading ? <ButtonSpinner /> : null}
                 </div>
               </div>
             </Form>
@@ -199,3 +214,8 @@ const AddInvoice = () => {
 };
 
 export default AddInvoice;
+
+const validationSchema = yup.object().shape({
+  courseId: yup.string().required("Course is required"),
+  paymentPlanId: yup.string().required("Payment plan is required"),
+});

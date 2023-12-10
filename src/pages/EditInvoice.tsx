@@ -2,15 +2,22 @@ import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import axios from "axios";
+import * as yup from "yup";
 import { getFormData } from "../utils/helper";
 import Datepicker, { DateValueType } from "react-tailwindcss-datepicker";
 import moment from "moment";
+import { updateInvoice } from "../api/invoice";
+import Toast from "../components/Toast";
+import ButtonSpinner from "../components/ButtonSpinner";
 
 const EditInvoice = () => {
   const { token } = useAuth();
   const { state } = useLocation();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [issuanceError, setIssuanceError] = useState<boolean>(false);
+  const [validityError, setValidityError] = useState<boolean>(false);
   const [issuanceDate, setIssuanceDate] = useState<DateValueType>({
     startDate: state.IssuanceDate,
     endDate: null,
@@ -21,28 +28,37 @@ const EditInvoice = () => {
   });
 
   const handleIssuanceDate = (newValue: DateValueType) => {
+    setIssuanceError(false);
     setIssuanceDate(newValue);
   };
 
   const handleValidityDate = (newValue: DateValueType) => {
+    setValidityError(false);
     setValidityDate(newValue);
   };
 
-  const updateInvoice = async (values: FormData) => {
-    try {
-      await axios.patch(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/invoice/${state.id}`,
-        values,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      navigate(`/dashboard/students/${state.studentId}`);
-    } catch (error) {
-      console.log(error);
+  const handleSubmit = async (values: any) => {
+    if (issuanceDate?.startDate === null) {
+      setIssuanceError(true);
+    }
+    if (validityDate?.startDate === null) {
+      setValidityError(true);
+    }
+    setLoading(true);
+    if (issuanceDate?.startDate !== null && validityDate?.startDate !== null) {
+      const formData = getFormData({
+        ...values,
+        issuanceDate: issuanceDate?.startDate || "",
+        validityDate: validityDate?.startDate || "",
+      });
+      const result: any = await updateInvoice(token, state.id, formData);
+      if (result?.status === 200 || result?.statusText === "OK") {
+        setLoading(false);
+        navigate(`/dashboard/students/${state.studentId}`);
+      } else {
+        setError(true);
+        setLoading(false);
+      }
     }
   };
 
@@ -51,6 +67,16 @@ const EditInvoice = () => {
       <h4 className="text-orange-400 font-semibold text-center text-2xl">
         Edit Invoice
       </h4>
+      {error ? (
+        <Toast
+          message="cannot add new course now"
+          close={() => {
+            setError(false);
+          }}
+          show={error}
+          type="error"
+        />
+      ) : null}
       <div className="w-full">
         <Formik
           initialValues={{
@@ -59,13 +85,9 @@ const EditInvoice = () => {
             paymentPlanId: state.courseId,
             status: state.status || "",
           }}
+          validationSchema={validationSchema}
           onSubmit={(values) => {
-            const formData = getFormData({
-              ...values,
-              issuanceDate: issuanceDate?.startDate || "",
-              validityDate: validityDate?.startDate || "",
-            });
-            updateInvoice(formData);
+            handleSubmit(values);
           }}
         >
           {({ values, handleChange }) => (
@@ -95,6 +117,11 @@ const EditInvoice = () => {
                       useRange={false}
                     />
                   </div>
+                  {issuanceError ? (
+                    <p className="text-xs px-5 text-red-500">
+                      Issuance date is required
+                    </p>
+                  ) : null}
                 </div>
                 <div className="space-y-2">
                   <p className="text-xs md:text-sm px-2 text-gray-600">
@@ -117,14 +144,20 @@ const EditInvoice = () => {
                       useRange={false}
                     />
                   </div>
+                  {validityError ? (
+                    <p className="text-xs px-5 text-red-500">
+                      Validity date is required
+                    </p>
+                  ) : null}
                 </div>
-                <div className="flex justify-end">
+                <div className="flex justify-end items-center space-x-4">
                   <button
                     type="submit"
                     className="text-sm md:text-base block px-5 bg-orange-500 text-white py-1.5 rounded-full font-semibold"
                   >
                     Submit
                   </button>
+                  {loading ? <ButtonSpinner /> : null}
                 </div>
               </div>
             </Form>
@@ -136,3 +169,8 @@ const EditInvoice = () => {
 };
 
 export default EditInvoice;
+
+const validationSchema = yup.object().shape({
+  courseId: yup.string().required("Course is required"),
+  paymentPlanId: yup.string().required("Payment plan is required"),
+});
