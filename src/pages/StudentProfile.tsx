@@ -97,7 +97,7 @@ const StudentProfile = () => {
 
   return (
     <div className="pt-8 pb-8 px-5 w-full space-y-6">
-      <StudentCard {...student} />
+      <StudentCard student={student} hasGuardian={guardian ? true : false} />
       <div className="flex">
         <div className="grid grid-cols-3 w-full gap-4">
           <div className="col-span-3 xl:col-span-2 bg-white shadow-xl rounded-lg p-4 w-full ">
