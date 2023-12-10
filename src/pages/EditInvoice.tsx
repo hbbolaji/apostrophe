@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Form, Formik } from "formik";
-import Select from "../components/Select";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
@@ -119,13 +118,6 @@ const EditInvoice = () => {
                     />
                   </div>
                 </div>
-                <Select
-                  data={["Paid", "Unpaid"]}
-                  name="status"
-                  placeholder="Status"
-                  value={values.status}
-                  onChange={handleChange}
-                />
                 <div className="flex justify-end">
                   <button
                     type="submit"

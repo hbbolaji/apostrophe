@@ -112,7 +112,7 @@ const AddInvoice = () => {
             studentId: state,
             courseId: "",
             paymentPlanId: "",
-            status: "",
+            status: "Unpaid",
           }}
           onSubmit={(values) => {
             const formData = getFormData({
@@ -179,13 +179,6 @@ const AddInvoice = () => {
                   name="paymentPlanId"
                   placeholder="Payment Plan"
                   value={values.paymentPlanId}
-                  onChange={handleChange}
-                />
-                <Select
-                  data={["Paid", "Unpaid"]}
-                  name="status"
-                  placeholder="Status"
-                  value={values.status}
                   onChange={handleChange}
                 />
                 <div className="flex justify-end">
