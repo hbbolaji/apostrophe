@@ -54,7 +54,7 @@ const AddPayment = () => {
   return (
     <div className="w-full space-y-5 md:pt-8 px-5">
       <h4 className="text-orange-400 font-semibold text-center text-2xl">
-        Add Discount Scheme
+        Add Payment
       </h4>
       <div className="w-full">
         <Formik
@@ -79,11 +79,11 @@ const AddPayment = () => {
             <Form className=" space-y-5 block w-full">
               <div className="p-5 bg-white rounded-lg shadow-lg w-5/6 xl:w-1/2 mx-auto space-y-5">
                 <p className="font-semibold text-gray-500">
-                  Discount Scheme Information
+                  Payment Information
                 </p>
                 <div className="space-y-2">
                   <p className="text-xs md:text-sm px-2 text-gray-600">
-                    Validity Date
+                    Date
                   </p>
                   <div
                     className={`flex items-center bg-white border border-1 rounded-full px-5 ${
