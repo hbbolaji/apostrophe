@@ -33,3 +33,20 @@ export const getStudentsBySales = async (token: string, salesId: string) => {
     return error;
   }
 };
+
+export const getStudetnById = async (token: string, id: string) => {
+  try {
+    const result = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}/api/v1/student/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const { data } = await result;
+    return data;
+  } catch (error) {
+    return error;
+  }
+};

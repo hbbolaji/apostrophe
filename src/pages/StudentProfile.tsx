@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import StudentCard from "../components/StudentCard";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import GuardianCard from "../components/GuardianCard";
 import InvoiceCard from "../components/InvoiceCard";
 import PaymentCard from "../components/PaymentCard";
+import { getGuardian } from "../api/guardian";
+import { getInvoiceByStudentId, getPaymentsById } from "../api/invoice";
+import { getStudetnById } from "../api/student";
+import Spinner from "../components/Spinner";
 
 const StudentProfile = () => {
   const { id } = useParams();
@@ -15,83 +18,74 @@ const StudentProfile = () => {
   const [student, setStudent] = useState<any>([]);
   const [invoice, setInvoice] = useState<any>(null);
   const [payments, setPayments] = useState<any>(null);
-
-  const getGuardian = async () => {
-    try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/guardian/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const { data } = await result;
-      setGuardian(data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getStudetnById = async () => {
-    try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/student/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const { data } = await result;
-      setStudent(data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getInvoiceByStudentId = async () => {
-    try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/invoice/all/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const { data } = await result;
-      setInvoice(data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getPaymentsById = async () => {
-    try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/payments/made/all/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const { data } = await result;
-      setPayments(data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [loading, setLoading] = useState({
+    guardian: false,
+    invoice: false,
+    payments: false,
+    student: false,
+  });
+  const [error, setError] = useState({
+    guardian: false,
+    invoice: false,
+    payments: false,
+    student: false,
+  });
 
   useEffect(() => {
     if (!id) {
       navigate("/dashboard/me");
     }
-    getStudetnById();
-    getGuardian();
-    getInvoiceByStudentId();
-    getPaymentsById();
+    (async () => {
+      setLoading({
+        guardian: true,
+        student: true,
+        invoice: true,
+        payments: true,
+      });
+      const studentResult: any = await getStudetnById(token, id as string);
+      const guardianResult: any = await getGuardian(token, id as string);
+      const invoiceResult: any = await getInvoiceByStudentId(
+        token,
+        id as string
+      );
+      const paymentResult: any = await getPaymentsById(token, id as string);
+
+      // students
+      if (studentResult.data) {
+        setLoading({ ...loading, student: false });
+        setStudent(studentResult.data);
+      } else {
+        setLoading({ ...loading, student: false });
+        setError({ ...error, student: true });
+      }
+
+      // guardian
+      if (guardianResult.data) {
+        setLoading({ ...loading, guardian: false });
+        setGuardian(guardianResult.data);
+      } else {
+        setLoading({ ...loading, guardian: false });
+        setError({ ...error, guardian: true });
+      }
+
+      // invoices
+      if (invoiceResult.data) {
+        setLoading({ ...loading, invoice: false });
+        setInvoice(invoiceResult.data);
+      } else {
+        setLoading({ ...loading, invoice: false });
+        setError({ ...error, invoice: true });
+      }
+
+      // payments
+      if (paymentResult.data) {
+        setLoading({ ...loading, payments: false });
+        setPayments(paymentResult.data);
+      } else {
+        setLoading({ ...loading, payments: false });
+        setError({ ...error, payments: true });
+      }
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -101,17 +95,27 @@ const StudentProfile = () => {
       <div className="flex">
         <div className="grid grid-cols-3 w-full gap-4">
           <div className="col-span-3 xl:col-span-2 bg-white shadow-xl rounded-lg p-4 w-full ">
-            {invoice ? <InvoiceCard invoice={invoice} /> : "No invoice sent"}
+            {invoice ? <InvoiceCard invoice={invoice} /> : null}
+            {error.invoice ? (
+              <p className="text-center py-24">No Invoice sent yet</p>
+            ) : null}
+            {loading.invoice ? <Spinner /> : null}
           </div>
           <div className="col-span-3 xl:col-span-1  bg-white shadow-xl rounded-lg p-4 w-full">
-            {payments ? <PaymentCard payments={payments} /> : "No payment made"}
+            {payments ? <PaymentCard payments={payments} /> : null}
+            {error.payments ? (
+              <p className="text-center py-24">No payments made</p>
+            ) : null}
+            {loading.payments ? <Spinner /> : null}
           </div>
           <div className="col-span-3 xl:col-span-2  bg-white shadow-xl rounded-lg p-4 w-full">
             {guardian ? (
               <GuardianCard guardian={{ ...guardian, studentId: student.id }} />
-            ) : (
-              <p>No guardian registered</p>
-            )}
+            ) : null}
+            {error.guardian ? (
+              <p className="text-center py-24">No Guardian added yet</p>
+            ) : null}
+            {loading.guardian ? <Spinner /> : null}
           </div>
           <div className="col-span-3 xl:col-span-1  bg-white shadow-xl rounded-lg p-4 w-full">
             Awaiting course registration
