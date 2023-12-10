@@ -15,7 +15,9 @@ const PaymentCard: React.FC<{ payments: any }> = ({ payments }) => {
           <p>Paid to</p>
         </div>
         {payments.map((pay: any) => (
-          <div
+          <a
+            href={pay.receipt}
+            target="blank"
             className="flex cursor-pointer items-center justify-between text-orange-500 p-2 text-sm font-semibold bg-orange-200 bg-opacity-30 rounded-lg"
             key={pay.id}
           >
@@ -24,7 +26,7 @@ const PaymentCard: React.FC<{ payments: any }> = ({ payments }) => {
               {pay.currency} {pay.amountPaid}
             </p>
             <p>{pay.toAccount}</p>
-          </div>
+          </a>
         ))}
       </div>
     </div>
