@@ -82,7 +82,10 @@ const AddCourses = () => {
             courseCode: "",
             amount: "",
             venueLink: "",
-            schedule: "",
+            physical: "false",
+            scheduleDay: "",
+            scheduleTime: "",
+            scheduleDuration: "",
             courseTitle: "",
             status: "active",
           }}
@@ -166,12 +169,37 @@ const AddCourses = () => {
                   ) : null}
                 </div>
                 <Input
-                  placeholder="Schedule"
-                  name="schedule"
-                  value={values.schedule}
+                  placeholder="Schedule Day"
+                  name="scheduleDay"
+                  value={values.scheduleDay}
                   onChange={handleChange}
                   type="text"
                 />
+                <Input
+                  placeholder="Schedule Time"
+                  name="scheduleTime"
+                  value={values.scheduleTime}
+                  onChange={handleChange}
+                  type="text"
+                />
+                <Input
+                  placeholder="Schedule Duration"
+                  name="scheduleDuration"
+                  value={values.scheduleDuration}
+                  onChange={handleChange}
+                  type="text"
+                />
+                <div className="px-2 flex items-center space-x-4">
+                  <input
+                    type="checkbox"
+                    value={values.physical}
+                    name="physical"
+                    onChange={handleChange}
+                  />
+                  <label className="text-orange-500 font-semibold">
+                    Class is Physical
+                  </label>
+                </div>
                 <Input
                   placeholder="Venue Link"
                   name="venueLink"
@@ -211,6 +239,10 @@ const validationSchema = yup.object().shape({
   courseCode: yup.string().required("course code is required"),
   amount: yup.string().required("course amount is required"),
   venueLink: yup.string().required("course venue is required"),
-  schedule: yup.string().required("course schedule is required"),
+  scheduleDay: yup.string().required("course schedule day is required"),
+  scheduleTime: yup.string().required("course schedule time is required"),
+  scheduleDuration: yup
+    .string()
+    .required("course schedule duration is required"),
   courseTitle: yup.string().required("course title is required"),
 });

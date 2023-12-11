@@ -14,14 +14,20 @@ const Course: React.FC<{ course: any }> = ({ course }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3 ">
             <PiBuildingsThin className="text-xl text-gray-500 font-semibold" />
-            <p className="text-sm text-gray-500 font-semibold">
-              {course.venueLink}
-            </p>
+            {course.physical ? (
+              <p className="text-sm text-gray-500 font-semibold">
+                {course.venueLink}
+              </p>
+            ) : (
+              <a href={course.venueLink} target="blank">
+                Venue
+              </a>
+            )}
           </div>
           <div className="flex items-center space-x-3">
             <PiClockAfternoonThin className="text-xl text-gray-500 font-semibold" />
             <p className="text-sm text-gray-500 font-semibold">
-              {course.schedule}
+              {course.scheduleDay}
             </p>
           </div>
         </div>
