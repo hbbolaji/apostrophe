@@ -1,13 +1,14 @@
-import { Form, Formik } from "formik";
+import { FieldArray, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
+import { v4 as uuid } from "uuid";
 import * as yup from "yup";
-import { getFormData } from "../utils/helper";
 import Input from "../components/Input";
 import { useAuth } from "../context/AuthContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { updatePaymentPlan } from "../api/plan";
 import ButtonSpinner from "../components/ButtonSpinner";
 import Toast from "../components/Toast";
+import { PiXLight } from "react-icons/pi";
 
 const EditPlans = () => {
   const { token } = useAuth();
@@ -18,8 +19,7 @@ const EditPlans = () => {
 
   const handleSubmit = async (values: any) => {
     setLoading(true);
-    const formData = getFormData(values);
-    const result: any = await updatePaymentPlan(token, state.id, formData);
+    const result: any = await updatePaymentPlan(token, state.id, values);
     if (result?.status === 200 || result?.statusText === "OK") {
       setLoading(false);
       navigate("/dashboard/plans");
@@ -47,7 +47,7 @@ const EditPlans = () => {
           initialValues={{
             totalFees: state.totalFees || "",
             noOfInstalments: state.noOfInstalments || "",
-            instalmentPortions: state.instalmentPortions || "",
+            instalmentPortions: state.instalmentPortions || [],
             notes: state.notes || "",
             enabled: true,
             discountSchemeId: state.discountSchemeId,
@@ -100,13 +100,52 @@ const EditPlans = () => {
                   onChange={handleChange}
                   type="text"
                 />
-                <Input
-                  placeholder="Installment Portion"
-                  name="instalmentPortions"
-                  value={values.instalmentPortions}
-                  onChange={handleChange}
-                  type="text"
-                />
+                <FieldArray name="instalmentPortions">
+                  {({ push, remove }) => (
+                    <div className="space-y-2">
+                      <p className="block text-xs md:text-sm text-gray-700 dark:text-gray-300">
+                        Instalment Portions
+                      </p>
+                      {values.instalmentPortions.map(
+                        (sub: any, index: number) => {
+                          const portion = `instalmentPortions[${index}].portion`;
+                          return (
+                            <div
+                              key={sub.id}
+                              className="flex items-center space-x-2"
+                            >
+                              <div className="flex-1">
+                                <Input
+                                  placeholder="Installment Portion"
+                                  name={portion}
+                                  hidelabel="true"
+                                  onChange={handleChange}
+                                />
+                              </div>
+                              <PiXLight
+                                className="text-3xl cursor-pointer text-gray-600 dark:text-gray-200"
+                                onClick={() => remove(index)}
+                              />
+                            </div>
+                          );
+                        }
+                      )}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          push({
+                            portionId: uuid(),
+                            portion: "",
+                            status: "unpaid",
+                          })
+                        }
+                        className="w-full flex justify-center text-sm md:text-base text-center py-2 px-4 md:py-2 md:px-2 text-orange-500 rounded-full bg-slate-200 flex items-center font-semibold"
+                      >
+                        + Add an Instalment Portion
+                      </button>
+                    </div>
+                  )}
+                </FieldArray>
                 <Input
                   placeholder="Notes"
                   name="notes"
@@ -137,6 +176,12 @@ export default EditPlans;
 const validationSchema = yup.object().shape({
   totalFees: yup.string().required("total fee is required"),
   noOfInstalments: yup.string().required("number of instalments is required"),
-  instalmentPortions: yup.string().required("instalment portions is required"),
+  instalmentPortions: yup.array().of(
+    yup.object().shape({
+      portion: yup.string().required("portion is required"),
+      status: yup.string(),
+      portionId: yup.string(),
+    })
+  ),
   notes: yup.string().required("notes is required"),
 });
