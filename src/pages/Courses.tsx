@@ -50,7 +50,7 @@ const Courses = () => {
           ))}
         </div>
         {error ? (
-          <p className="text-center py-24">Error Loading list of courses</p>
+          <p className="text-center py-24">No course available</p>
         ) : null}
         {loading ? <Spinner /> : null}
       </div>

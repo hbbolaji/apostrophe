@@ -42,7 +42,7 @@ const GuardiansPage = () => {
         ))}
       </div>
       {error ? (
-        <p className="text-center py-24">Error Loading list of Students</p>
+        <p className="text-center py-24">No gaurdians available</p>
       ) : null}
       {loading ? <Spinner /> : null}
     </div>

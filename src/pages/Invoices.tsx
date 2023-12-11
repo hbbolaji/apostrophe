@@ -57,7 +57,7 @@ const Invoices = () => {
           ))}
         </div>
         {error ? (
-          <p className="text-center py-24">Error Loading list of invoices</p>
+          <p className="text-center py-24">No invoice added yet</p>
         ) : null}
         {loading ? <Spinner /> : null}
       </div>

@@ -104,9 +104,7 @@ const Sales = () => {
           ))}
         </div>
         {error ? (
-          <p className="text-center py-24">
-            Error Loading list of sales agents
-          </p>
+          <p className="text-center py-24">No sales agents available</p>
         ) : null}
         {loading ? <Spinner /> : null}
       </div>

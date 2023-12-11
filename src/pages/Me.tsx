@@ -43,7 +43,9 @@ const Me = () => {
           </div>
         ))}
       </div>
-      {error ? <p className="text-center py-24">No students loaded</p> : null}
+      {error ? (
+        <p className="text-center py-24">No students available</p>
+      ) : null}
       {loading ? <Spinner /> : null}
     </div>
   );
