@@ -19,7 +19,7 @@ export const getPlans = async (token: string) => {
 
 export const createPaymentPlan = async (
   token: string,
-  values: FormData,
+  values: any,
   discountSchemeId: string
 ) => {
   try {
@@ -29,7 +29,7 @@ export const createPaymentPlan = async (
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
         },
       }
     );
@@ -42,7 +42,7 @@ export const createPaymentPlan = async (
 export const updatePaymentPlan = async (
   token: string,
   id: string,
-  values: FormData
+  values: any
 ) => {
   try {
     const result = await axios.patch(
@@ -51,7 +51,7 @@ export const updatePaymentPlan = async (
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
         },
       }
     );
