@@ -1,68 +1,78 @@
 import { Form, Formik } from "formik";
 import React, { useState } from "react";
 import * as yup from "yup";
-import Input from "../Input";
-import Select from "../Select";
-import { useAuth } from "../../context/AuthContext";
-import axios from "axios";
+import Input from "../components/Input";
+import Select from "../components/Select";
+import { getFormData } from "../utils/helper";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { getFormData } from "../../utils/helper";
+import { createSales } from "../api/sales";
+import ButtonSpinner from "../components/ButtonSpinner";
+import Toast from "../components/Toast";
 
-const EditSales = () => {
+const AddSales = () => {
   const [step, setStep] = useState(0);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const { token } = useAuth();
   const navigate = useNavigate();
-  const { currentUser, token } = useAuth();
 
-  const editSales = async (values: FormData) => {
-    try {
-      await axios.patch(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/user`,
-        values,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      navigate("/dashboard/me");
-    } catch (error) {
-      console.log(error);
+  const handleSubmit = async (values: any) => {
+    setLoading(true);
+    const formData = getFormData(values);
+    const result: any = await createSales(token, formData);
+    if (result?.status === 201 || result?.statusText === "Created") {
+      setLoading(false);
+      navigate("/dashboard/sales");
+    } else {
+      setError(true);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="w-full space-y-5 md:pt-8 px-5">
+    <div className="w-full space-y-5 md:pt-8">
       <h4 className="text-orange-400 font-semibold text-center text-2xl">
-        Edit Sales Profile
+        Add New Sales Rep
       </h4>
+      {error ? (
+        <Toast
+          message="cannot add new sales agent now"
+          close={() => {
+            setError(false);
+          }}
+          show={error}
+          type="error"
+        />
+      ) : null}
       <div className="w-full">
         <Formik
           initialValues={{
-            firstName: currentUser.firstName || "",
-            lastName: currentUser.lastName || "",
-            emailAddress: currentUser.emailAddress || "",
-            phoneNumber: currentUser.phoneNumber || "",
-            whatsappNumber: currentUser.whatsappNumber || "",
-            contactNumber: currentUser.contactNumber || "",
-            gender: currentUser.gender || "",
-            status: currentUser.status || "",
-            role: currentUser.role || "",
-            spokenLanguage: currentUser.spokenLanguage || "",
+            firstName: "",
+            lastName: "",
+            emailAddress: "",
+            phoneNumber: "",
+            whatsappNumber: "",
+            contactNumber: "",
+            gender: "",
+            status: "active",
+            generatedPassword: "",
+            role: "sales",
+            spokenLanguage: "",
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            const formData = getFormData(values);
-            editSales(formData);
+            handleSubmit(values);
           }}
         >
           {({ values, handleChange }) => (
             <Form className=" space-y-5 block w-full">
               {step === 0 ? (
-                <div className="p-5 bg-white rounded-lg shadow-lg w-5/6 xl:w-1/2 mx-auto space-y-5">
+                <div className="p-5 bg-white rounded-lg shadow-lg w-11/12 md:w-5/6 xl:w-1/2 mx-auto space-y-5">
                   <p className="font-semibold text-gray-500">
                     Personal Information
                   </p>
+
                   <Input
                     placeholder="First Name"
                     name="firstName"
@@ -84,12 +94,12 @@ const EditSales = () => {
                     value={values.gender}
                     onChange={handleChange}
                   />
-                  <Select
-                    data={["Turkish", "English", "Arabic"]}
-                    name="spokenLanguage"
-                    placeholder="Spoken Language"
-                    value={values.spokenLanguage}
+                  <Input
+                    placeholder="Password"
+                    name="generatedPassword"
+                    value={values.generatedPassword}
                     onChange={handleChange}
+                    type="password"
                   />
                   <div className="flex justify-end">
                     <button
@@ -108,23 +118,15 @@ const EditSales = () => {
                   </p>
                   <Input
                     placeholder="Email Address"
-                    name="email"
+                    name="emailAddress"
                     value={values.emailAddress}
                     onChange={handleChange}
                     type="email"
-                    disabled={true}
                   />
                   <Input
                     placeholder="Phone Number"
                     name="phoneNumber"
                     value={values.phoneNumber}
-                    onChange={handleChange}
-                    type="text"
-                  />
-                  <Input
-                    placeholder="WhatsApp Number"
-                    name="whatsappNumber"
-                    value={values.whatsappNumber}
                     onChange={handleChange}
                     type="text"
                   />
@@ -135,7 +137,21 @@ const EditSales = () => {
                     onChange={handleChange}
                     type="text"
                   />
-                  <div className="flex space-x-6 justify-end">
+                  <Input
+                    placeholder="WhatsApp Number"
+                    name="whatsappNumber"
+                    value={values.whatsappNumber}
+                    onChange={handleChange}
+                    type="text"
+                  />
+                  <Select
+                    data={["Turkish", "English", "Arabic"]}
+                    name="spokenLanguage"
+                    placeholder="Spoken Language"
+                    value={values.spokenLanguage}
+                    onChange={handleChange}
+                  />
+                  <div className="flex space-x-6 items-center justify-end">
                     <button
                       type="button"
                       onClick={() => setStep(0)}
@@ -149,6 +165,7 @@ const EditSales = () => {
                     >
                       Submit
                     </button>
+                    {loading ? <ButtonSpinner /> : null}
                   </div>
                 </div>
               ) : null}
@@ -160,14 +177,14 @@ const EditSales = () => {
   );
 };
 
-export default EditSales;
+export default AddSales;
 
 const validationSchema = yup.object().shape({
-  firstName: yup.string().required(),
-  lastName: yup.string().required(),
-  emailAddress: yup.string().required(),
-  phoneNumber: yup.string().required(),
-  whatsappNumber: yup.string().required(),
-  gender: yup.string().required(),
-  status: yup.string().required(),
+  firstName: yup.string().required("First name is required"),
+  lastName: yup.string().required("Last name is required"),
+  emailAddress: yup.string().required("Email is required"),
+  phoneNumber: yup.string().required("Phone number is required"),
+  whatsappNumber: yup.string().required("Whatsapp number is required"),
+  gender: yup.string().required("Gender is required"),
+  status: yup.string(),
 });

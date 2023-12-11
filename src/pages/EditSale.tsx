@@ -1,59 +1,67 @@
 import { Form, Formik } from "formik";
 import React, { useState } from "react";
 import * as yup from "yup";
-import Input from "../Input";
-import Select from "../Select";
-import { getFormData } from "../../utils/helper";
-import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
+import Input from "../components/Input";
+import Select from "../components/Select";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { getFormData } from "../utils/helper";
+import { editSales } from "../api/sales";
+import Toast from "../components/Toast";
+import ButtonSpinner from "../components/ButtonSpinner";
 
-const AddSales = () => {
+const EditSales = () => {
   const [step, setStep] = useState(0);
-  const { token } = useAuth();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { currentUser, token } = useAuth();
 
-  const createSales = async (values: FormData) => {
-    try {
-      await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/auth/register`,
-        values,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      navigate("/dashboard/sales");
-    } catch (error) {
-      console.log(error);
+  const handleSubmt = async (values: any) => {
+    setLoading(true);
+    const formData = getFormData(values);
+    const result: any = await editSales(token, formData);
+    if (result?.status === 201 || result?.statusText === "OK") {
+      setLoading(false);
+      navigate("/dashboard/me");
+    } else {
+      setError(true);
+      setLoading(false);
     }
   };
+
   return (
     <div className="w-full space-y-5 md:pt-8 px-5">
       <h4 className="text-orange-400 font-semibold text-center text-2xl">
-        Add New Sales Rep
+        Edit Sales Profile
       </h4>
+      {error ? (
+        <Toast
+          message="cannot edit sales agent now"
+          close={() => {
+            setError(false);
+          }}
+          show={error}
+          type="error"
+        />
+      ) : null}
       <div className="w-full">
         <Formik
           initialValues={{
-            firstName: "",
-            lastName: "",
-            emailAddress: "",
-            phoneNumber: "",
-            whatsappNumber: "",
-            contactNumber: "",
-            gender: "",
-            status: "active",
-            generatedPassword: "",
-            role: "sales",
-            spokenLanguage: "",
+            firstName: currentUser.firstName || "",
+            lastName: currentUser.lastName || "",
+            emailAddress: currentUser.emailAddress || "",
+            phoneNumber: currentUser.phoneNumber || "",
+            whatsappNumber: currentUser.whatsappNumber || "",
+            contactNumber: currentUser.contactNumber || "",
+            gender: currentUser.gender || "",
+            status: currentUser.status || "",
+            role: currentUser.role || "",
+            spokenLanguage: currentUser.spokenLanguage || "",
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            const formData = getFormData(values);
-            createSales(formData);
+            handleSubmt(values);
           }}
         >
           {({ values, handleChange }) => (
@@ -84,12 +92,12 @@ const AddSales = () => {
                     value={values.gender}
                     onChange={handleChange}
                   />
-                  <Input
-                    placeholder="Password"
-                    name="generatedPassword"
-                    value={values.generatedPassword}
+                  <Select
+                    data={["Turkish", "English", "Arabic"]}
+                    name="spokenLanguage"
+                    placeholder="Spoken Language"
+                    value={values.spokenLanguage}
                     onChange={handleChange}
-                    type="password"
                   />
                   <div className="flex justify-end">
                     <button
@@ -108,22 +116,16 @@ const AddSales = () => {
                   </p>
                   <Input
                     placeholder="Email Address"
-                    name="emailAddress"
+                    name="email"
                     value={values.emailAddress}
                     onChange={handleChange}
                     type="email"
+                    disabled={true}
                   />
                   <Input
                     placeholder="Phone Number"
                     name="phoneNumber"
                     value={values.phoneNumber}
-                    onChange={handleChange}
-                    type="text"
-                  />
-                  <Input
-                    placeholder="Contact Number"
-                    name="contactNumber"
-                    value={values.contactNumber}
                     onChange={handleChange}
                     type="text"
                   />
@@ -134,12 +136,12 @@ const AddSales = () => {
                     onChange={handleChange}
                     type="text"
                   />
-                  <Select
-                    data={["Turkish", "English", "Arabic"]}
-                    name="spokenLanguage"
-                    placeholder="Spoken Language"
-                    value={values.spokenLanguage}
+                  <Input
+                    placeholder="Contact Number"
+                    name="contactNumber"
+                    value={values.contactNumber}
                     onChange={handleChange}
+                    type="text"
                   />
                   <div className="flex space-x-6 justify-end">
                     <button
@@ -155,6 +157,7 @@ const AddSales = () => {
                     >
                       Submit
                     </button>
+                    {loading ? <ButtonSpinner /> : null}
                   </div>
                 </div>
               ) : null}
@@ -166,14 +169,14 @@ const AddSales = () => {
   );
 };
 
-export default AddSales;
+export default EditSales;
 
 const validationSchema = yup.object().shape({
-  firstName: yup.string().required(),
-  lastName: yup.string().required(),
-  emailAddress: yup.string().required(),
-  phoneNumber: yup.string().required(),
-  whatsappNumber: yup.string().required(),
-  gender: yup.string().required(),
-  status: yup.string().required(),
+  firstName: yup.string().required("First name is required"),
+  lastName: yup.string().required("Last name is required"),
+  emailAddress: yup.string().required("Email is required"),
+  phoneNumber: yup.string().required("Phone number is required"),
+  whatsappNumber: yup.string().required("Whatsapp number is required"),
+  gender: yup.string().required("Gender is required"),
+  status: yup.string(),
 });

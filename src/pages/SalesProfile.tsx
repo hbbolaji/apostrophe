@@ -3,34 +3,30 @@ import Profile from "../components/Profile";
 import { StudentType } from "../utils/types";
 import Student from "../components/Student";
 import { useLocation, useParams } from "react-router-dom";
-import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { getStudentsBySales } from "../api/student";
+import Spinner from "../components/Spinner";
 
 const SalesProfile = () => {
   const location = useLocation();
   const { id } = useParams();
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const { token } = useAuth();
   const [students, setStudents] = useState<StudentType[]>([]);
 
-  const getStudents = async () => {
-    try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/student/all/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const { data } = await result;
-      setStudents(data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    getStudents();
+    setLoading(true);
+    (async () => {
+      const result = await getStudentsBySales(token, id as string);
+      if (result.data) {
+        setLoading(false);
+        setStudents(result.data);
+      } else {
+        setLoading(false);
+        setError(true);
+      }
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -54,6 +50,10 @@ const SalesProfile = () => {
       ) : (
         <p>No students registered yet</p>
       )}
+      {error ? (
+        <p className="text-center py-24">No sales agents available</p>
+      ) : null}
+      {loading ? <Spinner /> : null}
     </div>
   );
 };
