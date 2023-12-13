@@ -1,13 +1,17 @@
 import React, { useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import * as yup from "yup";
+import Freecurrencyapi from "../utils/exchange";
 import { useAuth } from "../context/AuthContext";
 import { Form, Formik } from "formik";
 import { getFormData } from "../utils/helper";
 import Input from "../components/Input";
 import Select from "../components/Select";
-import axios from "axios";
 import { PiCloudArrowUpBold } from "react-icons/pi";
 import Datepicker, { DateValueType } from "react-tailwindcss-datepicker";
+import { createPayment } from "../api/invoice";
+import Toast from "../components/Toast";
+import ButtonSpinner from "../components/ButtonSpinner";
 
 const AddPayment = () => {
   const { state } = useLocation();
@@ -19,6 +23,8 @@ const AddPayment = () => {
     startDate: null,
     endDate: null,
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleDate = (newValue: DateValueType) => {
     setDate(newValue);
@@ -33,23 +39,40 @@ const AddPayment = () => {
     setFile(e.target.files[0]);
   };
 
-  const createPayment = async (values: FormData) => {
-    try {
-      await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/payments/made/${state.invoiceId}`,
-        values,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+  const selectData = (value: any) => {
+    return value
+      .filter((val: any) => val.status === "unpaid")
+      .map((val: any) => ({
+        title: `$ ${val.portion}`,
+        value: val.portionId,
+      }));
+  };
+
+  const handleSubmit = async (values: any) => {
+    setLoading(true);
+    const freecurrencyapi = new Freecurrencyapi(process.env.REACT_APP_API_KEY);
+    const response = await freecurrencyapi.latest({
+      base_currency: "USD",
+      currencies: values.currency,
+    });
+    const exchangeRate = Number(Object.values(response.data)[0]).toFixed(2);
+    const formData = getFormData({
+      ...values,
+      exchangeRate,
+      date: date?.startDate || "",
+    });
+    formData.append("receipt", file);
+    const result = await createPayment(token, state.id, formData);
+    if (result?.success) {
+      setLoading(false);
       navigate(`/dashboard/students/${state.studentId}`);
-    } catch (error) {
-      console.log(error);
+    } else {
+      setError(true);
+      setLoading(false);
     }
   };
+
+  const plans = state.paymentPlanResponse.instalmentPortions;
 
   return (
     <div className="w-full space-y-5 md:pt-8 px-5">
@@ -64,27 +87,32 @@ const AddPayment = () => {
             amountPaid: "",
             medium: "",
             toAccount: "",
+            portionId: "",
             notes: "",
           }}
+          validationSchema={validationSchema}
           onSubmit={(values: any) => {
-            const formData = getFormData({
-              ...values,
-              date: date?.startDate || "",
-            });
-            formData.append("receipt", file);
-            createPayment(formData);
+            handleSubmit(values);
           }}
         >
           {({ values, handleChange }) => (
             <Form className=" space-y-5 block w-full">
-              <div className="p-5 bg-white rounded-lg shadow-lg w-5/6 xl:w-1/2 mx-auto space-y-5">
+              <div className="p-5 bg-white rounded-lg shadow-lg w-11/12 md:w-5/6 xl:w-1/2 mx-auto space-y-5">
                 <p className="font-semibold text-gray-500">
                   Payment Information
                 </p>
+                {error ? (
+                  <Toast
+                    message="cannot add a payment now"
+                    close={() => {
+                      setError(false);
+                    }}
+                    show={error}
+                    type="error"
+                  />
+                ) : null}
                 <div className="space-y-2">
-                  <p className="text-xs md:text-sm px-2 text-gray-600">
-                    Date
-                  </p>
+                  <p className="text-xs md:text-sm px-2 text-gray-600">Date</p>
                   <div
                     className={`flex items-center bg-white border border-1 rounded-full px-5 ${
                       false ? "border-orange-300" : "border-gray-300"
@@ -100,6 +128,13 @@ const AddPayment = () => {
                     />
                   </div>
                 </div>
+                <Select
+                  dataObj={selectData(plans)}
+                  name="portionId"
+                  placeholder="Portion"
+                  value={values.portionId}
+                  onChange={handleChange}
+                />
                 <Select
                   data={["TRY", "MYR", "USD"]}
                   name="currency"
@@ -162,13 +197,14 @@ const AddPayment = () => {
                     {file.name}
                   </p>
                 ) : null}
-                <div className="flex justify-end">
+                <div className="flex justify-end items-center space-x-4">
                   <button
                     type="submit"
                     className="text-sm md:text-base block px-5 bg-orange-500 text-white py-1.5 rounded-full font-semibold"
                   >
                     Submit
                   </button>
+                  {loading ? <ButtonSpinner /> : null}
                 </div>
               </div>
             </Form>
@@ -180,3 +216,11 @@ const AddPayment = () => {
 };
 
 export default AddPayment;
+
+const validationSchema = yup.object().shape({
+  currency: yup.string().required("currency is required"),
+  amountPaid: yup.string().required("amount is required"),
+  medium: yup.string().required("medium of payment is required"),
+  toAccount: yup.string().required("this field is required"),
+  notes: yup.string().required("notes is required"),
+});

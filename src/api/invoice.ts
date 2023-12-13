@@ -96,3 +96,25 @@ export const updateInvoice = async (
     return error;
   }
 };
+
+export const createPayment = async (
+  token: string,
+  invoiceId: string,
+  values: FormData
+) => {
+  try {
+    const result = await axios.post(
+      `${process.env.REACT_APP_BASE_URL}/api/v1/payments/made/${invoiceId}`,
+      values,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return result.data;
+  } catch (error) {
+    return error;
+  }
+};

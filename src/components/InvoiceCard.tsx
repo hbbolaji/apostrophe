@@ -67,10 +67,7 @@ const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
                 className="col-span-1 border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
                 onClick={() => {
                   navigate(`/dashboard/payments/add`, {
-                    state: {
-                      studentId: inv.studentId,
-                      invoiceId: inv.id,
-                    },
+                    state: inv,
                   });
                 }}
               >
