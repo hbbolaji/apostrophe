@@ -22,14 +22,14 @@ const AddPlans = () => {
   useEffect(() => {
     (async () => {
       const result = await getDiscounts(token);
-      setDiscounts(selectData(result.data));
+      if (result.data) {
+        setDiscounts(selectData(result.data));
+      } else {
+        // navigate("/dashboard/discounts/add");
+      }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  if (discounts.length === 0) {
-    navigate("/dashboard/discounts/add");
-  }
 
   const selectData = (value: any) => {
     return value
@@ -116,18 +116,28 @@ const AddPlans = () => {
                       {values.instalmentPortions.map(
                         (sub: any, index: number) => {
                           const portion = `instalmentPortions[${index}].portion`;
+                          const date = `instalmentPortions[${index}].date`;
                           return (
                             <div
                               key={sub.id}
                               className="flex items-center space-x-2"
                             >
                               <div className="flex-1">
-                                <Input
-                                  placeholder="Installment Portion"
-                                  name={portion}
-                                  hidelabel="true"
-                                  onChange={handleChange}
-                                />
+                                <div className="flex w-full items-end space-x-4">
+                                  <Input
+                                    placeholder="Installment Portion"
+                                    name={portion}
+                                    hidelabel="true"
+                                    onChange={handleChange}
+                                  />
+                                  <Input
+                                    placeholder="Date"
+                                    name={date}
+                                    hidelabel="true"
+                                    onChange={handleChange}
+                                    type="date"
+                                  />
+                                </div>
                               </div>
                               <PiXLight
                                 className="text-3xl cursor-pointer text-gray-600 dark:text-gray-200"
@@ -143,7 +153,7 @@ const AddPlans = () => {
                           push({
                             portionId: uuid(),
                             portion: "",
-                            status: "unpaid",
+                            date: "",
                           })
                         }
                         className="w-full flex justify-center text-sm md:text-base text-center py-2 px-4 md:py-2 md:px-2 text-orange-500 rounded-full bg-slate-200 flex items-center font-semibold"
@@ -190,10 +200,11 @@ export default AddPlans;
 const validationSchema = yup.object().shape({
   totalFees: yup.string().required("total fee is required"),
   noOfInstalments: yup.string().required("number of instalments is required"),
+  discountSchemeId: yup.string().required("discount scheme is required"),
   instalmentPortions: yup.array().of(
     yup.object().shape({
       portion: yup.string().required("portion is required"),
-      status: yup.string(),
+      date: yup.string().required("portion date is required"),
       portionId: yup.string(),
     })
   ),
