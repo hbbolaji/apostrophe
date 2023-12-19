@@ -100,11 +100,12 @@ export const updateInvoice = async (
 export const createPayment = async (
   token: string,
   invoiceId: string,
+  portionId: string,
   values: FormData
 ) => {
   try {
     const result = await axios.post(
-      `${process.env.REACT_APP_BASE_URL}/api/v1/payments/made/${invoiceId}`,
+      `${process.env.REACT_APP_BASE_URL}/api/v1/payments/made/${invoiceId}/${portionId}`,
       values,
       {
         headers: {

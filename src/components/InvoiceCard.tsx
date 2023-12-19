@@ -48,8 +48,12 @@ const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
             <div className="text-sm col-span-1">
               {moment(inv.validityDate).format("MMM Do YY")}
             </div>
-            <div className="text-sm col-span-2">{inv.courseTitle}</div>
-            <div className="font-semibold col-span-1">${inv.courseAmount}</div>
+            <div className="text-sm col-span-2">
+              {inv.courseInfo.courseTitle}
+            </div>
+            <div className="font-semibold col-span-1">
+              ${inv.courseInfo.courseAmount}
+            </div>
             {role === "sales" ? (
               <div
                 className="col-span-1 border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"

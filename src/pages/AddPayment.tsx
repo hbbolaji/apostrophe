@@ -4,7 +4,6 @@ import * as yup from "yup";
 import Freecurrencyapi from "../utils/exchange";
 import { useAuth } from "../context/AuthContext";
 import { Form, Formik } from "formik";
-import { getFormData } from "../utils/helper";
 import Input from "../components/Input";
 import Select from "../components/Select";
 import { PiCloudArrowUpBold } from "react-icons/pi";
@@ -12,6 +11,7 @@ import Datepicker, { DateValueType } from "react-tailwindcss-datepicker";
 import { createPayment } from "../api/invoice";
 import Toast from "../components/Toast";
 import ButtonSpinner from "../components/ButtonSpinner";
+import { getFormData } from "../utils/helper";
 
 const AddPayment = () => {
   const { state } = useLocation();
@@ -44,7 +44,7 @@ const AddPayment = () => {
       .filter((val: any) => val.status === "unpaid")
       .map((val: any) => ({
         title: `$ ${val.portion}`,
-        value: val.portionId,
+        value: val.id,
       }));
   };
 
@@ -62,7 +62,12 @@ const AddPayment = () => {
       date: date?.startDate || "",
     });
     formData.append("receipt", file);
-    const result = await createPayment(token, state.id, formData);
+    const result = await createPayment(
+      token,
+      state.id,
+      values.portionId,
+      formData
+    );
     if (result?.success) {
       setLoading(false);
       navigate(`/dashboard/students/${state.studentId}`);
@@ -72,7 +77,7 @@ const AddPayment = () => {
     }
   };
 
-  const plans = state.paymentPlanResponse.instalmentPortions;
+  const plans = state.invoicePortion;
 
   return (
     <div className="w-full space-y-5 md:pt-8 px-5">
@@ -85,10 +90,11 @@ const AddPayment = () => {
             date: "",
             currency: "",
             amountPaid: "",
-            medium: "",
+            paymentMedium: "",
             toAccount: "",
             portionId: "",
             notes: "",
+            referenceNumber: "",
           }}
           validationSchema={validationSchema}
           onSubmit={(values: any) => {
@@ -151,9 +157,9 @@ const AddPayment = () => {
                 />
                 <Select
                   data={["transfer", "cash"]}
-                  name="medium"
+                  name="paymentMedium"
                   placeholder="Medium"
-                  value={values.medium}
+                  value={values.paymentMedium}
                   onChange={handleChange}
                 />
                 <Select
@@ -188,7 +194,6 @@ const AddPayment = () => {
                     multiple={false}
                     className="hidden"
                     accept="image/*"
-                    // value={file}
                     onChange={handleFile}
                   />
                 </div>
@@ -220,7 +225,7 @@ export default AddPayment;
 const validationSchema = yup.object().shape({
   currency: yup.string().required("currency is required"),
   amountPaid: yup.string().required("amount is required"),
-  medium: yup.string().required("medium of payment is required"),
+  paymentMedium: yup.string().required("medium of payment is required"),
   toAccount: yup.string().required("this field is required"),
   notes: yup.string().required("notes is required"),
 });
