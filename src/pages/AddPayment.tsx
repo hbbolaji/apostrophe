@@ -70,7 +70,7 @@ const AddPayment = () => {
     );
     if (result?.success) {
       setLoading(false);
-      navigate(`/dashboard/students/${state.studentId}`);
+      navigate(`/dashboard/students/${state.studentInfo.studentId}`);
     } else {
       setError(true);
       setLoading(false);

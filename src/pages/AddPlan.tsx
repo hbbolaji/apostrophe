@@ -177,7 +177,7 @@ const AddPlans = () => {
                   onChange={handleChange}
                   type="text"
                 />
-                <div className="flex justify-end">
+                <div className="flex justify-end items-center space-x-4">
                   <button
                     type="submit"
                     className="text-sm md:text-base block px-5 bg-orange-500 text-white py-1.5 rounded-full font-semibold"

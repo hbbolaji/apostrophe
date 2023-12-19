@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "../images/apostrophe.png";
 import moment from "moment";
 import ReactToPrint from "react-to-print";
+import { getRemain } from "../utils/helper";
 
 const Template = () => {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ const Template = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const remain = getRemain(state.invoicePortion);
 
   return (
     <div className="w-full py-8 px-5">
@@ -38,7 +41,8 @@ const Template = () => {
             <p>
               Issued to:{" "}
               <span className="font-semibold">
-                {state.studentFirstName} {state.studentLastName}
+                {state.studentInfo.studentFirstName}{" "}
+                {state.studentInfo.studentLastName}
               </span>
             </p>
             <p>
@@ -48,18 +52,64 @@ const Template = () => {
               </span>
             </p>
           </div>
+          {/* Overall Course Info */}
           <div>
             <div className="grid grid-cols-3 border-b border-gray-400 border-dashed text-sm text-gray-400 py-1">
               <div className="col-span-2">Desciption</div>
               <div className="col-span-1">Amount</div>
             </div>
             <div className="grid grid-cols-3 border-b border-gray-400 border-dashed py-5">
-              <div className="col-span-2">{state.courseTitle}</div>
-              <div className="col-span-1">$ {state.courseAmount}</div>
+              <div className="col-span-2">{state.courseInfo.courseTitle}</div>
+              <div className="col-span-1">
+                $ {state.courseInfo.courseAmount}
+              </div>
             </div>
-            <div className="grid grid-cols-3  border-dashed py-5">
-              <div className="col-span-2 text-lg font-semibold">Total</div>
-              <div className="col-span-1">$ {state.courseAmount}</div>
+          </div>
+          {/* Instalments */}
+          <div>
+            <p>Instalment Portions</p>
+            <div className="grid grid-cols-3 border-b border-gray-400 border-dashed text-sm text-gray-400 py-1">
+              <div className="col-span-1">Date</div>
+              <div className="col-span-1">Amount</div>
+              <div className="col-sapn-1">Status</div>
+            </div>
+            {state.invoicePortion.map((invPort: any) => (
+              <div
+                key={invPort.id}
+                className="grid grid-cols-3 border-b border-gray-400 border-dashed py-4"
+              >
+                <div className="col-span-1">
+                  {moment(invPort.date).format("MMMM Do YYYY")}
+                </div>
+                <div className="col-span-1">{invPort.portion}</div>
+                <div className="col-sapn-1">{invPort.status}</div>
+              </div>
+            ))}
+          </div>
+          <div>
+            {/* Amount Left */}
+            <div className="space-y-4">
+              {/* Paid */}
+              <div className="grid grid-cols-3 border-dashed">
+                <div className="col-span-2 text-lg font-semibold">Paid</div>
+                <div className="col-span-1">
+                  $ {state.courseInfo.courseAmount - remain}
+                </div>
+              </div>
+              {/* Amount Left */}
+              <div className="grid grid-cols-3 border-dashed">
+                <div className="col-span-2 text-lg font-semibold">
+                  Outstanding
+                </div>
+                <div className="col-span-1">$ {remain}</div>
+              </div>
+              {/* Total */}
+              <div className="grid grid-cols-3 border-t py-2 border-t-2 border-t-gray-500  border-dashed ">
+                <div className="col-span-2 text-lg font-semibold">Total</div>
+                <div className="col-span-1">
+                  $ {state.courseInfo.courseAmount}
+                </div>
+              </div>
             </div>
           </div>
         </div>

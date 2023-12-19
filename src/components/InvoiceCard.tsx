@@ -2,6 +2,7 @@ import moment from "moment";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { getRemain } from "../utils/helper";
 
 const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
   invoice,
@@ -25,7 +26,7 @@ const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
         >
           <div className="col-span-1">Date</div>
           <div className="col-span-2">Course</div>
-          <div className="col-span-1">Amount</div>
+          <div className="col-span-1">Amount (U)</div>
           {role === "sales" ? (
             <>
               <div className="col-span-1 text-center">Edit</div>
@@ -52,7 +53,7 @@ const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
               {inv.courseInfo.courseTitle}
             </div>
             <div className="font-semibold col-span-1">
-              ${inv.courseInfo.courseAmount}
+              ${getRemain(inv.invoicePortion)}
             </div>
             {role === "sales" ? (
               <div

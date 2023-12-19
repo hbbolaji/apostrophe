@@ -10,3 +10,9 @@ export const getFormData = (obj: ObjType) => {
 
   return formData;
 };
+
+export const getRemain = (portions: any[]) => {
+  return portions
+    .filter((inv: any) => inv.status === "unpaid")
+    .reduce((acc: any, cur: any) => acc + cur.portion, 0);
+};

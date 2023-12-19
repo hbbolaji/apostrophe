@@ -13,7 +13,8 @@ const Invoice: React.FC<{ invoice: any }> = ({ invoice }) => {
     >
       <div className="col-span-6 sm:col-span-2">
         <p className="font-semibold">
-          {invoice.studentFirstName} {invoice.studentLastName}
+          {invoice.studentInfo.studentFirstName}{" "}
+          {invoice.studentInfo.studentLastName}
         </p>
       </div>
       <div className="col-span-2">
