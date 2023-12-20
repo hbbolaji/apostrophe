@@ -168,26 +168,42 @@ const AddCourses = () => {
                     </p>
                   ) : null}
                 </div>
-                <Input
-                  placeholder="Schedule Day"
+                <Select
+                  data={[
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday",
+                    "Sunday",
+                  ]}
                   name="scheduleDay"
+                  placeholder="Schedule Day"
                   value={values.scheduleDay}
                   onChange={handleChange}
-                  type="text"
                 />
                 <Input
                   placeholder="Schedule Time"
                   name="scheduleTime"
                   value={values.scheduleTime}
                   onChange={handleChange}
-                  type="text"
+                  type="time"
                 />
-                <Input
-                  placeholder="Schedule Duration"
+                <Select
+                  data={[
+                    "1 hour",
+                    "1.5 hour",
+                    "2 hours",
+                    "2.5 hours",
+                    "3 hours",
+                    "3.5 hours",
+                    "4 hours",
+                  ]}
                   name="scheduleDuration"
+                  placeholder="Schedule Duration"
                   value={values.scheduleDuration}
                   onChange={handleChange}
-                  type="text"
                 />
                 <div className="px-2 flex items-center space-x-4">
                   <input
