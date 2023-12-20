@@ -40,7 +40,9 @@ const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
             className={`p-2 rounded-lg grid gap-4 ${
               role === "sales" ? "grid-cols-7" : "grid-cols-5"
             }   ${
-              getRemain(inv.invoicePortion) === 0
+              inv.invoicePortion.filter(
+                (portion: any) => portion.status === "unpaid"
+              ).length < 1
                 ? "bg-green-100 bg-opacity-60"
                 : "bg-red-100 bg-opacity-60"
             }`}
