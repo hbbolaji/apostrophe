@@ -18,6 +18,7 @@ const AddInvoice = () => {
   const navigate = useNavigate();
   const [courses, setCourses] = useState<any>([]);
   const [plans, setPlans] = useState<any>([]);
+  const [plansData, setPlansData] = useState<any>([]);
   const [issuanceError, setIssuanceError] = useState<boolean>(false);
   const [validityError, setValidityError] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -47,6 +48,7 @@ const AddInvoice = () => {
         val.courseTitle ||
         `${val.totalFees} payable in ${val.noOfInstalments} Installments`,
       value: val.id,
+      amount: val.totalFees || val.amount,
     }));
   };
 
@@ -138,7 +140,25 @@ const AddInvoice = () => {
                   name="courseId"
                   placeholder="Course Name"
                   value={values.courseId}
-                  onChange={handleChange}
+                  onChange={(e: React.ChangeEvent<any>) => {
+                    handleChange(e);
+                    const chosenCourse = courses.find(
+                      (course: any) => course.value === Number(e.target.value)
+                    );
+                    const availablePlans = plans.filter(
+                      (plan: any) => plan.amount === chosenCourse.amount
+                    );
+                    if (availablePlans.length > 0) {
+                      setPlansData(availablePlans);
+                    } else {
+                      setPlansData([
+                        {
+                          title: "No payment plan available for this course",
+                          value: "",
+                        },
+                      ]);
+                    }
+                  }}
                 />
                 <div className="space-y-2">
                   <p className="text-xs md:text-sm px-2 text-gray-600">
@@ -189,7 +209,7 @@ const AddInvoice = () => {
                   ) : null}
                 </div>
                 <Select
-                  dataObj={plans}
+                  dataObj={plansData}
                   name="paymentPlanId"
                   placeholder="Payment Plan"
                   value={values.paymentPlanId}
