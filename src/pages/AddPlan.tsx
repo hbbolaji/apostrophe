@@ -16,7 +16,9 @@ const AddPlans = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
   const [discounts, setDiscounts] = useState<any>([]);
+  const [afterDiscount, setAfterDiscount] = useState<number>(0);
   const [error, setError] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -25,7 +27,8 @@ const AddPlans = () => {
       if (result.data) {
         setDiscounts(selectData(result.data));
       } else {
-        // navigate("/dashboard/discounts/add");
+        setErrorMsg("No discounts create discounts first");
+        setError(true);
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -37,6 +40,7 @@ const AddPlans = () => {
       .map((val: any) => ({
         title: val.discountTitle,
         value: val.id,
+        amount: val.discountValue,
       }));
   };
 
@@ -52,6 +56,7 @@ const AddPlans = () => {
 
       navigate(`/dashboard/plans`);
     } else {
+      setErrorMsg("Unable to add a plan at the moment");
       setError(true);
       setLoading(false);
     }
@@ -74,7 +79,24 @@ const AddPlans = () => {
           }}
           validationSchema={validationSchema}
           onSubmit={(values: any) => {
-            handleSubmit(values);
+            const accum = values.instalmentPortions.reduce(
+              (acc: any, curr: any) => acc + Number(curr.portion),
+              0
+            );
+            if (afterDiscount === accum) {
+              handleSubmit(values);
+            } else if (
+              Number(values.noOfInstalments) !==
+              values.instalmentPortions.length
+            ) {
+              setErrorMsg("Number of instalments doesn't match");
+              setError(true);
+            } else {
+              setErrorMsg(
+                `Sum of instalments amounts should be equal to the $ ${afterDiscount}`
+              );
+              setError(true);
+            }
           }}
         >
           {({ values, handleChange }) => (
@@ -85,7 +107,7 @@ const AddPlans = () => {
                 </p>
                 {error ? (
                   <Toast
-                    message="cannot add new payment plan now"
+                    message={errorMsg}
                     close={() => {
                       setError(false);
                     }}
@@ -93,12 +115,32 @@ const AddPlans = () => {
                     type="error"
                   />
                 ) : null}
+                <p className="font-semibold p-2 text-center border border-2 border-orange-500 rounded-lg">
+                  Discounted Amount: {afterDiscount}
+                </p>
                 <Input
                   placeholder="Total Fee"
                   name="totalFees"
                   value={values.totalFees}
                   onChange={handleChange}
                   type="text"
+                />
+                <Select
+                  dataObj={discounts}
+                  name="discountSchemeId"
+                  placeholder="Discount Scheme"
+                  value={values.discountSchemeId}
+                  onChange={(e: React.ChangeEvent<any>) => {
+                    handleChange(e);
+                    const discountValue = discounts.find(
+                      (discount: any) =>
+                        discount.value === Number(e.target.value)
+                    );
+                    const discount = (100 - discountValue.amount) / 100;
+                    const discountedAmount =
+                      discount * Number(values.totalFees);
+                    setAfterDiscount(discountedAmount);
+                  }}
                 />
                 <Input
                   placeholder="Number of Installments"
@@ -163,13 +205,7 @@ const AddPlans = () => {
                     </div>
                   )}
                 </FieldArray>
-                <Select
-                  dataObj={discounts}
-                  name="discountSchemeId"
-                  placeholder="Discount Scheme"
-                  value={values.discountSchemeId}
-                  onChange={handleChange}
-                />
+
                 <Input
                   placeholder="Notes"
                   name="notes"
