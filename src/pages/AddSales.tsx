@@ -182,9 +182,11 @@ export default AddSales;
 const validationSchema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
   lastName: yup.string().required("Last name is required"),
-  emailAddress: yup.string().required("Email is required"),
+  emailAddress: yup.string().email().required("Email is required"),
   phoneNumber: yup.string().required("Phone number is required"),
   whatsappNumber: yup.string().required("Whatsapp number is required"),
   gender: yup.string().required("Gender is required"),
   status: yup.string(),
+  spokenLanguage: yup.string().required("Spoken Language is required"),
+  generatedPassword: yup.string().required("Password is required"),
 });
