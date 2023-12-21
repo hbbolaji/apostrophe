@@ -25,6 +25,7 @@ const AddPayment = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string>("");
 
   const handleDate = (newValue: DateValueType) => {
     setDate(newValue);
@@ -55,25 +56,41 @@ const AddPayment = () => {
       base_currency: "USD",
       currencies: values.currency,
     });
-    const exchangeRate = Number(Object.values(response.data)[0]).toFixed(2);
-    const formData = getFormData({
-      ...values,
-      exchangeRate,
-      date: date?.startDate || "",
-    });
-    formData.append("receipt", file);
-    const result = await createPayment(
-      token,
-      state.id,
-      values.portionId,
-      formData
+    const exchangeRate: any = Number(Object.values(response.data)[0]).toFixed(
+      2
     );
-    if (result?.success) {
-      setLoading(false);
-      navigate(`/dashboard/students/${state.studentInfo.studentId}`);
+    const amountPaid = Number(values.amountPaid);
+    const expectedAmount = plans.find(
+      (plan: any) => plan.id === Number(values.portionId)
+    );
+    const expectedPayment = exchangeRate * expectedAmount.portion;
+
+    if (amountPaid >= expectedPayment && amountPaid < expectedPayment + 6) {
+      const formData = getFormData({
+        ...values,
+        exchangeRate,
+        date: date?.startDate || "",
+      });
+      formData.append("receipt", file);
+      const result = await createPayment(
+        token,
+        state.id,
+        values.portionId,
+        formData
+      );
+      if (result?.success) {
+        setLoading(false);
+        navigate(`/dashboard/students/${state.studentInfo.studentId}`);
+      } else {
+        setErrorMsg("Unable to add payment at the moment");
+        setError(true);
+        setLoading(false);
+      }
     } else {
+      setErrorMsg(
+        `The amount paid in ${values.currency} should be ${values.currency} ${expectedPayment}`
+      );
       setError(true);
-      setLoading(false);
     }
   };
 
@@ -109,7 +126,7 @@ const AddPayment = () => {
                 </p>
                 {error ? (
                   <Toast
-                    message="cannot add a payment now"
+                    message={errorMsg}
                     close={() => {
                       setError(false);
                     }}
