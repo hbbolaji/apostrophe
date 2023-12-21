@@ -31,6 +31,11 @@ const Course: React.FC<{ course: any }> = ({ course }) => {
             </p>
           </div>
         </div>
+        <div>
+          <p className="font-xl text-orange-500 font-semibold">
+            {course.courseCode}
+          </p>
+        </div>
         <div className=" flex items-center justify-between">
           <p className="font-xl font-semibold">{course.courseTitle}</p>
           <p className="font-semibold text-gray-500">${course.amount}</p>

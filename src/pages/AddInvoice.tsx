@@ -43,13 +43,16 @@ const AddInvoice = () => {
     setValidityDate(newValue);
   };
 
+  const courseString = (val: any) =>
+    `${val.courseCode} ------ [${moment(val.startDate).format(
+      "MMM Do YY"
+    )} - ${moment(val.endDate).format("MMM Do YY")}]`;
+  const instalmentString = (val: any) =>
+    `${val.totalFees} payable in ${val.noOfInstalments} Installments`;
+
   const selectData = (value: any) => {
     return value.map((val: any) => ({
-      title:
-        `${val.courseTitle} ------ [${moment(val.startDate).format(
-          "MMM Do YY"
-        )} - ${moment(val.endDate).format("MMM Do YY")}]` ||
-        `${val.totalFees} payable in ${val.noOfInstalments} Installments`,
+      title: `${val.courseTitle ? courseString(val) : instalmentString(val)}`,
       value: val.id,
       amount: val.totalFees || val.amount,
     }));
