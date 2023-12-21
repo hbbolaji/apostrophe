@@ -11,6 +11,7 @@ import { getPlans } from "../api/plan";
 import { createInvoice } from "../api/invoice";
 import Toast from "../components/Toast";
 import ButtonSpinner from "../components/ButtonSpinner";
+import moment from "moment";
 
 const AddInvoice = () => {
   const { token } = useAuth();
@@ -45,7 +46,9 @@ const AddInvoice = () => {
   const selectData = (value: any) => {
     return value.map((val: any) => ({
       title:
-        val.courseTitle ||
+        `${val.courseTitle} ------ [${moment(val.startDate).format(
+          "MMM Do YY"
+        )} - ${moment(val.endDate).format("MMM Do YY")}]` ||
         `${val.totalFees} payable in ${val.noOfInstalments} Installments`,
       value: val.id,
       amount: val.totalFees || val.amount,
