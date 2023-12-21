@@ -97,7 +97,7 @@ const AddInvoice = () => {
         setCourses(
           selectData(
             courseResult.data.filter((result: any) =>
-              moment(Date.now()).isBefore(result.startDate)
+              moment(Date.now()).isSameOrBefore(result.startDate)
             )
           )
         );
