@@ -3,7 +3,6 @@ import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
 const Invoice: React.FC<{ invoice: any }> = ({ invoice }) => {
-  console.log(invoice);
   const paid =
     invoice.invoicePortion.filter((portion: any) => portion.status === "unpaid")
       .length < 1;
