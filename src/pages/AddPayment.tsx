@@ -87,6 +87,7 @@ const AddPayment = () => {
         setLoading(false);
       }
     } else {
+      setLoading(false);
       setErrorMsg(
         `The amount paid in ${values.currency} should be ${values.currency} ${expectedPayment}`
       );

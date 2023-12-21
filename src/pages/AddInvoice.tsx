@@ -45,8 +45,8 @@ const AddInvoice = () => {
 
   const courseString = (val: any) =>
     `${val.courseCode} ------ [${moment(val.startDate).format(
-      "MMM Do YY"
-    )} - ${moment(val.endDate).format("MMM Do YY")}]`;
+      "MMM Do YYYY"
+    )} - ${moment(val.endDate).format("MMM Do YYYY")}]`;
   const instalmentString = (val: any) =>
     `${val.totalFees} payable in ${val.noOfInstalments} Installments`;
 
@@ -94,7 +94,13 @@ const AddInvoice = () => {
       const courseResult = await getCourses(token);
       const plansResult = await getPlans(token);
       if (courseResult.data) {
-        setCourses(selectData(courseResult.data));
+        setCourses(
+          selectData(
+            courseResult.data.filter((result: any) =>
+              moment(Date.now()).isBefore(result.startDate)
+            )
+          )
+        );
       } else {
         navigate(`/dashboard/students/${state}`);
       }

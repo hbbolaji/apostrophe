@@ -3,6 +3,7 @@ import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
 const Invoice: React.FC<{ invoice: any }> = ({ invoice }) => {
+  console.log(invoice);
   const paid =
     invoice.invoicePortion.filter((portion: any) => portion.status === "unpaid")
       .length < 1;
@@ -21,10 +22,10 @@ const Invoice: React.FC<{ invoice: any }> = ({ invoice }) => {
         </p>
       </div>
       <div className="col-span-2">
-        <p>{moment(invoice.validityDate).format("MMM Do YY")}</p>
+        <p>{moment(invoice.validityDate).format("MMM Do YYYY")}</p>
       </div>
       <div className="col-span-2 sm:col-span-1">
-        <p>USD {invoice.courseAmount}</p>
+        <p>USD {invoice.courseInfo.courseAmount}</p>
       </div>
       <div className={`col-span-2 sm:col-span-1 `}>
         <p

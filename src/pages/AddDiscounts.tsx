@@ -70,7 +70,7 @@ const AddDiscounts = () => {
                   type="text"
                 />
                 <Input
-                  placeholder="Discount Value"
+                  placeholder="Discount Percentage"
                   name="discountValue"
                   value={values.discountValue}
                   onChange={handleChange}

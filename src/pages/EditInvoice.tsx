@@ -100,7 +100,7 @@ const EditInvoice = () => {
                   <p className="text-xs md:text-sm px-2 text-gray-600">
                     Issuance Date{" "}
                     <span className="font-semibold">
-                      {moment(issuanceDate?.startDate).format("MMM Do YY")}
+                      {moment(issuanceDate?.startDate).format("MMM Do YYYY")}
                     </span>
                   </p>
                   <div
@@ -127,7 +127,7 @@ const EditInvoice = () => {
                   <p className="text-xs md:text-sm px-2 text-gray-600">
                     Validity Date{" "}
                     <span className="font-semibold">
-                      {moment(validityDate?.startDate).format("MMM Do YY")}
+                      {moment(validityDate?.startDate).format("MMM Do YYYY")}
                     </span>
                   </p>
                   <div

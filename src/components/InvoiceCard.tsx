@@ -49,7 +49,7 @@ const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
             key={inv.id}
           >
             <div className="text-sm col-span-1">
-              {moment(inv.validityDate).format("MMM Do YY")}
+              {moment(inv.validityDate).format("MMM Do YYYY")}
             </div>
             <div className="text-sm col-span-2">
               {inv.courseInfo.courseTitle}

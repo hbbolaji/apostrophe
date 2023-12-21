@@ -21,7 +21,7 @@ const PaymentCard: React.FC<{ payments: any }> = ({ payments }) => {
             className="flex cursor-pointer items-center justify-between text-orange-500 p-2 text-sm font-semibold bg-orange-200 bg-opacity-30 rounded-lg"
             key={pay.id}
           >
-            <p>{moment(pay.date).format("MMM Do YY")}</p>
+            <p>{moment(pay.date).format("MMM Do YYYY")}</p>
             <p>
               {pay.currency} {pay.amountPaid}
             </p>
