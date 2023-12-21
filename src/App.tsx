@@ -13,12 +13,11 @@ import Courses from "./pages/Courses";
 import AddGuardians from "./pages/AddGuardians";
 import { useAuth } from "./context/AuthContext";
 import AddSales from "./pages/AddSales";
-import AddStudents from "./components/Sales/AddStudents";
 import SalesProfile from "./pages/SalesProfile";
 import StudentProfile from "./pages/StudentProfile";
 import Me from "./pages/Me";
 import EditSales from "./pages/EditSale";
-import EditStudent from "./components/Sales/EditStudent";
+import EditStudent from "./pages/EditStudent";
 import AddCourses from "./pages/AddCourse";
 import EditGuardian from "./pages/EditGuardians";
 import GuardiansPage from "./pages/GuardiansPage";
@@ -29,6 +28,7 @@ import EditPlans from "./pages/EditPlan";
 import AddInvoice from "./pages/AddInvoice";
 import EditInvoice from "./pages/EditInvoice";
 import AddPayment from "./pages/AddPayment";
+import AddStudents from "./pages/AddStudents";
 
 function App() {
   const { token, currentUser } = useAuth();

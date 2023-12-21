@@ -1,86 +1,87 @@
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import * as yup from "yup";
 import Datepicker, { DateValueType } from "react-tailwindcss-datepicker";
-import Input from "../Input";
-import Select from "../Select";
-import countries from "../../utils/countries.json";
-import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
-import { getFormData } from "../../utils/helper";
-import moment from "moment";
+import Input from "../components/Input";
+import Select from "../components/Select";
+import countries from "../utils/countries.json";
+import { getFormData } from "../utils/helper";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { createStudent } from "../api/student";
+import Toast from "../components/Toast";
+import ButtonSpinner from "../components/ButtonSpinner";
 
-const EditStudent = () => {
-  const { token } = useAuth();
-  const { state } = useLocation();
+const AddStudents = () => {
   const navigate = useNavigate();
-  const student = { ...state };
+  const { token } = useAuth();
   const [step, setStep] = useState(0);
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<string>("");
   const [dob, setDob] = useState<DateValueType>({
-    startDate: student.dateOfBirth,
-    endDate: null,
+    startDate: new Date(),
+    endDate: new Date(),
   });
 
   const countriesData = countries.map((count) => count.country);
-
-  useEffect(() => {
-    if (!state) {
-      navigate("/dashboard/me");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const handleValueChange = (newValue: DateValueType) => {
     setDob(newValue);
   };
 
-  const editStudent = async (values: FormData) => {
-    try {
-      await axios.patch(
-        `${process.env.REACT_APP_BASE_URL}/api/v1/student/${student.id}`,
-        values,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      navigate(`/dashboard/students/${student.id}`);
-    } catch (error) {
-      console.log(error);
+  const handleSubmit = async (values: any) => {
+    setLoading(true);
+    const formData = getFormData({
+      ...values,
+      dateOfBirth: dob?.startDate || "",
+    });
+    const result: any = await createStudent(token, formData);
+    if (result?.status === 200 || result?.statusText === "OK") {
+      setLoading(false);
+      navigate(`/dashboard/me`);
+    } else {
+      setErrorMsg("Unable to add student at the moment ");
+      setError(true);
+      setLoading(false);
     }
   };
 
   return (
     <div className="w-full space-y-5 md:pt-8 px-5">
       <h4 className="text-orange-400 font-semibold text-center text-2xl">
-        Edit student Profile
+        Add New Students
       </h4>
+      {error ? (
+        <Toast
+          message={errorMsg}
+          close={() => {
+            setError(false);
+          }}
+          show={error}
+          type="error"
+        />
+      ) : null}
       <div className="w-full">
         <Formik
           initialValues={{
-            firstName: student?.firstName || "",
-            lastName: student?.lastName || "",
-            emailAddress: student?.emailAddress || "",
-            phoneNumber: student?.phoneNumber || "",
-            spokenLanguage: student?.spokenLanguage || "",
-            whatsappNumber: student?.whatsappNumber || "",
-            contactNumber: student?.contactNumber || "",
-            gender: student?.gender || "",
-            status: "",
-            nationality: student?.nationality || "",
-            residence: student?.residence || "",
-            placementTest: student?.placementTest || "",
-            academicStatus: student?.academicStatus || "",
-            financialStatus: student?.financialStatus || "",
+            firstName: "",
+            lastName: "",
+            emailAddress: "",
+            phoneNumber: "",
+            spokenLanguage: "",
+            whatsappNumber: "",
+            contactNumber: "",
+            gender: "",
+            nationality: "",
+            residence: "",
+            placementTest: "",
+            academicStatus: "Awaiting Course Registration",
+            financialStatus: "No Payment",
           }}
+          validationSchema={validationSchema}
           onSubmit={(values: any) => {
-            const formData = getFormData({
-              ...values,
-              dateOfBirth: dob?.startDate || "",
-            });
-            editStudent(formData);
+            handleSubmit(values);
           }}
         >
           {({ values, handleChange }) => (
@@ -113,10 +114,7 @@ const EditStudent = () => {
                   />
                   <div className="space-y-2">
                     <p className="text-xs md:text-sm px-2 text-gray-600">
-                      Date of Birth{" "}
-                      <span className="font-semibold">
-                        {moment(dob?.startDate).format("MMM Do YY")}
-                      </span>
+                      Date of Birth
                     </p>
                     <div
                       className={`flex items-center bg-white border border-1 rounded-full px-5 ${
@@ -227,34 +225,10 @@ const EditStudent = () => {
                     onChange={handleChange}
                     type="number"
                   />
-                  {/* <Select
-                    data={[
-                      "Course Completed",
-                      "Awaiting Course Registration",
-                      "Frozen Registration",
-                      "Withdrawn",
-                    ]}
-                    name="academicStatus"
-                    placeholder="Academic Status"
-                    value={values.academicStatus}
-                    onChange={handleChange}
-                  />
-                  <Select
-                    data={[
-                      "No Payment",
-                      "In Negotiation",
-                      "Complete Payment",
-                      "Partial Payment",
-                    ]}
-                    name="financialStatus"
-                    placeholder="Financial Status"
-                    value={values.financialStatus}
-                    onChange={handleChange}
-                  /> */}
                   <div className="flex space-x-6 justify-end">
                     <button
                       type="button"
-                      onClick={() => setStep(0)}
+                      onClick={() => setStep(1)}
                       className="text-sm md:text-base block px-5 bg-orange-500 text-white py-1.5 rounded-full font-semibold"
                     >
                       Previous
@@ -265,6 +239,7 @@ const EditStudent = () => {
                     >
                       Submit
                     </button>
+                    {loading ? <ButtonSpinner /> : null}
                   </div>
                 </div>
               ) : null}
@@ -276,4 +251,21 @@ const EditStudent = () => {
   );
 };
 
-export default EditStudent;
+export default AddStudents;
+
+const validationSchema = yup.object().shape({
+  firstName: yup.string().required("FirstName is required"),
+  lastName: yup.string().required("LastName is required"),
+  emailAddress: yup
+    .string()
+    .email("Invalid Email format")
+    .required("Email is required"),
+  phoneNumber: yup.string().required("Phone number is required"),
+  spokenLanguage: yup.string().required("Spoken Language is required"),
+  whatsappNumber: yup.string().required("Whatsapp Number is required"),
+  contactNumber: yup.string().required("Contact Number is required"),
+  gender: yup.string().required("Gender is required"),
+  nationality: yup.string().required("Nationality is required"),
+  residence: yup.string().required("Residence is required"),
+  placementTest: yup.string().required("Placement Test is required"),
+});
