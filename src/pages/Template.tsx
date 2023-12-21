@@ -17,6 +17,10 @@ const Template = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const discount = state.discountInfo.discountValue;
+  const discountedAmount =
+    (Number(state.courseInfo.courseAmount) * discount) / 100;
+  const title = state.discountInfo.discountTitle;
   const remain = getRemain(state.invoicePortion);
 
   return (
@@ -89,6 +93,15 @@ const Template = () => {
           <div>
             {/* Amount Left */}
             <div className="space-y-4">
+              {/* Discount */}
+              <div className="grid grid-cols-3 border-dashed">
+                <div className="col-span-2 text-lg font-semibold">
+                  {title} Discount {discount}%
+                </div>
+                <div className="col-span-1 text-orange-500 font-semibold">
+                  $ {discountedAmount}
+                </div>
+              </div>
               {/* Paid */}
               <div className="grid grid-cols-3 border-dashed">
                 <div className="col-span-2 text-lg font-semibold">Paid</div>
@@ -101,7 +114,7 @@ const Template = () => {
                 <div className="col-span-2 text-lg font-semibold">
                   Outstanding
                 </div>
-                <div className="col-span-1">$ {remain}</div>
+                <div className="col-span-1">$ {remain - discountedAmount}</div>
               </div>
               {/* Total */}
               <div className="grid grid-cols-3 border-t py-2 border-t-2 border-t-gray-500  border-dashed ">
