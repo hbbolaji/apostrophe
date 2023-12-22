@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "../images/apostrophe.png";
 import moment from "moment";
 import ReactToPrint from "react-to-print";
-import { getRemain } from "../utils/helper";
+import { getPaid, getRemain } from "../utils/helper";
 
 const Template = () => {
   const navigate = useNavigate();
@@ -22,6 +22,7 @@ const Template = () => {
     (Number(state.courseInfo.courseAmount) * discount) / 100;
   const title = state.discountInfo.discountTitle;
   const remain = getRemain(state.invoicePortion);
+  const paid = getPaid(state.invoicePortion);
 
   return (
     <div className="w-full py-8 px-5">
@@ -105,16 +106,14 @@ const Template = () => {
               {/* Paid */}
               <div className="grid grid-cols-3 border-dashed">
                 <div className="col-span-2 text-lg font-semibold">Paid</div>
-                <div className="col-span-1">
-                  $ {state.courseInfo.courseAmount - remain}
-                </div>
+                <div className="col-span-1">$ {paid}</div>
               </div>
               {/* Amount Left */}
               <div className="grid grid-cols-3 border-dashed">
                 <div className="col-span-2 text-lg font-semibold">
                   Outstanding
                 </div>
-                <div className="col-span-1">$ {remain - discountedAmount}</div>
+                <div className="col-span-1">$ {remain}</div>
               </div>
               {/* Total */}
               <div className="grid grid-cols-3 border-t py-2 border-t-2 border-t-gray-500  border-dashed ">

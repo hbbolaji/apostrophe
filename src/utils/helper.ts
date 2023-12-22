@@ -16,3 +16,9 @@ export const getRemain = (portions: any[]) => {
     .filter((inv: any) => inv.status === "unpaid")
     .reduce((acc: any, cur: any) => acc + cur.portion, 0);
 };
+
+export const getPaid = (portions: any[]) => {
+  return portions
+    .filter((inv: any) => inv.status === "paid")
+    .reduce((acc: any, cur: any) => acc + cur.portion, 0);
+};
