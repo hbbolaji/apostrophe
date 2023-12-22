@@ -224,7 +224,7 @@ const AddCourses = () => {
                   type="text"
                 />
                 <Input
-                  placeholder="Amount"
+                  placeholder="Amount (USD)"
                   name="amount"
                   value={values.amount}
                   onChange={handleChange}

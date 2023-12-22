@@ -184,6 +184,7 @@ const validationSchema = yup.object().shape({
   lastName: yup.string().required("Last name is required"),
   emailAddress: yup.string().email().required("Email is required"),
   phoneNumber: yup.string().required("Phone number is required"),
+  contactNumber: yup.string().required("Contact number is required"),
   whatsappNumber: yup.string().required("Whatsapp number is required"),
   gender: yup.string().required("Gender is required"),
   status: yup.string(),
