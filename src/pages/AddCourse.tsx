@@ -11,10 +11,12 @@ import { getFormData } from "../utils/helper";
 import { createCourse } from "../api/course";
 import ButtonSpinner from "../components/ButtonSpinner";
 import Toast from "../components/Toast";
+import { PiXLight } from "react-icons/pi";
 
 const AddCourses = () => {
   const navigate = useNavigate();
   const { token } = useAuth();
+  const [scheduleDay, setScheduleDay] = useState<string[]>([]);
   const [startError, setStartError] = useState<boolean>(false);
   const [endError, setEndError] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -35,6 +37,16 @@ const AddCourses = () => {
     setEndError(false);
     setEndDate(newValue);
   };
+
+  const [days, setDays] = useState<string[]>([
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ]);
 
   const handleSubmit = async (values: any) => {
     if (startDate?.startDate === null) {
@@ -91,7 +103,7 @@ const AddCourses = () => {
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            handleSubmit(values);
+            console.log({ ...values, scheduleDay });
           }}
         >
           {({ values, handleChange }) => (
@@ -168,20 +180,39 @@ const AddCourses = () => {
                     </p>
                   ) : null}
                 </div>
+                <div className="flex items-center flex-wrap space-x-3 px-3">
+                  {scheduleDay.map((day: string) => (
+                    <div
+                      key={day}
+                      className="text-sm flex items-center space-x-2 px-1 py-0.5 bg-orange-300 rounded"
+                    >
+                      <p>{day}</p>
+                      <PiXLight
+                        className="text-base"
+                        onClick={() => {
+                          setDays((prev) => [...prev, day]);
+                          setScheduleDay((prev) =>
+                            prev.filter((sched: string) => sched !== day)
+                          );
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
                 <Select
-                  data={[
-                    "Monday",
-                    "Tuesday",
-                    "Wednesday",
-                    "Thursday",
-                    "Friday",
-                    "Saturday",
-                    "Sunday",
-                  ]}
+                  data={days}
                   name="scheduleDay"
                   placeholder="Schedule Day"
                   value={values.scheduleDay}
-                  onChange={handleChange}
+                  onChange={(e: React.ChangeEvent<any>) => {
+                    handleChange(e);
+                    if (e.target.value !== "Schedule Day") {
+                      setScheduleDay((prev) => [...prev, e.target.value]);
+                      setDays(
+                        days.filter((day: string) => day !== e.target.value)
+                      );
+                    }
+                  }}
                 />
                 <Input
                   placeholder="Schedule Time"
@@ -255,7 +286,6 @@ const validationSchema = yup.object().shape({
   courseCode: yup.string().required("course code is required"),
   amount: yup.string().required("course amount is required"),
   venueLink: yup.string().required("course venue is required"),
-  scheduleDay: yup.string().required("course schedule day is required"),
   scheduleTime: yup.string().required("course schedule time is required"),
   scheduleDuration: yup
     .string()
