@@ -116,7 +116,7 @@ const EditSales = () => {
                   </p>
                   <Input
                     placeholder="Email Address"
-                    name="email"
+                    name="emailAddress"
                     value={values.emailAddress}
                     onChange={handleChange}
                     type="email"

@@ -44,9 +44,9 @@ const AddInvoice = () => {
   };
 
   const courseString = (val: any) =>
-    `${val.courseCode} ------ [${moment(val.startDate).format(
-      "MMM Do YYYY"
-    )} - ${moment(val.endDate).format("MMM Do YYYY")}]`;
+    `${val.courseTitle} ${val.courseCode} ------ [${moment(
+      val.startDate
+    ).format("MMM Do YYYY")} - ${moment(val.endDate).format("MMM Do YYYY")}]`;
   const instalmentString = (val: any) =>
     `${val.totalFees} payable in ${val.noOfInstalments} Installments`;
 
