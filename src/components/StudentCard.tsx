@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Avatar, { genConfig } from "react-nice-avatar";
 import {
   PiNotePencilThin,
@@ -13,15 +13,22 @@ import {
 import { useNavigate } from "react-router-dom";
 import { StudentType } from "../utils/types";
 import { useAuth } from "../context/AuthContext";
+import moment from "moment";
 
-const StudentCard: React.FC<{ student: StudentType; hasGuardian: boolean }> = ({
-  student,
-  hasGuardian,
-}) => {
+type Props = { student: StudentType; hasGuardian: boolean; portions: any[] };
+const StudentCard: React.FC<Props> = ({ student, hasGuardian, portions }) => {
   const { currentUser } = useAuth();
   const role = currentUser.role;
   let config = genConfig(student.emailAddress);
   const navigate = useNavigate();
+  const [nextPayment, setNextPayment] = useState<any[]>([]);
+  useEffect(() => {
+    setNextPayment(
+      portions
+        .filter((port: any) => port.status === "unpaid")
+        .sort((a: any, b: any) => moment(a.date).diff(b.date))
+    );
+  }, [portions]);
   return (
     <div className="w-full bg-white rounded-lg shadow-lg p-6">
       <div className="flex items-center justify-between">
@@ -38,6 +45,9 @@ const StudentCard: React.FC<{ student: StudentType; hasGuardian: boolean }> = ({
             </p>
             <p className="text-sm text-gray-400">{student.emailAddress}</p>
             <p className="text-sm text-gray-400">{student.gender}</p>
+            <p className="text-sm text-gray-600 font-semibold">
+              Next Payment: {moment(nextPayment[0]?.date).format("MMM Do YYYY")}
+            </p>
           </div>
         </div>
         <div className="space-y-4">
