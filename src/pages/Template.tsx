@@ -10,6 +10,7 @@ const Template = () => {
   const { state } = useLocation();
   const invoiceRef = useRef<HTMLDivElement>(null);
 
+  console.log(state);
   useEffect(() => {
     if (!state) {
       navigate("/dashboard/me");
@@ -125,7 +126,9 @@ const Template = () => {
             </div>
           </div>
           <p className="text-center text-sm italic text-gray-400">
-            for more inquiry contact {"Musab"} @ +988888888888888
+            for more inquiry contact {state.salesInfo.salesFirstName}{" "}
+            {state.salesInfo.salesLastNme} @ {state.salesInfo.salesEmail} or{" "}
+            {state.salesInfo.salesContact}
           </p>
         </div>
       </div>
