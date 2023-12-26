@@ -20,7 +20,11 @@ const Course: React.FC<{ course: any }> = ({ course }) => {
                 {course.venueLink}
               </p>
             ) : (
-              <a href={course.venueLink} target="blank">
+              <a
+                className="text-orange-500 underline underline-offset-4"
+                href={course.venueLink}
+                target="blank"
+              >
                 Venue
               </a>
             )}
