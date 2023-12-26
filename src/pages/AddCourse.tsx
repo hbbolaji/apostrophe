@@ -38,16 +38,6 @@ const AddCourses = () => {
     setEndDate(newValue);
   };
 
-  const [days, setDays] = useState<string[]>([
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ]);
-
   const handleSubmit = async (values: any) => {
     if (startDate?.startDate === null) {
       setStartError(true);
@@ -103,7 +93,7 @@ const AddCourses = () => {
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            console.log({ ...values, scheduleDay });
+            handleSubmit({ ...values, scheduleDay: scheduleDay.join(",") });
           }}
         >
           {({ values, handleChange }) => (
@@ -190,7 +180,6 @@ const AddCourses = () => {
                       <PiXLight
                         className="text-base"
                         onClick={() => {
-                          setDays((prev) => [...prev, day]);
                           setScheduleDay((prev) =>
                             prev.filter((sched: string) => sched !== day)
                           );
@@ -200,17 +189,24 @@ const AddCourses = () => {
                   ))}
                 </div>
                 <Select
-                  data={days}
+                  data={[
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday",
+                    "Sunday",
+                  ]}
                   name="scheduleDay"
                   placeholder="Schedule Day"
                   value={values.scheduleDay}
                   onChange={(e: React.ChangeEvent<any>) => {
                     handleChange(e);
-                    if (e.target.value !== "Schedule Day") {
-                      setScheduleDay((prev) => [...prev, e.target.value]);
-                      setDays(
-                        days.filter((day: string) => day !== e.target.value)
-                      );
+                    if (!scheduleDay.includes(e.target.value)) {
+                      if (e.target.value !== "Schedule Day") {
+                        setScheduleDay((prev) => [...prev, e.target.value]);
+                      }
                     }
                   }}
                 />

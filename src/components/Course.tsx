@@ -7,11 +7,12 @@ import {
 } from "react-icons/pi";
 
 const Course: React.FC<{ course: any }> = ({ course }) => {
+  const schedule = course?.scheduleDay.split(",");
   return (
     <div className="shadow-lg rounded-lg cursor-pointer">
       <div className="h-32 w-full bg-orange-400 rounded-t-lg"></div>
       <div className="py-2 px-4 space-y-2">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col space-y-2">
           <div className="flex items-center space-x-3 ">
             <PiBuildingsThin className="text-xl text-gray-500 font-semibold" />
             {course.physical ? (
@@ -26,8 +27,10 @@ const Course: React.FC<{ course: any }> = ({ course }) => {
           </div>
           <div className="flex items-center space-x-3">
             <PiClockAfternoonThin className="text-xl text-gray-500 font-semibold" />
-            <p className="text-sm text-gray-500 font-semibold">
-              {course.scheduleDay}
+            <p className="text-sm text-gray-500 space-x-2 font-semibold">
+              {schedule.map((sched: string) => (
+                <span key={sched}>{sched}</span>
+              ))}
             </p>
           </div>
         </div>
