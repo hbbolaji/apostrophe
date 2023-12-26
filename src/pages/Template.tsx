@@ -124,6 +124,9 @@ const Template = () => {
               </div>
             </div>
           </div>
+          <p className="text-center text-sm italic text-gray-400">
+            for more inquiry contact {"Musab"} @ +988888888888888
+          </p>
         </div>
       </div>
       {/* Invoice print action */}
