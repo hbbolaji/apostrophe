@@ -10,7 +10,6 @@ const Template = () => {
   const { state } = useLocation();
   const invoiceRef = useRef<HTMLDivElement>(null);
 
-  console.log(state);
   useEffect(() => {
     if (!state) {
       navigate("/dashboard/me");
