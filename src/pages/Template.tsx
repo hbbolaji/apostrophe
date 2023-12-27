@@ -124,6 +124,11 @@ const Template = () => {
               </div>
             </div>
           </div>
+          <p className="text-center text-sm italic text-gray-400">
+            for more inquiry contact {state.salesInfo.salesFirstName}{" "}
+            {state.salesInfo.salesLastNme} @ {state.salesInfo.salesEmail} or{" "}
+            {state.salesInfo.salesContact}
+          </p>
         </div>
       </div>
       {/* Invoice print action */}
