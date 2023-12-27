@@ -160,17 +160,7 @@ const AddPayment = () => {
                   onChange={handleChange}
                 />
                 <Select
-                  data={[
-                    "TRY",
-                    "MYR",
-                    "USD",
-                    "EUR",
-                    "SAR",
-                    "AED",
-                    "KWD",
-                    "QAR",
-                    "GBP",
-                  ]}
+                  data={["TRY", "MYR", "USD", "EUR", "GBP"]}
                   name="currency"
                   placeholder="Currency"
                   value={values.currency}
