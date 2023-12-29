@@ -181,7 +181,11 @@ const AddPayment = () => {
                   onChange={handleChange}
                 />
                 <Select
-                  data={["musab", "omar", "khalid"]}
+                  data={[
+                    "Arab National Bank (SAR)",
+                    "Kuveyt Türk Katilim Bankasi A.S. (USD)",
+                    "Kuveyt Türk Katilim Bankasi A.S. (TL)",
+                  ]}
                   name="toAccount"
                   placeholder="To Account"
                   value={values.toAccount}
