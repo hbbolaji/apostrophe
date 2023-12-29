@@ -93,11 +93,12 @@ const AddInvoice = () => {
     (async () => {
       const courseResult = await getCourses(token);
       const plansResult = await getPlans(token);
+      console.log(courseResult.data);
       if (courseResult.data) {
         setCourses(
           selectData(
             courseResult.data.filter((result: any) =>
-              moment(Date.now()).isSameOrBefore(result.startDate)
+              moment(Date.now()).isSameOrBefore(result.endDate)
             )
           )
         );
