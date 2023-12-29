@@ -53,7 +53,6 @@ const AddPlans = () => {
     );
     if (result?.status === 200 || result?.statusText === "OK") {
       setLoading(false);
-
       navigate(`/dashboard/plans`);
     } else {
       setErrorMsg("Unable to add a plan at the moment");
@@ -123,7 +122,7 @@ const AddPlans = () => {
                   name="totalFees"
                   value={values.totalFees}
                   onChange={handleChange}
-                  type="text"
+                  type="number"
                 />
                 <Select
                   dataObj={discounts}
@@ -147,7 +146,7 @@ const AddPlans = () => {
                   name="noOfInstalments"
                   value={values.noOfInstalments}
                   onChange={handleChange}
-                  type="text"
+                  type="number"
                 />
                 <FieldArray name="instalmentPortions">
                   {({ push, remove }) => (
@@ -234,8 +233,8 @@ const AddPlans = () => {
 export default AddPlans;
 
 const validationSchema = yup.object().shape({
-  totalFees: yup.string().required("total fee is required"),
-  noOfInstalments: yup.string().required("number of instalments is required"),
+  totalFees: yup.number().required("total fee is required"),
+  noOfInstalments: yup.number().required("number of instalments is required"),
   discountSchemeId: yup.string().required("discount scheme is required"),
   instalmentPortions: yup.array().of(
     yup.object().shape({

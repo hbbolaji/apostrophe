@@ -15,6 +15,7 @@ const EditPlans = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [error, setError] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (values: any) => {
@@ -22,8 +23,9 @@ const EditPlans = () => {
     const result: any = await updatePaymentPlan(token, state.id, values);
     if (result?.status === 200 || result?.statusText === "OK") {
       setLoading(false);
-      navigate("/dashboard/plans");
+      navigate(`/dashboard/plans`);
     } else {
+      setErrorMsg("Unable to edit this plan at the moment");
       setError(true);
       setLoading(false);
     }
@@ -54,7 +56,27 @@ const EditPlans = () => {
           }}
           validationSchema={validationSchema}
           onSubmit={(values: any) => {
-            handleSubmit(values);
+            const accum = values.instalmentPortions.reduce(
+              (acc: any, curr: any) => acc + Number(curr.portion),
+              0
+            );
+            const discount =
+              (100 - state.discountSchemeResponse.discountValue) / 100;
+            const discountedAmount = discount * Number(values.totalFees);
+            if (discountedAmount === accum) {
+              handleSubmit(values);
+            } else if (
+              Number(values.noOfInstalments) !==
+              values.instalmentPortions.length
+            ) {
+              setErrorMsg("Number of instalments doesn't match");
+              setError(true);
+            } else {
+              setErrorMsg(
+                `Sum of instalments amounts should be equal to the $ ${discountedAmount}`
+              );
+              setError(true);
+            }
           }}
         >
           {({ values, handleChange }) => (
@@ -66,7 +88,7 @@ const EditPlans = () => {
                   </p>
                   {error ? (
                     <Toast
-                      message="cannot edit this payment plan now"
+                      message={errorMsg}
                       close={() => {
                         setError(false);
                       }}
@@ -90,15 +112,17 @@ const EditPlans = () => {
                   placeholder="Total Fee"
                   name="totalFees"
                   value={values.totalFees}
-                  onChange={handleChange}
-                  type="text"
+                  onChange={(e: React.ChangeEvent<any>) => {
+                    handleChange(e);
+                  }}
+                  type="number"
                 />
                 <Input
                   placeholder="Number of Installments"
                   name="noOfInstalments"
                   value={values.noOfInstalments}
                   onChange={handleChange}
-                  type="text"
+                  type="number"
                 />
                 <FieldArray name="instalmentPortions">
                   {({ push, remove }) => (
@@ -109,18 +133,28 @@ const EditPlans = () => {
                       {values.instalmentPortions.map(
                         (sub: any, index: number) => {
                           const portion = `instalmentPortions[${index}].portion`;
+                          const date = `instalmentPortions[${index}].date`;
                           return (
                             <div
                               key={sub.id}
                               className="flex items-center space-x-2"
                             >
                               <div className="flex-1">
-                                <Input
-                                  placeholder="Installment Portion"
-                                  name={portion}
-                                  hidelabel="true"
-                                  onChange={handleChange}
-                                />
+                                <div className="flex w-full items-end space-x-4">
+                                  <Input
+                                    placeholder="Installment Portion"
+                                    name={portion}
+                                    hidelabel="true"
+                                    onChange={handleChange}
+                                  />
+                                  <Input
+                                    placeholder="Date"
+                                    name={date}
+                                    hidelabel="true"
+                                    onChange={handleChange}
+                                    type="date"
+                                  />
+                                </div>
                               </div>
                               <PiXLight
                                 className="text-3xl cursor-pointer text-gray-600 dark:text-gray-200"
@@ -174,12 +208,12 @@ const EditPlans = () => {
 export default EditPlans;
 
 const validationSchema = yup.object().shape({
-  totalFees: yup.string().required("total fee is required"),
-  noOfInstalments: yup.string().required("number of instalments is required"),
+  totalFees: yup.number().required("total fee is required"),
+  noOfInstalments: yup.number().required("number of instalments is required"),
   instalmentPortions: yup.array().of(
     yup.object().shape({
       portion: yup.string().required("portion is required"),
-      status: yup.string(),
+      date: yup.string().required("portion date is required"),
       portionId: yup.string(),
     })
   ),
