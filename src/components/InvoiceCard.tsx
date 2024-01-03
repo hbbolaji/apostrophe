@@ -10,6 +10,9 @@ const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const { role } = currentUser;
+  const isFullyPaid = (inv: any) =>
+    inv.invoicePortion.filter((portion: any) => portion.status === "unpaid")
+      .length < 1;
   return (
     <div className="px-5 py-3 space-y-4 ">
       <div className="flex justify-between items-center">
@@ -40,9 +43,7 @@ const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
             className={`p-2 rounded-lg grid gap-4 ${
               role === "sales" ? "grid-cols-7" : "grid-cols-5"
             }   ${
-              inv.invoicePortion.filter(
-                (portion: any) => portion.status === "unpaid"
-              ).length < 1
+              isFullyPaid(inv)
                 ? "bg-green-100 bg-opacity-60"
                 : "bg-red-100 bg-opacity-60"
             }`}
@@ -58,28 +59,41 @@ const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
               ${getRemain(inv.invoicePortion)}
             </div>
             {role === "sales" ? (
-              <div
-                className="col-span-1 border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
-                onClick={() => {
-                  navigate(`/dashboard/invoices/edit/1`, {
-                    state: inv,
-                  });
-                }}
-              >
-                <p className="text-sm text-center text-orange-500">Edit </p>
-              </div>
+              <>
+                {!isFullyPaid(inv) ? (
+                  <div
+                    className="col-span-1 border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
+                    onClick={() => {
+                      navigate(`/dashboard/invoices/edit/1`, {
+                        state: inv,
+                      });
+                    }}
+                  >
+                    <p className="text-sm text-center text-orange-500">Edit </p>
+                  </div>
+                ) : (
+                  <span className="text-center">-</span>
+                )}
+              </>
             ) : null}
+
             {role === "sales" ? (
-              <div
-                className="col-span-1 border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
-                onClick={() => {
-                  navigate(`/dashboard/payments/add`, {
-                    state: inv,
-                  });
-                }}
-              >
-                <p className="text-sm text-center text-orange-500">Pay </p>
-              </div>
+              <>
+                {!isFullyPaid(inv) ? (
+                  <div
+                    className="col-span-1 border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
+                    onClick={() => {
+                      navigate(`/dashboard/payments/add`, {
+                        state: inv,
+                      });
+                    }}
+                  >
+                    <p className="text-sm text-center text-orange-500">Pay</p>
+                  </div>
+                ) : (
+                  <span className="text-center">-</span>
+                )}
+              </>
             ) : null}
             <div
               className="col-span-1 border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
