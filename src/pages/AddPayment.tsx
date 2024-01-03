@@ -12,6 +12,7 @@ import { createPayment } from "../api/invoice";
 import Toast from "../components/Toast";
 import ButtonSpinner from "../components/ButtonSpinner";
 import { getFormData } from "../utils/helper";
+// import { getExchangeRate } from "../api/exchange";
 
 const AddPayment = () => {
   const { state } = useLocation();
@@ -30,6 +31,8 @@ const AddPayment = () => {
   const handleDate = (newValue: DateValueType) => {
     setDate(newValue);
   };
+
+  // getExchangeRate();
 
   const handleClick = () => {
     ref.current?.click();
