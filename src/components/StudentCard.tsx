@@ -29,6 +29,9 @@ const StudentCard: React.FC<Props> = ({ student, hasGuardian, portions }) => {
         .sort((a: any, b: any) => moment(a.date).diff(b.date))
     );
   }, [portions]);
+  const hasNextPayment = portions.some(
+    (portion: any) => portion.status === "paid"
+  );
   return (
     <div className="w-full bg-white rounded-lg shadow-lg p-6">
       <div className="flex items-center justify-between">
@@ -46,7 +49,11 @@ const StudentCard: React.FC<Props> = ({ student, hasGuardian, portions }) => {
             <p className="text-sm text-gray-400">{student.emailAddress}</p>
             <p className="text-sm text-gray-400">{student.gender}</p>
             <p className="text-sm text-gray-600 font-semibold">
-              Next Payment: {moment(nextPayment[0]?.date).format("MMM Do YYYY")}
+              {hasNextPayment
+                ? `Next Payment: ${moment(nextPayment[0]?.date).format(
+                    "MMM Do YYYY"
+                  )}`
+                : "No upcoming payment"}
             </p>
           </div>
         </div>
