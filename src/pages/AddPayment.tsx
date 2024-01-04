@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as yup from "yup";
-import Freecurrencyapi from "../utils/exchange";
 import { useAuth } from "../context/AuthContext";
 import { Form, Formik } from "formik";
 import Input from "../components/Input";
@@ -12,7 +11,7 @@ import { createPayment } from "../api/invoice";
 import Toast from "../components/Toast";
 import ButtonSpinner from "../components/ButtonSpinner";
 import { getFormData } from "../utils/helper";
-// import { getExchangeRate } from "../api/exchange";
+import { getExchangeRate } from "../api/exchange";
 
 const AddPayment = () => {
   const { state } = useLocation();
@@ -31,8 +30,6 @@ const AddPayment = () => {
   const handleDate = (newValue: DateValueType) => {
     setDate(newValue);
   };
-
-  // getExchangeRate();
 
   const handleClick = () => {
     ref.current?.click();
@@ -53,15 +50,9 @@ const AddPayment = () => {
   };
 
   const handleSubmit = async (values: any) => {
-    setLoading(true);
-    const freecurrencyapi = new Freecurrencyapi(process.env.REACT_APP_API_KEY);
-    const response = await freecurrencyapi.latest({
-      base_currency: "USD",
-      currencies: values.currency,
-    });
-    const exchangeRate: any = Number(Object.values(response.data)[0]).toFixed(
-      2
-    );
+    // setLoading(true);
+    const { rates } = await getExchangeRate();
+    const exchangeRate = rates[values.currency].toFixed(2);
     const amountPaid = Number(values.amountPaid);
     const expectedAmount = plans.find(
       (plan: any) => plan.id === Number(values.portionId)
@@ -163,7 +154,21 @@ const AddPayment = () => {
                   onChange={handleChange}
                 />
                 <Select
-                  data={["TRY", "MYR", "USD", "EUR", "GBP"]}
+                  data={[
+                    "TRY",
+                    "MYR",
+                    "USD",
+                    "EUR",
+                    "GBP",
+                    "AED",
+                    "KWD",
+                    "QAR",
+                    "SAR",
+                    "BHD",
+                    "OMR",
+                    "EGP",
+                    "DZD",
+                  ]}
                   name="currency"
                   placeholder="Currency"
                   value={values.currency}
