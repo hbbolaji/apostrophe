@@ -26,6 +26,9 @@ const AddPayment = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
+  const [exchange, setExchange] = useState<number>(1);
+  const [exchangeLoad, setExchangeLoad] = useState<boolean>(false);
+  const [amountPaid, setAmountPaid] = useState<number>(0);
 
   const handleDate = (newValue: DateValueType) => {
     setDate(newValue);
@@ -46,50 +49,37 @@ const AddPayment = () => {
       .map((val: any) => ({
         title: `$ ${val.portion}`,
         value: val.id,
+        portion: val.portion,
       }));
   };
 
   const handleSubmit = async (values: any) => {
-    // setLoading(true);
-    const { rates } = await getExchangeRate();
-    const exchangeRate = rates[values.currency].toFixed(2);
-    const amountPaid = Number(values.amountPaid);
-    const expectedAmount = plans.find(
-      (plan: any) => plan.id === Number(values.portionId)
+    setLoading(true);
+    const formData = getFormData({
+      ...values,
+      exchangeRate: exchange,
+      amountPaid: amountPaid.toFixed(2),
+      date: date?.startDate || "",
+    });
+    formData.append("receipt", file);
+    const result = await createPayment(
+      token,
+      state.id,
+      values.portionId,
+      formData
     );
-    const expectedPayment = exchangeRate * expectedAmount.portion;
-
-    if (amountPaid >= expectedPayment && amountPaid < expectedPayment + 6) {
-      const formData = getFormData({
-        ...values,
-        exchangeRate,
-        date: date?.startDate || "",
-      });
-      formData.append("receipt", file);
-      const result = await createPayment(
-        token,
-        state.id,
-        values.portionId,
-        formData
-      );
-      if (result?.success) {
-        setLoading(false);
-        navigate(`/dashboard/students/${state.studentInfo.studentId}`);
-      } else {
-        setErrorMsg("Unable to add payment at the moment");
-        setError(true);
-        setLoading(false);
-      }
-    } else {
+    if (result?.success) {
       setLoading(false);
-      setErrorMsg(
-        `The amount paid in ${values.currency} should be ${values.currency} ${expectedPayment}`
-      );
+      navigate(`/dashboard/students/${state.studentInfo.studentId}`);
+    } else {
+      setErrorMsg("Unable to add payment at the moment");
       setError(true);
+      setLoading(false);
     }
   };
 
-  const plans = state.invoicePortion;
+  const plans = selectData(state.invoicePortion);
+  const latestPortion = plans[0];
 
   return (
     <div className="w-full space-y-5 md:pt-8 px-5">
@@ -101,7 +91,6 @@ const AddPayment = () => {
           initialValues={{
             date: "",
             currency: "",
-            amountPaid: "",
             paymentMedium: "",
             toAccount: "",
             portionId: "",
@@ -147,7 +136,7 @@ const AddPayment = () => {
                   </div>
                 </div>
                 <Select
-                  dataObj={selectData(plans)}
+                  dataObj={[latestPortion]}
                   name="portionId"
                   placeholder="Portion"
                   value={values.portionId}
@@ -172,15 +161,27 @@ const AddPayment = () => {
                   name="currency"
                   placeholder="Currency"
                   value={values.currency}
-                  onChange={handleChange}
+                  onChange={(e: React.ChangeEvent<any>) => {
+                    handleChange(e);
+                    setExchangeLoad(true);
+                    getExchangeRate().then(({ rates }) => {
+                      setExchange(rates[e.target.value].toFixed(2));
+                      setAmountPaid(
+                        rates[e.target.value] * latestPortion.portion
+                      );
+                      setExchangeLoad(false);
+                    });
+                  }}
                 />
-                <Input
-                  placeholder="Amount Paid"
-                  name="amountPaid"
-                  value={values.amountPaid}
-                  onChange={handleChange}
-                  type="text"
-                />
+                <div className="space-y-2">
+                  <label className="text-xs md:text-sm px-2 text-gray-600">
+                    Amount Paid
+                  </label>
+                  <div className="border border-1 border-orange-500 rounded-full py-1.5 px-5 flex items-center justify-between">
+                    <p>{amountPaid.toFixed(2)}</p>
+                    {exchangeLoad ? <ButtonSpinner /> : null}
+                  </div>
+                </div>
                 <Select
                   data={["transfer", "cash"]}
                   name="paymentMedium"
@@ -254,7 +255,6 @@ export default AddPayment;
 
 const validationSchema = yup.object().shape({
   currency: yup.string().required("currency is required"),
-  amountPaid: yup.string().required("amount is required"),
   paymentMedium: yup.string().required("medium of payment is required"),
   toAccount: yup.string().required("this field is required"),
   notes: yup.string().required("notes is required"),
