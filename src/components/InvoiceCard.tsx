@@ -3,6 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getRemain } from "../utils/helper";
+import { PiEyeLight, PiMoneyLight, PiPencilLight } from "react-icons/pi";
 
 const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
   invoice,
@@ -23,11 +24,11 @@ const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
       {/* invoice data type */}
       <div className="space-y-2">
         <div
-          className={`p-2 grid w-full ${
-            role === "sales" ? "grid-cols-7" : "grid-cols-5"
+          className={`hidden p-2 lg:grid w-full text-sm font-semibold ${
+            role === "sales" ? "grid-cols-8" : "grid-cols-6"
           } gap-4 rounded-lg bg-orange-200 bg-opacity-60 `}
         >
-          <div className="col-span-1">Date</div>
+          <div className="col-span-2">Date</div>
           <div className="col-span-2">Course</div>
           <div className="col-span-1">Amount (U)</div>
           {role === "sales" ? (
@@ -40,8 +41,8 @@ const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
         </div>
         {invoice.map((inv: any) => (
           <div
-            className={`p-2 rounded-lg grid gap-4 ${
-              role === "sales" ? "grid-cols-7" : "grid-cols-5"
+            className={`p-2 text-center lg:text-left rounded-lg grid lg:gap-4 ${
+              role === "sales" ? "grid-cols-8" : "grid-cols-6"
             }   ${
               isFullyPaid(inv)
                 ? "bg-green-100 bg-opacity-60"
@@ -49,30 +50,32 @@ const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
             }`}
             key={inv.id}
           >
-            <div className="text-sm col-span-1">
+            <div className="text-sm col-span-3 lg:col-span-2">
               {moment(inv.validityDate).format("MMM Do YYYY")}
             </div>
-            <div className="text-sm col-span-2">
+            <div className="text-sm col-span-3 lg:col-span-2">
               {inv.courseInfo.courseTitle}
             </div>
-            <div className="font-semibold col-span-1">
+            <div className="font-semibold col-span-2 lg:col-span-1">
               ${getRemain(inv.invoicePortion)}
             </div>
             {role === "sales" ? (
               <>
                 {!isFullyPaid(inv) ? (
                   <div
-                    className="col-span-1 border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
+                    className="col-span-3 lg:col-span-1 flex justify-center cursor-pointer"
                     onClick={() => {
                       navigate(`/dashboard/invoices/edit/1`, {
                         state: inv,
                       });
                     }}
                   >
-                    <p className="text-sm text-center text-orange-500">Edit </p>
+                    <PiPencilLight className="text-center text-xl text-orange-500 font-semibold" />{" "}
                   </div>
                 ) : (
-                  <span className="text-center">-</span>
+                  <div className="col-span-3 lg:col-span-1 flex justify-center cursor-pointer">
+                    <span className="text-center">-</span>
+                  </div>
                 )}
               </>
             ) : null}
@@ -81,29 +84,31 @@ const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
               <>
                 {!isFullyPaid(inv) ? (
                   <div
-                    className="col-span-1 border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
+                    className="col-span-3 lg:col-span-1 flex justify-center cursor-pointer"
                     onClick={() => {
                       navigate(`/dashboard/payments/add`, {
                         state: inv,
                       });
                     }}
                   >
-                    <p className="text-sm text-center text-orange-500">Pay</p>
+                    <PiMoneyLight className="text-center text-xl text-orange-500 font-semibold" />{" "}
                   </div>
                 ) : (
-                  <span className="text-center">-</span>
+                  <div className="col-span-3 lg:col-span-1 flex justify-center cursor-pointer">
+                    <span className="text-center">-</span>
+                  </div>
                 )}
               </>
             ) : null}
             <div
-              className="col-span-1 border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
+              className="col-span-2 lg:col-span-1 flex justify-center cursor-pointer"
               onClick={() => {
                 navigate(`/dashboard/templates`, {
                   state: inv,
                 });
               }}
             >
-              <p className="text-sm text-center text-orange-500">Show</p>
+              <PiEyeLight className="text-center text-xl text-orange-500 font-semibold" />{" "}
             </div>
           </div>
         ))}

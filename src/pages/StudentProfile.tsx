@@ -96,41 +96,39 @@ const StudentProfile = () => {
     : [];
 
   return (
-    <div className="pt-8 pb-8 px-5 w-full space-y-6">
-      <StudentCard
-        student={student}
-        portions={portions}
-        hasGuardian={guardian ? true : false}
-      />
-      <div className="flex">
-        <div className="grid grid-cols-3 w-full gap-4">
-          <div className="col-span-3 xl:col-span-2 bg-white shadow-xl rounded-lg p-4 w-full ">
-            {invoice ? <InvoiceCard invoice={invoice} /> : null}
-            {error.invoice ? (
-              <p className="text-center py-24">No Invoice sent yet</p>
-            ) : null}
-            {loading.invoice ? <Spinner /> : null}
-          </div>
-          <div className="col-span-3 xl:col-span-1  bg-white shadow-xl rounded-lg p-4 w-full">
-            {payments ? <PaymentCard payments={payments} /> : null}
-            {error.payments ? (
-              <p className="text-center py-24">No payments made</p>
-            ) : null}
-            {loading.payments ? <Spinner /> : null}
-          </div>
-          <div className="col-span-3 xl:col-span-2  bg-white shadow-xl rounded-lg p-4 w-full">
-            {guardian ? (
-              <GuardianCard guardian={{ ...guardian, studentId: student.id }} />
-            ) : null}
-            {error.guardian ? (
-              <p className="text-center py-24">No Guardian added yet</p>
-            ) : null}
-            {loading.guardian ? <Spinner /> : null}
-          </div>
-          <div className="col-span-3 xl:col-span-1  bg-white shadow-xl rounded-lg p-4 w-full">
-            Awaiting course registration
-          </div>
-        </div>
+    <div className="grid grid-cols-3 w-full gap-4 pt-6 pb-12 px-2 lg:px-12 xl:px-28 2xl:px-56">
+      <div className="col-span-3">
+        <StudentCard
+          student={student}
+          portions={portions}
+          hasGuardian={guardian ? true : false}
+        />
+      </div>
+      <div className="col-span-3 bg-white shadow-xl rounded p-4 w-full ">
+        {invoice ? <InvoiceCard invoice={invoice} /> : null}
+        {error.invoice ? (
+          <p className="text-center py-24">No Invoice sent yet</p>
+        ) : null}
+        {loading.invoice ? <Spinner /> : null}
+      </div>
+      <div className="col-span-3 bg-white shadow-xl rounded-lg p-4 w-full">
+        {payments ? <PaymentCard payments={payments} /> : null}
+        {error.payments ? (
+          <p className="text-center py-24">No payments made</p>
+        ) : null}
+        {loading.payments ? <Spinner /> : null}
+      </div>
+      <div className="col-span-3  bg-white shadow-xl rounded-lg p-4 w-full">
+        {guardian ? (
+          <GuardianCard guardian={{ ...guardian, studentId: student.id }} />
+        ) : null}
+        {error.guardian ? (
+          <p className="text-center py-24">No Guardian added yet</p>
+        ) : null}
+        {loading.guardian ? <Spinner /> : null}
+      </div>
+      <div className="col-span-3 bg-white shadow-xl rounded-lg p-4 w-full">
+        Awaiting course registration
       </div>
     </div>
   );
