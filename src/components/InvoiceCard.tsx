@@ -3,11 +3,18 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getRemain } from "../utils/helper";
-import { PiEyeLight, PiMoneyLight, PiPencilLight } from "react-icons/pi";
+import {
+  PiEyeLight,
+  PiMoneyLight,
+  PiPencilLight,
+  PiPlusLight,
+} from "react-icons/pi";
 
-const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
-  invoice,
-}) => {
+const InvoiceCard: React.FC<{
+  invoice: any;
+  payments?: any;
+  studentId: string;
+}> = ({ invoice, studentId }) => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const { role } = currentUser;
@@ -20,6 +27,17 @@ const InvoiceCard: React.FC<{ invoice: any; payments?: any }> = ({
         <div className="flex space-x-2 items-center">
           <p className="font-semibold ">Invoice Info</p>
         </div>
+        {role === "sales" ? (
+          <div
+            className="flex items-center justify-center border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
+            onClick={() => {
+              navigate("/dashboard/invoices/add", { state: studentId });
+            }}
+          >
+            <PiPlusLight className="text-orange-500" />
+            <span className="text-sm text-orange-500">Add Invoice</span>
+          </div>
+        ) : null}
       </div>
       {/* invoice data type */}
       <div className="space-y-2">

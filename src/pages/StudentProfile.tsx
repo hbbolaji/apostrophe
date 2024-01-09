@@ -105,7 +105,9 @@ const StudentProfile = () => {
         />
       </div>
       <div className="col-span-3 bg-white shadow-xl rounded p-4 w-full ">
-        {invoice ? <InvoiceCard invoice={invoice} /> : null}
+        {invoice ? (
+          <InvoiceCard invoice={invoice} studentId={student.id} />
+        ) : null}
         {error.invoice ? (
           <p className="text-center py-24">No Invoice sent yet</p>
         ) : null}

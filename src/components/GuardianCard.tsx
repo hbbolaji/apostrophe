@@ -4,6 +4,7 @@ import {
   PiFlagThin,
   PiMapPinThin,
   PiNotePencilThin,
+  PiPersonLight,
   PiPhoneCallThin,
   PiPhoneThin,
   PiWhatsappLogoThin,
@@ -20,18 +21,33 @@ const GuardianCard: React.FC<{ guardian: any }> = ({ guardian }) => {
       <div className="flex justify-between items-center">
         <p className="font-semibold text-lg text-center">Guardian Info</p>
         {role === "sales" ? (
-          <div
-            className="flex items-center justify-center border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
-            onClick={() => {
-              navigate(`/dashboard/guardians/edit/${guardian.id}`, {
-                state: guardian,
-              });
-            }}
-          >
-            <div>
-              <PiNotePencilThin className="text-orange-500" />
+          <div>
+            <div
+              className="flex items-center justify-center border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
+              onClick={() => {
+                navigate(`/dashboard/guardians/edit/${guardian.id}`, {
+                  state: guardian,
+                });
+              }}
+            >
+              <div>
+                <PiNotePencilThin className="text-orange-500" />
+              </div>
+              <p className="text-sm  text-orange-500">Edit</p>
             </div>
-            <p className="text-sm  text-orange-500">Edit</p>
+            {!guardian ? (
+              <div
+                className="flex items-center justify-center border border-orange-500 rounded-full px-4 py-1 space-x-3 cursor-pointer"
+                onClick={() => {
+                  navigate("/dashboard/guardians/add", {
+                    state: guardian.studentId,
+                  });
+                }}
+              >
+                <PiPersonLight className="text-orange-500" />
+                <span className="text-sm text-orange-500">Add Guardian</span>
+              </div>
+            ) : null}
           </div>
         ) : null}
       </div>
