@@ -28,7 +28,7 @@ const StudentCard: React.FC<Props> = ({ student, hasGuardian, portions }) => {
     (portion: any) => portion.status === "paid"
   );
   return (
-    <div className="w-full flex flex-col sm:flex-row space-y-4 space-x-0 sm:space-x-4">
+    <div className="w-full flex flex-col sm:flex-row space-y-4 sm:space-y-0 space-x-0 sm:space-x-4">
       <div className="w-full sm:w-1/2 lg:w-2/3 bg-white rounded shadow-lg p-8">
         <div className="text-left space-y-1">
           <div className="flex items-center justify-between">

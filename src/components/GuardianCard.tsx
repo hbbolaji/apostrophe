@@ -17,7 +17,7 @@ const GuardianCard: React.FC<{ guardian: any }> = ({ guardian }) => {
   const { currentUser } = useAuth();
   const role = currentUser.role;
   return (
-    <div className="px-5 py-3 space-y-4">
+    <div className="px-0.5 lg:px-5 py-3 space-y-4">
       <div className="flex justify-between items-center">
         <p className="font-semibold text-lg text-center">Guardian Info</p>
         {role === "sales" ? (

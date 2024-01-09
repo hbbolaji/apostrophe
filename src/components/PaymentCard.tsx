@@ -3,7 +3,7 @@ import React from "react";
 
 const PaymentCard: React.FC<{ payments: any }> = ({ payments }) => {
   return (
-    <div className="px-5 py-3 space-y-4">
+    <div className="px-0.5 lg:px-5 py-3 space-y-4">
       <div className="flex justify-between items-center">
         <p className="font-semibold ">Payment Info</p>
       </div>

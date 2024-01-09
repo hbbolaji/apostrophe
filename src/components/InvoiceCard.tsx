@@ -22,7 +22,7 @@ const InvoiceCard: React.FC<{
     inv.invoicePortion.filter((portion: any) => portion.status === "unpaid")
       .length < 1;
   return (
-    <div className="px-5 py-3 space-y-4 ">
+    <div className="px-0.5 lg:px-5 py-3 space-y-4 ">
       <div className="flex justify-between items-center">
         <div className="flex space-x-2 items-center">
           <p className="font-semibold ">Invoice Info</p>
@@ -59,7 +59,7 @@ const InvoiceCard: React.FC<{
         </div>
         {invoice.map((inv: any) => (
           <div
-            className={`p-2 text-center lg:text-left rounded-lg grid lg:gap-4 ${
+            className={`p-2 text-center lg:text-left rounded-lg grid gap-1 lg:gap-4 ${
               role === "sales" ? "grid-cols-8" : "grid-cols-6"
             }   ${
               isFullyPaid(inv)
@@ -68,13 +68,25 @@ const InvoiceCard: React.FC<{
             }`}
             key={inv.id}
           >
-            <div className="text-sm col-span-3 lg:col-span-2">
+            <div
+              className={`text-sm ${
+                role === "sales" ? "col-span-3" : "col-span-2"
+              } lg:col-span-2`}
+            >
               {moment(inv.validityDate).format("MMM Do YYYY")}
             </div>
-            <div className="text-sm col-span-3 lg:col-span-2">
+            <div
+              className={`text-sm ${
+                role === "sales" ? "col-span-3" : "col-span-2"
+              } lg:col-span-2`}
+            >
               {inv.courseInfo.courseTitle}
             </div>
-            <div className="font-semibold col-span-2 lg:col-span-1">
+            <div
+              className={`font-semibold ${
+                role === "sales" ? "col-span-3" : "col-span-1"
+              } lg:col-span-1`}
+            >
               ${getRemain(inv.invoicePortion)}
             </div>
             {role === "sales" ? (
@@ -88,7 +100,10 @@ const InvoiceCard: React.FC<{
                       });
                     }}
                   >
-                    <PiPencilLight className="text-center text-xl text-orange-500 font-semibold" />{" "}
+                    <PiPencilLight className="hidden lg:block text-center text-xl text-orange-500 font-semibold" />
+                    <div className="px-4 py-1 text-xs lg:hidden text-orange-500 border border-orange-500 rounded-full">
+                      Edit
+                    </div>
                   </div>
                 ) : (
                   <div className="col-span-3 lg:col-span-1 flex justify-center cursor-pointer">
@@ -109,7 +124,10 @@ const InvoiceCard: React.FC<{
                       });
                     }}
                   >
-                    <PiMoneyLight className="text-center text-xl text-orange-500 font-semibold" />{" "}
+                    <PiMoneyLight className="hidden lg:block text-center text-xl text-orange-500 font-semibold" />{" "}
+                    <div className="px-4 py-1 text-xs lg:hidden text-orange-500 border border-orange-500 rounded-full">
+                      Pay
+                    </div>
                   </div>
                 ) : (
                   <div className="col-span-3 lg:col-span-1 flex justify-center cursor-pointer">
@@ -119,14 +137,19 @@ const InvoiceCard: React.FC<{
               </>
             ) : null}
             <div
-              className="col-span-2 lg:col-span-1 flex justify-center cursor-pointer"
+              className={`${
+                role === "sales" ? "col-span-3" : "col-span-1"
+              } lg:col-span-1 flex justify-center cursor-pointer`}
               onClick={() => {
                 navigate(`/dashboard/templates`, {
                   state: inv,
                 });
               }}
             >
-              <PiEyeLight className="text-center text-xl text-orange-500 font-semibold" />{" "}
+              <PiEyeLight className="sm:hidden lg:block text-center text-xl text-orange-500 font-semibold" />
+              <div className="hidden sm:block px-4 py-1 text-xs lg:hidden text-orange-500 border border-orange-500 rounded-full">
+                Show
+              </div>
             </div>
           </div>
         ))}
